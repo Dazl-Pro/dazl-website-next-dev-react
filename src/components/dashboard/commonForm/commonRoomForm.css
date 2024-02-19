@@ -1,0 +1,15 @@
+.customer-create-project button.MuiButtonBase-root[aria-label="Open"], 
+.customer-create-project button.MuiButtonBase-root[aria-label="Close"] {
+  background: none !important;
+  height: 56px;
+  padding-inline: 15px;
+  border: none !important;
+  outline: none !important;
+}
+.customer-create-project .MuiAutocomplete-endAdornment {
+  top: 0 !important;
+  right: 0 !important;
+}
+.customer-create-project button.MuiButtonBase-root[aria-label="Clear"] {
+  display: none !important
+}

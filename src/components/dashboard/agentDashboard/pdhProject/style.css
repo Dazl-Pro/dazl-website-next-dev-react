@@ -1,0 +1,195 @@
+.box-shaddow {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+  .css-1t1j96h-MuiPaper-root-MuiDialog-paper   {
+     max-width: unset;
+    width: calc(100% - 100px) !important;
+    padding: 30px 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 5px;
+}
+.MuiDialog-paperWidthSm.css-uhb5lp  {
+     max-width: unset;
+    width: calc(100% - 100px) !important;
+    padding: 30px 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 5px;
+}
+.rooms-container-height {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+.value {
+  margin: 10px 0;
+}
+.popup1 h3 {
+  margin: 10px 0;
+}
+.img-style {
+  width: 50%;
+}
+.img-style img {
+  width: 100%;
+}
+.flex-sec {
+  width: 25%;
+  display: inline-block;
+}
+.popup1 .border {
+  border: 1px solid #80808059 !important;
+  border-radius: 10px;
+}
+.error{
+  border: 2px solid #ff0000;
+}
+
+.custom-radio-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px
+}
+
+.custom-radio-label input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid black;
+  border-radius: 50%; 
+  margin-left: 10px;
+  position: relative; 
+}
+
+.custom-radio-label input:checked {
+  background-color: white; /* Set the background color when selected */
+  border-color: blue; /* Set the border color when selected */
+}
+
+.custom-radio-label input:checked::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: blue; /* Set the color of the dot */
+  position: absolute;
+  top: 50%; /* Position the dot at the vertical center */
+  left: 50%; /* Position the dot at the horizontal center */
+  transform: translate(-50%, -50%);
+}
+
+.autocomplete-dropdown-container div {
+  border-bottom: 1px solid #8080802e;
+  padding: 12px 0;
+}
+.autocomplete-dropdown-container {
+  width: 38%;
+  border-radius: 20px;
+  margin: 13px 4px;
+  border-radius: 5px;
+  position: absolute;
+}
+.bg-image-box, .bg-image-box2 {
+  background-image: url('/images/shrinkCardimages/proBG.jpg');
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  color: #fff;
+}
+.bg-image-box2 {
+  background-image: url('/images/shrinkCardimages/customerBG.jpg')
+}
+.bg-image-box:before, .bg-image-box2:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(0deg, black, #00000061);
+  border-radius: var(--bs-border-radius-xl) !important;
+}
+.slider-rangee {
+  color: #dc3545;
+}
+.slider-rangee .MuiSlider-thumb {
+  width: 10px;
+  height: 25px;
+  border-radius: 5px;
+}
+.progress-slidee .MuiLinearProgress-bar {
+  background-color: #dc3545;
+}
+/* .progress-slidee{
+  border: 2px solid black;
+  padding: 4px 7px;
+} */
+
+.imagessss > img {
+  width: 70px;
+}
+.cs-dialogg-close {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: #dc3545;
+  border-radius: 6px 0 6px 6px;
+}
+.cs-dialogg-close > svg.MuiSvgIcon-root {
+  fill: #fff;
+  padding: 5px;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+
+
+.cs-dialogg > .MuiDialog-container > .MuiPaper-root {
+  overflow: hidden;
+  padding-block: 0 !important;
+}
+.cs-dialogg > .MuiDialog-container > .MuiPaper-root > .cs-dialogg-container {
+  overflow: auto;
+}
+.pb-70 {
+  padding-bottom: 70%;
+}
+.min-vh-auto {
+  min-height: auto;
+}
+.autocomplete-dropdown-container {
+  width: calc(100% - 23px);
+  margin: 0;
+  box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.1);
+}
+.autocomplete-dropdown-container > div {
+  padding-block: 8px;
+  padding-inline: 15px;
+}
+
+@media screen and (max-width: 768px) {
+  .mob-space{
+    flex-direction: column;
+    width: 100%;
+
+  }
+  .autocomplete-dropdown-container {
+    width: 100%;
+    left: 0;
+    right: 0;
+    padding: 0 13px;
+}
+}
+.errorSub.MuiRadio-root .MuiSvgIcon-root  {
+  fill: red !important;
+  }
+  .errorTerm.MuiCheckbox-root .MuiSvgIcon-root  {
+    fill: red !important;
+  }
+
+
+
+  

@@ -1,0 +1,15 @@
+input:disabled {
+  background: #f5f5f5;
+  border-color: #f5f5f5;
+  border-style: solid;
+}
+input {
+  border: var(--bs-border-width) solid var(--bs-border-color);
+}
+.error {
+  border: 1px solid red;
+  font-weight: bold;
+}
+.mob {
+  margin-bottom: 10px;
+}

@@ -1,0 +1,7 @@
+.Toastify__close-button--light {
+     color: #fff; 
+    opacity: 0.3;
+}
+.btn-pd button.Toastify__close-button.Toastify__close-button--light {
+    padding: 11px 20px;
+}
