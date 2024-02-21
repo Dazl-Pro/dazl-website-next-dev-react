@@ -308,10 +308,10 @@ const ViewPhdAlt = () => {
                               {e?.feature?.map((eleInner, eleindex) => {
                                 return (
                                   <div key={eleindex}>
-                                    <div className="border d-flex align-items-center ps-2 py-4 gap-1 mb-3 ">
-                                      <div className="fw-bolder ">
-                                        {eleInner.feature_name}:
-                                      </div>
+                                    <div className="fw-bolder mb-1 ms-2">
+                                      {eleInner.feature_name}:
+                                    </div>
+                                    <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
                                       <div>{eleInner?.imageDesc}</div>
                                     </div>
                                   </div>
