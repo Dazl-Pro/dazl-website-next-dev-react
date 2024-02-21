@@ -572,10 +572,10 @@ export const updateProjectStatus = createAsyncThunk(
 export const bidStatusUpdate = createAsyncThunk(
   "dashboard/bidStatusUpdate",
   async (value) => {
-    const { id, status, feature, room } = value;
+    const { id, status, room } = value;
     try {
       const response = await http.patch(
-        `/statusUpdate/${id}?feature_id=${feature}&room_id=${room}&bid_status=${status}`
+        `/statusUpdate/${id}?&room_id=${room}&bid_status=${status}`
       );
 
       if (response.status === 200) {
@@ -583,6 +583,7 @@ export const bidStatusUpdate = createAsyncThunk(
       }
     } catch (error) {
       return (
+        console.log(error.response.data.message),
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
       );

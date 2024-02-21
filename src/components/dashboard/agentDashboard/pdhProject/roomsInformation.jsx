@@ -167,6 +167,35 @@ const RoomsInformation = (props) => {
 
   const save = (e, value) => {
     e.preventDefault();
+
+    // Get the values of the checkboxes
+    const checkboxes = watch("checkboxes") || [];
+
+    // Filter out unchecked checkboxes
+    const checkedCheckboxesData = phdCheckbox.filter(
+      (checkbox, index) => checkboxes[index]
+    );
+
+    // Check if at least one checkbox is checked
+    if (checkedCheckboxesData.length === 0) {
+      setErrorborder3(true); // Set error state if no checkbox is checked
+      return; // Exit the function early if no checkbox is checked
+    }
+
+    // Perform other validations
+    if (input.phd_description === "") {
+      setErrorborder(true);
+      return;
+    }
+    if (input.options === "") {
+      setErrorborder1(true);
+      return;
+    }
+    if (fileValue === null) {
+      setErrorborder2(true);
+      return;
+    }
+
     const atLeastOneCheckbox = phdCheckbox[0]?.images;
     if (input.phd_description === "") {
       setErrorborder(true);
@@ -251,6 +280,21 @@ const RoomsInformation = (props) => {
         saved1 !== null ? saved1.customer : undefined
       );
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
+
+      checkedCheckboxesData.forEach((item) => {
+        const checkboxKey = `rooms[${roomId}][feature_status][${
+          item.checkbox ?? "description"
+        }]`;
+        const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
+        const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
+
+        formData.append(checkboxKey, "NEEDS DAZL");
+        formData.append(descriptionKey, item.description);
+        item.images.forEach((image, imgIndex) => {
+          const imageKey = `${imagesKey}[${imgIndex}]`;
+          formData.append(imageKey, image);
+        });
+      });
 
       dispatch(createPhd(formData))
         .unwrap()
@@ -575,7 +619,7 @@ const RoomsInformation = (props) => {
               </div>
               <div className="col-md-4">
                 <FormControlLabel
-                  value="option3"
+                  value="NEEDS DAZL"
                   control={
                     <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
                   }

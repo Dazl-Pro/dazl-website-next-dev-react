@@ -84,7 +84,7 @@ const ViewPhdAlt = () => {
   const [progressBar, setProgressBar] = React.useState(
     viewPhdData?.[0]?.phd_price
   );
-  const [status, setStatus] = React.useState(["Bid", "D.I.Y", "Pass"]);
+  const [allStatus, setStatus] = React.useState(["Bid", "D.I.Y", "Pass"]);
   const [progressBarpre, setProgressbarpre] = React.useState(
     viewPhdData?.[0]?.pre_price
   );
@@ -95,12 +95,12 @@ const ViewPhdAlt = () => {
   const [currentStatus, setCurrentStatus] = useState("Pass");
 
   const mainPrice = viewPhdData?.[0]?.phd_price;
-  const onchangeStatus = (status, feature, room, index) => {
+  const onchangeStatus = (status, room) => {
     dispatch(
       bidStatusUpdate({
         id: viewPhdData[0]?.project_id,
         status: status,
-        feature: feature,
+
         room: room,
       })
     )
@@ -165,6 +165,7 @@ const ViewPhdAlt = () => {
     }
   };
 
+  console.log(currentStatus);
   const sendEmail = () => {
     Toastify({
       data: "success",
@@ -177,6 +178,7 @@ const ViewPhdAlt = () => {
     console.log("No data available");
     return <div>No data available</div>;
   }
+
   return (
     <>
       <div className="py-0">
@@ -203,7 +205,7 @@ const ViewPhdAlt = () => {
                   const year = dateObject.getFullYear();
                   return (
                     <>
-                      <div className="pb-3">
+                      <div key={index} className="pb-3">
                         <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
                           <span className="fw-bold">Homeowners Name: </span>
                           <span className="w-50">
@@ -290,130 +292,118 @@ const ViewPhdAlt = () => {
                         </h3>
                         {items?.roominfo?.map((e, index) => {
                           return (
-                            <div key={index}>
+                            <div
+                              key={index}
+                              className="border border-dark p-3 mt-3 bg-white"
+                            >
+                              <div className="d-flex align-items-center justify-content-between mb-3">
+                                <div className="d-flex gap-1 align-items-center">
+                                  Area:
+                                  <div className="fw-bolder">
+                                    {e?.room_name}
+                                  </div>
+                                </div>
+                                <div className="text-danger">{e?.status}</div>
+                              </div>
                               {e?.feature?.map((eleInner, eleindex) => {
                                 return (
-                                  <div
-                                    key={index}
-                                    className="border border-dark p-3 mt-3 bg-white"
-                                  >
-                                    <div className="d-flex align-items-center justify-content-between mb-3">
-                                      <div className="d-flex gap-1 align-items-center">
-                                        Area:
-                                        <div className="fw-bolder">
-                                          {e?.room_name}
-                                        </div>
+                                  <div key={eleindex}>
+                                    <div className="border d-flex align-items-center ps-2 py-4 gap-1 mb-3 ">
+                                      <div className="fw-bolder ">
+                                        {eleInner.feature_name}:
                                       </div>
-                                      <div className="text-danger">
-                                        {e?.status}
-                                      </div>
+                                      <div>{eleInner?.imageDesc}</div>
                                     </div>
-                                    <div className="border d-flex justify-content-center align-items-center flex-column py-2">
-                                      <div className="fw-bolder mb-2">
-                                        Selling Advantage Notes
-                                      </div>
-                                      <div>{items?.description}</div>
-                                    </div>
-                                    <div className="container ps-0 mt-3 mb-3">
-                                      <div className="d-flex gap-1">
-                                        {Array.from(
-                                          new Set(
-                                            items.images
-                                              .filter(
-                                                (image) =>
-                                                  image.description ===
-                                                  items?.images?.[index + 1]
-                                                    ?.description
-                                              )
-                                              .map((image) => image.description)
-                                          )
-                                        ).map(
-                                          (description, descriptionIndex) => (
-                                            <div key={descriptionIndex}>
-                                              <h4>{description}</h4>
-                                              <div className="d-flex gap-1">
-                                                {items.images
-                                                  .filter(
-                                                    (image) =>
-                                                      image.description ===
-                                                        description &&
-                                                      image.description ===
-                                                        items?.images?.[
-                                                          index + 1
-                                                        ]?.description
-                                                  )
-                                                  .map((image, imageIndex) => (
-                                                    <div key={imageIndex}>
-                                                      <a
-                                                        href={image.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                      >
-                                                        <LazyLoadImage
-                                                          alt="img"
-                                                          src={image.url}
-                                                          className="object-fit-cover border"
-                                                          width={"100px"}
-                                                          height={"100px"}
-                                                        />
-                                                      </a>
-                                                    </div>
-                                                  ))}
-                                              </div>
-                                            </div>
-                                          )
-                                        )}
-                                      </div>
-                                    </div>
-
-                                    <div
-                                      style={{ display: "flex", gap: "10px" }}
-                                    >
-                                      {status.map((status) => (
-                                        <label
-                                          key={status}
-                                          className="custom-radio-label"
-                                        >
-                                          <input
-                                            type="radio"
-                                            name={`status-${eleindex}`}
-                                            onChange={() => {
-                                              onchangeStatus(
-                                                status,
-                                                eleInner.feature_id,
-                                                e.room_id,
-                                                eleindex
-                                              );
-                                              setCurrentStatus(status);
-                                            }}
-                                          />
-                                          <span className="ps-2">{status}</span>
-                                        </label>
-                                      ))}
-                                    </div>
-                                    {currentStatus !== "Pass" && (
-                                      <div>
-                                        <div className="d-flex justify-content-between mt-3 mb-2">
-                                          <p className="mb-0">$200k</p>
-                                          <p className="mb-0">
-                                            $
-                                            {progressBar
-                                              ? (progressBar / 1000).toFixed(
-                                                  1
-                                                ) + "k"
-                                              : "2M"}
-                                          </p>
-                                          <p className="mb-0">$2M</p>
-                                        </div>
-                                        <BorderLinearProgress
-                                          variant="determinate"
-                                          value={(progressBar / 1800000) * 100}
-                                        />
-                                      </div>
-                                    )}
                                   </div>
                                 );
                               })}
+                              <div className="container ps-0 mb-3">
+                                <div className="d-flex gap-1">
+                                  {Array.from(
+                                    new Set(
+                                      items.images
+                                        .filter(
+                                          (image) =>
+                                            image.description ===
+                                            items?.images?.[index]?.description
+                                        )
+                                        .map((image) => image.description)
+                                    )
+                                  ).map((description, descriptionIndex) => (
+                                    <div key={descriptionIndex}>
+                                      <div className="d-flex gap-1">
+                                        {items.images
+                                          .filter(
+                                            (image) =>
+                                              image.description ===
+                                                description &&
+                                              image.description ===
+                                                items?.images?.[index]
+                                                  ?.description
+                                          )
+                                          .map((image, imageIndex) => (
+                                            <div key={imageIndex}>
+                                              <a
+                                                href={image.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                <LazyLoadImage
+                                                  alt="img"
+                                                  src={image.url}
+                                                  className="object-fit-cover border"
+                                                  width={"100px"}
+                                                  height={"100px"}
+                                                />
+                                              </a>
+                                            </div>
+                                          ))}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div style={{ display: "flex", gap: "10px" }}>
+                                {allStatus.map((status) => (
+                                  <label
+                                    key={status}
+                                    className="custom-radio-label"
+                                  >
+                                    <input
+                                      type="radio"
+                                      name={`status-${index}`}
+                                      onChange={() => {
+                                        onchangeStatus(
+                                          status,
+
+                                          e.room_id
+                                        );
+                                        setCurrentStatus(status);
+                                      }}
+                                    />
+                                    <span className="ps-2">{status}</span>
+                                  </label>
+                                ))}
+                              </div>
+                              {currentStatus !== "Pass" && (
+                                <div>
+                                  <div className="d-flex justify-content-between mt-3 mb-2">
+                                    <p className="mb-0">$200k</p>
+                                    <p className="mb-0">
+                                      $
+                                      {progressBar
+                                        ? (progressBar / 1000).toFixed(1) + "k"
+                                        : "2M"}
+                                    </p>
+                                    <p className="mb-0">$2M</p>
+                                  </div>
+                                  <BorderLinearProgress
+                                    variant="determinate"
+                                    value={(progressBar / 1800000) * 100}
+                                  />
+                                </div>
+                              )}
                             </div>
                           );
                         })}
