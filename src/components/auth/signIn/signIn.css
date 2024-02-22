@@ -1,5 +1,3 @@
-
-
 /* CSS */
 .button-85 {
   padding: 0.6em 2em;
@@ -14,6 +12,16 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+}
+
+.myCustomMargin {
+  margin-top: 150px; /* change value to your desire */
+}
+
+.custom-modal-header .btn-close {
+  /* Your custom styles for the close button */
+  color: red; /* Example: change the color to red */
+  /* Add any other styling you want */
 }
 
 .button-85:before {
@@ -69,40 +77,54 @@
 }
 
 .card-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px; /* Adjust the gap as needed */
-  }
-  
-  .card-image {
-    padding-bottom: 80%;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    border-radius: 16px 16px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; /* Adjust the gap as needed */
 }
-  .image-overlay {
-    background: linear-gradient(0deg, black, transparent);
-  }
-  .card-title {
-    margin: 0;
-    font-size: 1.5rem;
-  }
 
-  .card-content {
-    padding: 20px;
-    box-sizing: border-box;
+.card-image {
+  padding-bottom: 80%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 16px 16px 0 0;
+}
+.image-overlay {
+  background: linear-gradient(0deg, black, transparent);
+}
+.card-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.card-content {
+  padding: 20px;
+  box-sizing: border-box;
+}
+.card-subtitle {
+  margin: 5px 0;
+  color: #888;
+}
+.circle-container {
+  width: 40px; /* Adjust as needed */
+  height: 40px; /* Adjust as needed */
+  border: 3px solid #ff7300; /* Border color and thickness */
+  border-radius: 50%; /* Makes the div circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ff7300;
+  font-weight: bold;
+  font-size: 1.2rem; /* Adjust font size as needed */
+  margin-bottom: 20px;
+}
+
+.error {
+  border: 2px solid red;
+  font-weight: bold;
+}
+@media screen and (max-width: 768px) {
+  .card-container {
+    display: block;
   }
-  .card-subtitle {
-    margin: 5px 0;
-    color: #888;
-  }
-  .error {
-    border: 2px solid red;
-    font-weight: bold;
-  }
-  @media screen and (max-width: 768px) {
-    .card-container {
-      display: block;
-  }  
 }

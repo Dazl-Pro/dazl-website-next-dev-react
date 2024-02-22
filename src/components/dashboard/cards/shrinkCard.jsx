@@ -40,7 +40,8 @@ const ShrinkCard = (props) => {
         >
           <div className="lower-contet-signupp">
             <h5 className=" text-uppercase text-black mb-3">
-              for REAL ESTATE PROFESSIONALS Dazl is a hub to:
+              for <text className="text-danger">REAL ESTATE PROFESSIONALS</text>{" "}
+              Dazl is a hub to:
             </h5>
             <div className="custom-list">
               <p className="mb-2">
@@ -70,7 +71,8 @@ const ShrinkCard = (props) => {
         >
           <div className="lower-contet-signupp">
             <h5 className=" text-uppercase text-black mb-3">
-              for SERVICE PROFESSIONALS Dazl is a hub to:
+              for <text className="text-danger">SERVICE PROFESSIONALS</text>{" "}
+              Dazl is a hub to:
             </h5>
             <div className="custom-list">
               <p className="mb-2">
@@ -99,7 +101,8 @@ const ShrinkCard = (props) => {
         >
           <div className="lower-contet-signupp">
             <h5 className=" text-uppercase text-black mb-3">
-              for HOMEOWNERS Dazl is a hub to:
+              for <text className="text-danger">HOMEOWNERS</text> Dazl is a hub
+              to:
             </h5>
             <div className="custom-list">
               <p className="mb-2">

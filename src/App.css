@@ -1,17 +1,23 @@
-
-
 :root {
-  --bs-light-rgb: 245,245,245 !important;
-  --head-fonts: 'Barlow', sans-serif;
-  --para-fonts: 'Lato', sans-serif;
+  --bs-light-rgb: 245, 245, 245 !important;
+  --head-fonts: "Barlow", sans-serif;
+  --para-fonts: "Lato", sans-serif;
 }
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700&display=swap');
-body, .para-font {
-  font-family: var( --para-fonts ) !important;
-  font-weight: 400 ;
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700&display=swap");
+body,
+.para-font {
+  font-family: var(--para-fonts) !important;
+  font-weight: 400;
 }
-h1, h2, h3, h4, h5, h6, .heading-font, .btn {
-  font-family: var( --head-fonts ) !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading-font,
+.btn {
+  font-family: var(--head-fonts) !important;
 }
 main.main-content-main {
   padding-top: 125px !important;
@@ -58,7 +64,7 @@ body .btn {
   font-weight: 700;
   text-transform: uppercase;
   --bs-btn-padding-x: 1rem;
-    --bs-btn-padding-y: 0.5rem;
+  --bs-btn-padding-y: 0.5rem;
 }
 body .btn-primary {
   --bs-btn-bg: #dc3545;
@@ -74,7 +80,7 @@ body .btn-light {
   --bs-btn-color: #dc3545;
   --bs-btn-hover-bg: #fff;
   --bs-btn-hover-border-color: #fff;
-  --bs-btn-active-bg: #fff; 
+  --bs-btn-active-bg: #fff;
 }
 
 .mw-230px {
@@ -147,10 +153,10 @@ body .btn-light {
   color: #888;
 }
 
- /* sectio-two css */
- 
+/* sectio-two css */
+
 /* start */
- .section-two-ul li{
+.section-two-ul li {
   list-style: none;
   color: #727272;
   font-size: 21px;
@@ -160,30 +166,29 @@ body .btn-light {
   grid-gap: 10px;
   gap: 10px;
   font-family: "nudista-web", "sans-serif";
- }
-
- /* section-three csss */
-.firstCard{
-  background-image: url('/images/shrinkCardimages/realtorBG.jpg');
-  background-position: center;
-  background-size: cover;
-
 }
-.secondCard{
-  background-image: url('/images/shrinkCardimages/proBG.jpg');
+
+/* section-three csss */
+.firstCard {
+  background-image: url("/images/shrinkCardimages/realtorBG.jpg");
   background-position: center;
   background-size: cover;
 }
-.thirdCard{
-  background-image: url('/images/shrinkCardimages/customerBG.jpg');
+.secondCard {
+  background-image: url("/images/shrinkCardimages/proBG.jpg");
   background-position: center;
   background-size: cover;
-
+}
+.thirdCard {
+  background-image: url("/images/shrinkCardimages/customerBG.jpg");
+  background-position: center;
+  background-size: cover;
 }
 @media (min-width: 1200px) {
-body .h2, body h2 {
+  body .h2,
+  body h2 {
     font-size: 2.3rem;
-}
+  }
 }
 .box-shaddow {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
