@@ -39,7 +39,7 @@ const MyProject = () => {
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   useEffect(() => {
-    if (projectData.length === 0) {
+    if (projectData?.length === 0) {
       if (location.pathname === "/homeOwner/my-project") {
         dispatch(getCustomerProject({ pageNo: 1, numberofdata: 5 }));
       } else {

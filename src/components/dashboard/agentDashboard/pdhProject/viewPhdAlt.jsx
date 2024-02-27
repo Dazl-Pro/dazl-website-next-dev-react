@@ -319,48 +319,25 @@ const ViewPhdAlt = () => {
                               })}
                               <div className="container ps-0 mb-3">
                                 <div className="d-flex gap-1">
-                                  {Array.from(
-                                    new Set(
-                                      items.images
-                                        .filter(
-                                          (image) =>
-                                            image.description ===
-                                            items?.images?.[index]?.description
-                                        )
-                                        .map((image) => image.description)
-                                    )
-                                  ).map((description, descriptionIndex) => (
-                                    <div key={descriptionIndex}>
-                                      <div className="d-flex gap-1">
-                                        {items.images
-                                          .filter(
-                                            (image) =>
-                                              image.description ===
-                                                description &&
-                                              image.description ===
-                                                items?.images?.[index]
-                                                  ?.description
-                                          )
-                                          .map((image, imageIndex) => (
-                                            <div key={imageIndex}>
-                                              <a
-                                                href={image.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                              >
-                                                <LazyLoadImage
-                                                  alt="img"
-                                                  src={image.url}
-                                                  className="object-fit-cover border"
-                                                  width={"100px"}
-                                                  height={"100px"}
-                                                />
-                                              </a>
-                                            </div>
-                                          ))}
+                                  {e?.project_images?.map(
+                                    (image, imageIndex) => (
+                                      <div key={imageIndex}>
+                                        <a
+                                          href={image.url[0]}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          <LazyLoadImage
+                                            alt="img"
+                                            src={image.url[0]}
+                                            className="object-fit-cover border"
+                                            width={"100px"}
+                                            height={"100px"}
+                                          />
+                                        </a>
                                       </div>
-                                    </div>
-                                  ))}
+                                    )
+                                  )}
                                 </div>
                               </div>
 

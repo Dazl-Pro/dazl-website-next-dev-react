@@ -283,7 +283,7 @@ const Commonproject = () => {
           <p className="mt-3 text-start">
             What items in this area would you like to dazl up ?
           </p>
-          {phdRooms.map((_, index) => {
+          {phdRooms?.map((_, index) => {
             if (
               _.name === "Light Fixtures" ||
               _.name === "Plumbing Issues (Leaks)"

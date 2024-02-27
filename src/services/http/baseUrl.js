@@ -1,11 +1,11 @@
-
 import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: "https://api.dazlpro.com/api",
+  baseURL: "http://66.228.35.90/api",
+
   headers: {
-    "Accept": "application/json",
+    Accept: "application/json",
     "Content-type": "application/json",
   },
 });
