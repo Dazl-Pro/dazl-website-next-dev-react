@@ -314,32 +314,32 @@ const ViewPhdAlt = () => {
                                     <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
                                       <div>{eleInner?.imageDesc}</div>
                                     </div>
+                                    <div className="container ps-0 mb-3">
+                                      <div className="d-flex gap-1">
+                                        {eleInner?.images?.map(
+                                          (image, imageIndex) => (
+                                            <div key={imageIndex}>
+                                              <a
+                                                href={image}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                <LazyLoadImage
+                                                  alt="img"
+                                                  src={image}
+                                                  className="object-fit-cover border"
+                                                  width={"100px"}
+                                                  height={"100px"}
+                                                />
+                                              </a>
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
                                   </div>
                                 );
                               })}
-                              <div className="container ps-0 mb-3">
-                                <div className="d-flex gap-1">
-                                  {e?.project_images?.map(
-                                    (image, imageIndex) => (
-                                      <div key={imageIndex}>
-                                        <a
-                                          href={image.url[0]}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          <LazyLoadImage
-                                            alt="img"
-                                            src={image.url[0]}
-                                            className="object-fit-cover border"
-                                            width={"100px"}
-                                            height={"100px"}
-                                          />
-                                        </a>
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              </div>
 
                               <div style={{ display: "flex", gap: "10px" }}>
                                 {allStatus.map((status) => (

@@ -490,7 +490,7 @@ export const viewPhd = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await http.get(
-        `/home-diagnostic-reports/for-realtor/${value.id}`
+        `/home-diagnostic-reports-test/for-realtor/${value.id}`
       );
 
       if (response.status === 200) {
@@ -513,7 +513,7 @@ export const viewPhdAlt = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await http.get(
-        `/home-diagnostic-reports/for-realtor/${value.id}`
+        `/home-diagnostic-reports-test/for-realtor/${value.id}`
       );
 
       if (response.status === 200) {
