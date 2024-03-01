@@ -1,20 +1,21 @@
 .box-shaddow {
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  }
-  .css-1t1j96h-MuiPaper-root-MuiDialog-paper   {
-     max-width: unset;
-    width: calc(100% - 100px) !important;
-    padding: 30px 0px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    border-radius: 5px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
-.MuiDialog-paperWidthSm.css-uhb5lp  {
-     max-width: unset;
-    width: calc(100% - 100px) !important;
-    padding: 30px 0px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    border-radius: 5px;
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper {
+  max-width: unset;
+  width: calc(100% - 100px) !important;
+  padding: 30px 0px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 5px;
 }
+.MuiDialog-paperWidthSm.css-uhb5lp {
+  max-width: unset;
+  width: calc(100% - 100px) !important;
+  padding: 30px 0px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 5px;
+}
+
 .rooms-container-height {
   min-height: 60vh;
   display: flex;
@@ -40,7 +41,7 @@
   border: 1px solid #80808059 !important;
   border-radius: 10px;
 }
-.error{
+.error {
   border: 2px solid #ff0000;
 }
 
@@ -48,7 +49,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px
+  gap: 8px;
 }
 
 .custom-radio-label input {
@@ -58,9 +59,9 @@
   width: 14px;
   height: 14px;
   border: 2px solid black;
-  border-radius: 50%; 
+  border-radius: 50%;
   margin-left: 10px;
-  position: relative; 
+  position: relative;
 }
 
 .custom-radio-label input:checked {
@@ -69,7 +70,7 @@
 }
 
 .custom-radio-label input:checked::after {
-  content: '';
+  content: "";
   display: block;
   width: 6px;
   height: 6px;
@@ -92,17 +93,19 @@
   border-radius: 5px;
   position: absolute;
 }
-.bg-image-box, .bg-image-box2 {
-  background-image: url('/images/shrinkCardimages/proBG.jpg');
+.bg-image-box,
+.bg-image-box2 {
+  background-image: url("/images/shrinkCardimages/proBG.jpg");
   background-position: center;
   background-size: cover;
   position: relative;
   color: #fff;
 }
 .bg-image-box2 {
-  background-image: url('/images/shrinkCardimages/customerBG.jpg')
+  background-image: url("/images/shrinkCardimages/customerBG.jpg");
 }
-.bg-image-box:before, .bg-image-box2:before {
+.bg-image-box:before,
+.bg-image-box2:before {
   content: "";
   position: absolute;
   top: 0;
@@ -146,7 +149,6 @@
   height: 35px;
 }
 
-
 .cs-dialogg > .MuiDialog-container > .MuiPaper-root {
   overflow: hidden;
   padding-block: 0 !important;
@@ -163,33 +165,34 @@
 .autocomplete-dropdown-container {
   width: calc(100% - 23px);
   margin: 0;
-  box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.1);
+  box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.1);
 }
 .autocomplete-dropdown-container > div {
   padding-block: 8px;
   padding-inline: 15px;
 }
 
+@media print {
+  .d-print-none {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 768px) {
-  .mob-space{
+  .mob-space {
     flex-direction: column;
     width: 100%;
-
   }
   .autocomplete-dropdown-container {
     width: 100%;
     left: 0;
     right: 0;
     padding: 0 13px;
+  }
 }
-}
-.errorSub.MuiRadio-root .MuiSvgIcon-root  {
+.errorSub.MuiRadio-root .MuiSvgIcon-root {
   fill: red !important;
-  }
-  .errorTerm.MuiCheckbox-root .MuiSvgIcon-root  {
-    fill: red !important;
-  }
-
-
-
-  
+}
+.errorTerm.MuiCheckbox-root .MuiSvgIcon-root {
+  fill: red !important;
+}

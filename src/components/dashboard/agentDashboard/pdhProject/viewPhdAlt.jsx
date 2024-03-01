@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import "./style.css";
 
@@ -11,19 +11,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
   bidStatusUpdate,
+  mailPdf,
   viewPhdAlt,
 } from "../../../../store/dashboard/dashboardSlice";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { styled } from "@mui/material/styles";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import SendIcon from "@mui/icons-material/Send";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { Toastify } from "../../../../services/toastify/toastContainer";
-import {
-  createphdStepone,
-  uploadImage,
-} from "../../../../store/dashboard/dashboardSlice";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { uploadImage } from "../../../../store/dashboard/dashboardSlice";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -39,6 +39,7 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 const ViewPhdAlt = () => {
+  const componentRef = useRef();
   const dispatch = useDispatch();
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
@@ -179,18 +180,61 @@ const ViewPhdAlt = () => {
     return <div>No data available</div>;
   }
 
+  const convertToPdf = () => {
+    console.log("convertToPdf function called");
+    if (!componentRef.current) return;
+
+    // Generate the PDF
+    const input = componentRef.current;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: [input.offsetWidth, input.offsetHeight],
+    });
+
+    html2canvas(input, { useCORS: true }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      pdf.addImage(imgData, "PNG", 0, 0, input.offsetWidth, input.offsetHeight);
+
+      // Save PDF as blob
+      pdf
+        .save("document.pdf", {
+          returnPromise: true, // Ensure that the save method returns a Promise
+        })
+        .then((pdfBlob) => {
+          // Convert blob to File object
+          const pdfFile = new File([pdfBlob], "document.pdf", {
+            type: "application/pdf",
+          });
+
+          // Dispatch the mailPdf action with name, email, and PDF File object
+          dispatch(
+            mailPdf({
+              firstName: viewPhdData[0].customer.first_name,
+              lastName: viewPhdData[0].customer.last_name,
+              email: viewPhdData[0].customer.email,
+              pdfData: pdfFile,
+            })
+          );
+        })
+        .catch((error) => {
+          console.error("Error saving PDF:", error);
+        });
+    });
+  };
+
   return (
     <>
       <div className="py-0">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6" ref={componentRef}>
               <div className="popup1 cs-dialogg-container px-4 pb-4">
                 <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom pt-4">
                   <h3>PHD Report Summary</h3>
 
                   <div className="header-logo pe-4 me-4">
-                    <LazyLoadImage
+                    <img
                       alt="img"
                       src="/images/footerImages/footer.png"
                       width={"70px"}
@@ -324,7 +368,7 @@ const ViewPhdAlt = () => {
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                               >
-                                                <LazyLoadImage
+                                                <img
                                                   alt="img"
                                                   src={image}
                                                   className="object-fit-cover border"
@@ -443,7 +487,14 @@ const ViewPhdAlt = () => {
                             />
                           </div>
                         </div>
-                        <div className="d-flex justify-content-end ">
+                        <div className="d-flex justify-content-end gap-4">
+                          <button
+                            type="submit"
+                            className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
+                            onClick={convertToPdf}
+                          >
+                            Download Pdf {<PictureAsPdfIcon />}
+                          </button>
                           <button
                             type="submit"
                             className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"

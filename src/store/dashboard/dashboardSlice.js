@@ -550,6 +550,39 @@ export const deletePhd = createAsyncThunk(
     }
   }
 );
+
+export const mailPdf = createAsyncThunk(
+  "dashboard/mailPdf",
+  async ({ firstName, lastName, email, pdfData }, { dispatch }) => {
+    try {
+      console.log(pdfData);
+      const formData = new FormData();
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+
+      formData.append("email", email);
+      formData.append("pdf", pdfData);
+
+      console.log(formData);
+
+      const response = await http.post(`/sendtestmail`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return (
+        error.response.data,
+        Toastify({ data: "error", msg: error.response.data.message })
+      );
+    }
+  }
+);
+
 export const updateProjectStatus = createAsyncThunk(
   "dashboard/updateProjectStatus",
   async (value, { dispatch }) => {
