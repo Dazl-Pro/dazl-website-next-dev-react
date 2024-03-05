@@ -24,6 +24,7 @@ import { Toastify } from "../../../../services/toastify/toastContainer";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { uploadImage } from "../../../../store/dashboard/dashboardSlice";
+import { saveAs } from "file-saver";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -180,9 +181,18 @@ const ViewPhdAlt = () => {
     return <div>No data available</div>;
   }
 
-  const convertToPdf = () => {
+  const convertToPdf = async () => {
     console.log("convertToPdf function called");
     if (!componentRef.current) return;
+
+    // Temporarily store the current JSX
+    const originalContent = componentRef.current.innerHTML;
+
+    // Remove the buttons from the DOM
+    const downloadPdfButton = document.getElementById("downloadPdfButton");
+    const sendEmailButton = document.getElementById("sendEmailButton");
+    downloadPdfButton.remove();
+    sendEmailButton.remove();
 
     // Generate the PDF
     const input = componentRef.current;
@@ -192,35 +202,28 @@ const ViewPhdAlt = () => {
       format: [input.offsetWidth, input.offsetHeight],
     });
 
-    html2canvas(input, { useCORS: true }).then((canvas) => {
+    try {
+      const canvas = await html2canvas(input, { useCORS: true });
       const imgData = canvas.toDataURL("image/png");
       pdf.addImage(imgData, "PNG", 0, 0, input.offsetWidth, input.offsetHeight);
 
-      // Save PDF as blob
-      pdf
-        .save("document.pdf", {
-          returnPromise: true, // Ensure that the save method returns a Promise
-        })
-        .then((pdfBlob) => {
-          // Convert blob to File object
-          const pdfFile = new File([pdfBlob], "document.pdf", {
-            type: "application/pdf",
-          });
+      // Dispatch the mailPdf action with name, email, and PDF File object
+      const pdfBlob = pdf.output("blob");
+      console.log("pdfBlob", pdfBlob);
 
-          // Dispatch the mailPdf action with name, email, and PDF File object
-          dispatch(
-            mailPdf({
-              firstName: viewPhdData[0].customer.first_name,
-              lastName: viewPhdData[0].customer.last_name,
-              email: viewPhdData[0].customer.email,
-              pdfData: pdfFile,
-            })
-          );
+      dispatch(
+        mailPdf({
+          firstName: viewPhdData[0].customer.first_name,
+          lastName: viewPhdData[0].customer.last_name,
+          email: viewPhdData[0].customer.email,
+          pdfData: pdfBlob,
         })
-        .catch((error) => {
-          console.error("Error saving PDF:", error);
-        });
-    });
+      );
+      componentRef.current.innerHTML = originalContent;
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      componentRef.current.innerHTML = originalContent;
+    }
   };
 
   return (
@@ -489,6 +492,7 @@ const ViewPhdAlt = () => {
                         </div>
                         <div className="d-flex justify-content-end gap-4">
                           <button
+                            id="downloadPdfButton"
                             type="submit"
                             className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
                             onClick={convertToPdf}
@@ -496,6 +500,7 @@ const ViewPhdAlt = () => {
                             Download Pdf {<PictureAsPdfIcon />}
                           </button>
                           <button
+                            id="sendEmailButton"
                             type="submit"
                             className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
                             onClick={sendEmail}

@@ -555,13 +555,13 @@ export const mailPdf = createAsyncThunk(
   "dashboard/mailPdf",
   async ({ firstName, lastName, email, pdfData }, { dispatch }) => {
     try {
-      console.log(pdfData);
+      console.log("aaaaaaaa", pdfData);
       const formData = new FormData();
       formData.append("firstName", firstName);
       formData.append("lastName", lastName);
 
       formData.append("email", email);
-      formData.append("pdf", pdfData);
+      formData.append("pdfData", pdfData);
 
       console.log(formData);
 
