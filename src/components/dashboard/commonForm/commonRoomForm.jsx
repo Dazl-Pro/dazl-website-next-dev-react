@@ -1,15 +1,15 @@
-import React, { useEffect,  useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import FormControl from "@mui/material/FormControl";
-import "./commonRoomForm.css"
+import "./commonRoomForm.css";
 import { useDispatch } from "react-redux";
 import { phdRooms } from "../../../store/dashboard/dashboardSlice";
 import { useForm, Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-
 const CommonRoomform = (props) => {
-  const { setShow, setSelectvalue, selectValue, show, setInitialFields } = props;
+  const { setShow, setSelectvalue, selectValue, show, setInitialFields } =
+    props;
   const dispatch = useDispatch();
 
   const { handleSubmit, control } = useForm();
@@ -66,7 +66,7 @@ const CommonRoomform = (props) => {
         <Controller
           name="selectedField"
           control={control}
-          defaultValue= {selectValue === "" ? selectValue : ""}
+          defaultValue={selectValue === "" ? selectValue : ""}
           render={({ field }) => (
             <Autocomplete
               {...field}

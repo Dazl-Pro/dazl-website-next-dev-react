@@ -48,7 +48,7 @@ const RoomsInformation = (props) => {
   const navigate = useNavigate();
   const selector = useSelector((state) => state.dashboardSlice);
   const phdRooms = selector.data.phdRooms;
-  console.log("phdRooms", phdRooms);
+
   const roomtype = selector.data.roomtype;
   const addValueData = selector.data.addValueData;
   const phdStepOne = selector.data.phdStepOne;
@@ -126,8 +126,6 @@ const RoomsInformation = (props) => {
     name: "checkbox_photos",
   });
 
-  console.log("photos ", defaultValues.checkbox_photos);
-
   useEffect(() => {
     defaultValues?.checkbox_photos?.forEach((photo) => {
       const existingIndex = fields.findIndex(
@@ -143,8 +141,6 @@ const RoomsInformation = (props) => {
       }
     });
   }, []);
-
-  console.log("fields ", fields);
 
   const handleChange = (event, index, id) => {
     setChecked((prevChecked) =>
@@ -176,12 +172,6 @@ const RoomsInformation = (props) => {
       (checkbox, index) => checkboxes[index]
     );
 
-    // Check if at least one checkbox is checked
-    if (checkedCheckboxesData.length === 0) {
-      setErrorborder3(true); // Set error state if no checkbox is checked
-      return; // Exit the function early if no checkbox is checked
-    }
-
     // Perform other validations
     if (input.phd_description === "") {
       setErrorborder(true);
@@ -196,25 +186,16 @@ const RoomsInformation = (props) => {
       return;
     }
 
-    const atLeastOneCheckbox = phdCheckbox[0]?.images;
     if (input.phd_description === "") {
       setErrorborder(true);
     }
     if (input.options === "") {
-      console.log("options", input.options);
       setErrorborder1(true);
     }
     if (fileValue === null) {
       setErrorborder2(true);
     }
-    if (atLeastOneCheckbox === undefined) {
-      setErrorborder3(true);
-    } else if (
-      atLeastOneCheckbox &&
-      fileValue !== null &&
-      input.phd_description &&
-      input.options
-    ) {
+    if (fileValue !== null && input.phd_description && input.options) {
       let formData = new FormData();
       formData.append("score", 100);
       formData.append("address", phdUserDetail?.location);
@@ -281,20 +262,21 @@ const RoomsInformation = (props) => {
       );
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
 
-      checkedCheckboxesData.forEach((item) => {
-        const checkboxKey = `rooms[${roomId}][feature_status][${
-          item.checkbox ?? "description"
-        }]`;
-        const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
-        const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
+      checkedCheckboxesData.length > 0 &&
+        checkedCheckboxesData.forEach((item) => {
+          const checkboxKey = `rooms[${roomId}][feature_status][${
+            item.checkbox ?? "description"
+          }]`;
+          const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
+          const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-        formData.append(checkboxKey, "NEEDS DAZL");
-        formData.append(descriptionKey, item.description);
-        item.images.forEach((image, imgIndex) => {
-          const imageKey = `${imagesKey}[${imgIndex}]`;
-          formData.append(imageKey, image);
+          formData.append(checkboxKey, "NEEDS DAZL");
+          formData.append(descriptionKey, item.description);
+          item.images.forEach((image, imgIndex) => {
+            const imageKey = `${imagesKey}[${imgIndex}]`;
+            formData.append(imageKey, image);
+          });
         });
-      });
 
       dispatch(createPhd(formData))
         .unwrap()
@@ -326,7 +308,6 @@ const RoomsInformation = (props) => {
     setErrorborder2(false);
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${index}].file`);
-    console.log("isImage", isImage);
     if (!isImage) {
       setError(`photos[${index}].file`, {
         type: "manual",
@@ -431,6 +412,8 @@ const RoomsInformation = (props) => {
     }));
     // Add your logic or actions based on the selected value here
   };
+
+  console.log("Errorrrrssssss", errors);
 
   return (
     <div>
@@ -653,9 +636,6 @@ const RoomsInformation = (props) => {
                       <Checkbox
                         checked={watch(`checkboxes[${index}]`) || false}
                         onChange={() => handleCheckboxArrayChange(_, index)}
-                        error={!!errors.textArea?.[index]}
-                        helperText={errors.textArea?.[index]?.message}
-                        className={errorBorder3 ? "errorTerm" : ""}
                       />
                     }
                     label={`${displayName}`}
@@ -679,7 +659,7 @@ const RoomsInformation = (props) => {
                                 <div className="d-flex align-items-start gap-2">
                                   <input
                                     type="file"
-                                    class={`form-control ${
+                                    className={`form-control ${
                                       errors?.checkbox_photos &&
                                       errors?.checkbox_photos[imgIndex]?.file
                                         ? "error"
@@ -739,8 +719,6 @@ const RoomsInformation = (props) => {
           <button
             className="room btn btn-success m-2"
             onClick={(e) => save(e, "submit")}
-            style={{ color: "white  margin-left: 10px;" }}
-            //  disabled={input.phd_description && input.options ? false : true}
           >
             Complete
           </button>
