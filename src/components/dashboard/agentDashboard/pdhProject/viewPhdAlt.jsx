@@ -316,9 +316,13 @@ const ViewPhdAlt = () => {
                               Updated house details and condition
                             </h3>
                             {items?.roominfo.map((ele, index) => {
+                              const roomId = ele.room_id;
+                              const imagesGroup = items.images.filter(
+                                (image) => image.room_id === roomId
+                              );
                               return (
                                 <div key={index}>
-                                  <div className="d-flex align-items-center justify-content-between mt-3">
+                                  <div className="d-flex align-items-center justify-content-between mt-2">
                                     <div className="fw-bolder">
                                       {ele?.room_name}
                                     </div>
@@ -326,7 +330,39 @@ const ViewPhdAlt = () => {
                                       {ele?.status}
                                     </div>
                                   </div>
-                                  <div>{items?.images[index].description}</div>
+                                  <div>
+                                    {
+                                      items.images.filter(
+                                        (image) => image.room_id === roomId
+                                      )[0]?.description
+                                    }
+                                  </div>
+                                  <div className="container ps-0 mb-4 mt-2">
+                                    <div key={index}>
+                                      <div className="d-flex gap-1">
+                                        {/* Display images for the current room_id */}
+                                        {imagesGroup.map(
+                                          (image, imageIndex) => (
+                                            <div key={imageIndex}>
+                                              <a
+                                                href={image.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                <img
+                                                  alt="img"
+                                                  src={image.url}
+                                                  className="object-fit-cover border"
+                                                  width={"100px"}
+                                                  height={"100px"}
+                                                />
+                                              </a>
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               );
                             })}
