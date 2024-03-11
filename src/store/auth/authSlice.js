@@ -8,7 +8,7 @@ export const agentSignUp = createAsyncThunk(
     try {
       const response = await http.post("/realtor/register", {
         address: data.location,
-        check_box:JSON.parse( data.agreeToTerms),
+        check_box: JSON.parse(data.agreeToTerms),
         confirm_password: data.confirmPassword,
         email: data.email,
         first_name: data.firstName,
@@ -31,10 +31,9 @@ export const agentSignUp = createAsyncThunk(
 export const professionalSignUp = createAsyncThunk(
   "auth/professionalSignUp",
   async (data, { dispatch }) => {
-    console.log("data",data);
     try {
       const response = await http.post("/professional/register", {
-        check_box:JSON.parse(data.data.agreeToTerms) ,
+        check_box: JSON.parse(data.data.agreeToTerms),
         company_city: data.data.city,
         company_name: data.data.companyName,
         company_number: data.data.number,
@@ -61,7 +60,7 @@ export const professionalSignUp = createAsyncThunk(
         years: data.data.yearofbusiness,
         zip_code: data.data.zip,
       });
-    
+
       if (response.status === 201) {
         return response.data;
       }
@@ -172,11 +171,13 @@ export const uploadImageAuth = createAsyncThunk(
 export const contactUsAuth = createAsyncThunk(
   "dashboard/contactUsAuth",
   async (data) => {
-    
     try {
-      const response = await http.post(`/contact-us`,data);
+      const response = await http.post(`/contact-us`, data);
       if (response.status === 200) {
-        return( response.data, Toastify({data:"success", msg:response.data.message}));
+        return (
+          response.data,
+          Toastify({ data: "success", msg: response.data.message })
+        );
       }
     } catch (error) {
       return (
@@ -217,7 +218,7 @@ const authSlice = createSlice({
       })
       .addCase(professionalSignUp.fulfilled, (state, action) => {
         // state.data.professionalUser=action.payload;
-        
+
         state.loading = false;
       })
       .addCase(professionalSignUp.rejected, (state, action) => {
@@ -285,7 +286,7 @@ const authSlice = createSlice({
       .addCase(uploadImageAuth.rejected, (state, action) => {
         state.loading = false;
       })
-      // contact us 
+      // contact us
       .addCase(contactUsAuth.pending, (state, action) => {
         state.loading = true;
       })

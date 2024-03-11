@@ -413,8 +413,6 @@ const RoomsInformation = (props) => {
     // Add your logic or actions based on the selected value here
   };
 
-  console.log("Errorrrrssssss", errors);
-
   return (
     <div>
       <h4 className="mb-4 text-danger">{roomselect ?? ""}</h4>

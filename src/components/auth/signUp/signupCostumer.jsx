@@ -90,7 +90,6 @@ const SignupCostumer = () => {
     dispatch(customerSignUp(data))
       .unwrap()
       .then((data) => {
-        console.log("data", typeof data);
         if (data === undefined) {
         } else {
           Toastify({ data: "success", msg: "Successfully Signed Up" });

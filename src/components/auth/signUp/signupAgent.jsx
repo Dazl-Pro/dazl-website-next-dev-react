@@ -131,7 +131,6 @@ const SignupAgent = () => {
     setAddress(newAddress);
     setSelect(false);
   };
-  console.log(watch("password"), watch("confirmPassword"));
   return (
     <div className="py-5 sign-up-bg bg-light-red">
       <div className="container">

@@ -125,7 +125,6 @@ const Commonproject = () => {
   const handleGetCheckboxValues = () => {
     let payload;
     if (selectedImages.length === 0) {
-      console.log("error: no selected images", selectedImages.length);
       setShowErrors(true);
     } else if (showErrors === false) {
       if (location.pathname === "/agent/createProject") {
@@ -189,7 +188,6 @@ const Commonproject = () => {
   };
   const addAnother = () => {
     if (selectedImages.length === 0) {
-      console.log("error: no selected images", selectedImages.length);
       setShowErrors(true);
     } else {
       setImagesFinal(true);

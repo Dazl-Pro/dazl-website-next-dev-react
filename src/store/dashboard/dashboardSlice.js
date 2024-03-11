@@ -73,7 +73,6 @@ export const updatehomeOwnerProfile = createAsyncThunk(
         return response.data, dispatch(customerProfile());
       }
     } catch (error) {
-      console.log("error", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
@@ -129,7 +128,7 @@ export const createphdStepone = createAsyncThunk(
       const response = await http.get(
         `/home-diagnostic-reports/house-data?score=100&address=${values.location}&first_name=${values.firstName}&last_name=${values.lastName}&client_email=${values.email}&type=1&year_built=2021&bedrooms=1&bathrooms=1&structure_type=1&lot_size=1&location=${values.location}&foundation_type=1&tax_accessed_value=1&sale_date=1`
       );
-      console.log(response);
+
       if (response.status === 200) {
         return response.data;
       }
@@ -152,7 +151,6 @@ export const getCompanyProfile = createAsyncThunk(
         return response.data;
       }
     } catch (error) {
-      console.log("errors--", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
@@ -176,7 +174,6 @@ export const UpdateCompanyProfile = createAsyncThunk(
         );
       }
     } catch (error) {
-      console.log("errors--", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
@@ -195,7 +192,6 @@ export const projectOpportunities = createAsyncThunk(
         return response.data;
       }
     } catch (error) {
-      console.log("errors--", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
@@ -212,7 +208,6 @@ export const phdRooms = createAsyncThunk(
         return response.data;
       }
     } catch (error) {
-      console.log("errors--", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
@@ -230,7 +225,6 @@ export const diagnosticReports = createAsyncThunk(
         return response.data;
       }
     } catch (error) {
-      console.log("errors--", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
@@ -343,7 +337,7 @@ export const getAgentProject = createAsyncThunk(
       const response = await http.get(
         `/realtorprojects/customers/${data.pageNo}/${data.numberofdata}`
       );
-      console.log("response", response);
+
       if (response.status === 200) {
         return response.data;
       }
@@ -555,15 +549,12 @@ export const mailPdf = createAsyncThunk(
   "dashboard/mailPdf",
   async ({ firstName, lastName, email, pdfData }, { dispatch }) => {
     try {
-      console.log("aaaaaaaa", pdfData);
       const formData = new FormData();
       formData.append("firstName", firstName);
       formData.append("lastName", lastName);
 
       formData.append("email", email);
       formData.append("pdfData", pdfData);
-
-      console.log(formData);
 
       const response = await http.post(`/sendtestmail`, formData, {
         headers: {
@@ -616,7 +607,6 @@ export const bidStatusUpdate = createAsyncThunk(
       }
     } catch (error) {
       return (
-        console.log(error.response.data.message),
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
       );
@@ -629,9 +619,7 @@ export const closeViewPhd = createAsyncThunk(
   async (value) => {
     try {
       return value;
-    } catch (error) {
-      console.log("error", error);
-    }
+    } catch (error) {}
   }
 );
 
@@ -640,9 +628,7 @@ export const closeViewPhdAlt = createAsyncThunk(
   async (value) => {
     try {
       return value;
-    } catch (error) {
-      console.log("error", error);
-    }
+    } catch (error) {}
   }
 );
 
@@ -651,9 +637,7 @@ export const openConfirmPopup = createAsyncThunk(
   async (value) => {
     try {
       return value;
-    } catch (error) {
-      console.log("error", error);
-    }
+    } catch (error) {}
   }
 );
 const dashboardSlice = createSlice({

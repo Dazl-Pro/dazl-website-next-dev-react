@@ -76,7 +76,7 @@ const CompanyProfile = () => {
       dispatch(getCompanyProfile(userId));
     }
   }, [companydata, disable]);
-  console.log("companydata", companydata);
+
   return (
     <div className="py-0">
       <div className="">

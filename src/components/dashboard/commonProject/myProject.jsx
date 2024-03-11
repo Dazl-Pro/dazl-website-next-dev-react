@@ -122,7 +122,7 @@ const MyProject = () => {
       );
     }
   };
-  console.log("projectData", projectData);
+
   return (
     <div className="py-0">
       <div className="">
@@ -168,7 +168,6 @@ const MyProject = () => {
                         className="grid-item rounded-4 p-0 border-0"
                         key={index}
                       >
-                        {console.log(projectData)}
                         {items?.roominfo?.map(
                           (roominfoItems, indexroomInfo) => {
                             return (

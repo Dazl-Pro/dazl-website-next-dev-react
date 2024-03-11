@@ -48,9 +48,9 @@ const CreatePhd = () => {
   });
 
   const selector = useSelector((state) => state.dashboardSlice);
-  console.log("selector", selector);
+
   const stepOne = selector.data.phdStepOne;
-  console.log("stepone ", stepOne);
+
   const navigate = useNavigate();
   const {
     control,
@@ -155,7 +155,7 @@ const CreatePhd = () => {
     setErrorborder2(false);
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${index}].file`);
-    console.log("isImage", isImage);
+
     if (!isImage) {
       setError(`photos[${index}].file`, {
         type: "manual",

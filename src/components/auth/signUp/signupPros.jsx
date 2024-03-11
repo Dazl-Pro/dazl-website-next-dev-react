@@ -72,7 +72,6 @@ const photosSchema = yup.array().of(
   }))
 );
 
-
 const schema = yup.object().shape({
   firstName: yup.string().required("First Name is required").trim(),
   lastName: yup.string().required("Last Name is required").trim(),
@@ -99,7 +98,7 @@ const schema = yup.object().shape({
   streetAddress: yup.string().trim(),
   city: yup.string().required("Location is required").trim(),
   state: yup.string().required("state is required").trim(),
-  zip: yup.string().required('Zip Code is required').trim(),
+  zip: yup.string().required("Zip Code is required").trim(),
   number: yup
     .string()
     .matches(/^[0-9]+$/, "Please enter a valid number")
@@ -109,21 +108,22 @@ const schema = yup.object().shape({
     .string()
     .matches(/^[0-9]+$/, "Please enter a valid number")
     .trim(),
-  yearofbusiness: yup.string().matches(/^[0-9]+$/, "Please enter a valid year").required("Year in business is required").trim(),
+  yearofbusiness: yup
+    .string()
+    .matches(/^[0-9]+$/, "Please enter a valid year")
+    .required("Year in business is required")
+    .trim(),
   websiteLink: yup.string().url("Invalid website link").trim(),
   facebookLink: yup.string().url("Invalid Facebook link").trim(),
   twitterLink: yup.string().url("Invalid Twitter link").trim(),
   insuranceCompany: yup.string().trim(),
-  contactPerson: yup
-    .string()
-    .trim()
-    ,
-  insuranceNumber: yup
-    .string()
-    .trim(),
-    agreeToTerms: yup.bool().oneOf([true],'Please accept the terms and conditions'),
+  contactPerson: yup.string().trim(),
+  insuranceNumber: yup.string().trim(),
+  agreeToTerms: yup
+    .bool()
+    .oneOf([true], "Please accept the terms and conditions"),
   subscription: yup.string().required("Please select a subscription option"),
-  photos: photosSchema
+  photos: photosSchema,
 });
 const defaultValues = {
   firstName: "",
@@ -204,7 +204,7 @@ const SignupPros = () => {
     defaultValues,
     resolver: yupResolver(schema),
   });
-console.log("error", errors)
+
   const selectedServices = watch("selectServices");
   const { fields, append, remove } = useFieldArray({
     control,
@@ -212,7 +212,7 @@ console.log("error", errors)
   });
 
   const onSubmit = (data) => {
-    setError()
+    setError();
     dispatch(professionalSignUp({ data, images }))
       .unwrap()
       .then((data) => {
@@ -220,12 +220,12 @@ console.log("error", errors)
         } else {
           Toastify({ data: "success", msg: "Successfully Signed Up" });
           navigate("/login/professional");
-          window.open(data.data.payment_url)
+          window.open(data.data.payment_url);
         }
       });
 
-      reset();
-      setKey((prevKey) => prevKey + 1);
+    reset();
+    setKey((prevKey) => prevKey + 1);
   };
 
   const uploadMiltipleImages = (e, index) => {
@@ -237,7 +237,7 @@ console.log("error", errors)
         type: "manual",
         message: "Invalid file type. Please select a valid image.",
       });
-    } 
+    }
     const formData = new FormData();
     formData.append("image", file);
     dispatch(uploadImageAuth(formData))
@@ -346,18 +346,20 @@ console.log("error", errors)
                     name="password"
                     control={control}
                     render={({ field }) => (
-                     <>
-                      <input
-                        {...field}
-                        className={` width-input form-control ${
-                          errors.password ? "error" : ""
-                        }`}
-                        placeholder="Create Password*"
-                        type={showPassword ? "text" : "password"}
-                      />
-                      {errors.password && (
-                        <p className="text-danger mt-2">{errors.password.message}</p>
-                      )}
+                      <>
+                        <input
+                          {...field}
+                          className={` width-input form-control ${
+                            errors.password ? "error" : ""
+                          }`}
+                          placeholder="Create Password*"
+                          type={showPassword ? "text" : "password"}
+                        />
+                        {errors.password && (
+                          <p className="text-danger mt-2">
+                            {errors.password.message}
+                          </p>
+                        )}
                       </>
                     )}
                   />
@@ -377,17 +379,23 @@ console.log("error", errors)
                     control={control}
                     render={({ field }) => (
                       <>
-                      <input
-                        {...field}
-                        className={` width-input form-control ${
-                          errors.confirmPassword &&(watch("password")!==watch("confirmPassword"))? "error" : ""
-                        }`}
-                        placeholder="Confirm Password*"
-                        type={showConfirmPassword ? "text" : "password"}
-                      />
-                       {errors.confirmPassword&&(watch("password")!==watch("confirmPassword")) && (
-                        <p className="text-danger mt-2">{errors.confirmPassword.message}</p>
-                      )}
+                        <input
+                          {...field}
+                          className={` width-input form-control ${
+                            errors.confirmPassword &&
+                            watch("password") !== watch("confirmPassword")
+                              ? "error"
+                              : ""
+                          }`}
+                          placeholder="Confirm Password*"
+                          type={showConfirmPassword ? "text" : "password"}
+                        />
+                        {errors.confirmPassword &&
+                          watch("password") !== watch("confirmPassword") && (
+                            <p className="text-danger mt-2">
+                              {errors.confirmPassword.message}
+                            </p>
+                          )}
                       </>
                     )}
                   />
@@ -469,24 +477,24 @@ console.log("error", errors)
                     control={control}
                     render={({ field }) => (
                       <>
-                      <input
-                       type='text'
-                       pattern="[0-9]*"
-                       inputMode="numeric"
-                        {...field}
-                        className={` width-input form-control ${
-                          errors.zip ? "error" : ""
-                        }`}
-                        placeholder="Zip Code*"
-                        maxLength={6}
-                        onKeyPress={(e) => {
-                          const isValidKey = /^[0-9]$/i.test(e.key);
-                          if (!isValidKey) {
-                            e.preventDefault();
-                          }
-                        }}
-                      />
-                      {/* {errors.zip && (
+                        <input
+                          type="text"
+                          pattern="[0-9]*"
+                          inputMode="numeric"
+                          {...field}
+                          className={` width-input form-control ${
+                            errors.zip ? "error" : ""
+                          }`}
+                          placeholder="Zip Code*"
+                          maxLength={6}
+                          onKeyPress={(e) => {
+                            const isValidKey = /^[0-9]$/i.test(e.key);
+                            if (!isValidKey) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                        {/* {errors.zip && (
                         <p className="text-danger mt-2">{errors.zip.message}</p>
                       )} */}
                       </>
@@ -762,7 +770,10 @@ console.log("error", errors)
                         <input
                           type="file"
                           className={`form-control ${
-                            errors.photos && errors?.photos[index]?.file? "error" : "" }`}
+                            errors.photos && errors?.photos[index]?.file
+                              ? "error"
+                              : ""
+                          }`}
                           {...register(`photos.${index}.file`)}
                           accept="image/*"
                           onChange={(e) => {
@@ -783,7 +794,14 @@ console.log("error", errors)
                     defaultValue={false}
                     render={({ field }) => (
                       <FormControlLabel
-                        control={<Checkbox {...field} className={`p-0 me-2 ${ errors.agreeToTerms ? "errorTerm" :""} `} />}
+                        control={
+                          <Checkbox
+                            {...field}
+                            className={`p-0 me-2 ${
+                              errors.agreeToTerms ? "errorTerm" : ""
+                            } `}
+                          />
+                        }
                         label="Click here to accept"
                         className="mx-0"
                       />
@@ -796,7 +814,8 @@ console.log("error", errors)
                       window.open("https://dev.dazlpro.com/termsandConditions")
                     }
                   >
-                    DAZl'S TERMS AND CONDITIONS.<span className="text-danger">*</span>
+                    DAZl'S TERMS AND CONDITIONS.
+                    <span className="text-danger">*</span>
                   </p>
                   {/* {errors.agreeToTerms && (
                     <p className="text-danger mb-0 w-100">
@@ -819,13 +838,25 @@ console.log("error", errors)
                       <RadioGroup {...field} className="row flex-row">
                         <FormControlLabel
                           value="monthly"
-                          control={<Radio className={`p-0 me-2  ${errors.subscription?"errorSub":""}`} />}
+                          control={
+                            <Radio
+                              className={`p-0 me-2  ${
+                                errors.subscription ? "errorSub" : ""
+                              }`}
+                            />
+                          }
                           label="$50 per month"
                           className="col-md-4 col-sm-6 mb-3 mx-0"
                         />
                         <FormControlLabel
                           value="yearly"
-                          control={<Radio className={`p-0 me-2  ${errors.subscription?"errorSub":""}`} />}
+                          control={
+                            <Radio
+                              className={`p-0 me-2  ${
+                                errors.subscription ? "errorSub" : ""
+                              }`}
+                            />
+                          }
                           label="$550 per year"
                           className="col-md-4 col-sm-6 mb-3 mx-0"
                         />

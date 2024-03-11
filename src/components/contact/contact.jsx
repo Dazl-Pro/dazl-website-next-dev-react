@@ -85,9 +85,8 @@ const ContactUs = () => {
     control,
     name: "photos",
   });
-  console.log("errors ", errors);
+
   const onSubmit = (data) => {
-    console.log("typesss errors");
     const item = {
       member_name: data.memberName,
       property_address: data.propertyAddress,
@@ -115,11 +114,10 @@ const ContactUs = () => {
     setTextValues(updatedTextValues);
   };
 
-  console.log("errors ", errors);
   const handleImage = (phd, index, e) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");
-    console.log("isimage ", isImage);
+
     clearErrors(`photos[${index}].file`);
     if (!isImage) {
       setError(`photos[${index}].file`, {

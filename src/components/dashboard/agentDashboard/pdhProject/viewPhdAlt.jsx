@@ -135,7 +135,7 @@ const ViewPhdAlt = () => {
     setErrorborder2(false);
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${index}].file`);
-    console.log("isImage", isImage);
+
     if (!isImage) {
       setError(`photos[${index}].file`, {
         type: "manual",
@@ -167,22 +167,20 @@ const ViewPhdAlt = () => {
     }
   };
 
-  console.log(currentStatus);
   const sendEmail = () => {
     Toastify({
       data: "success",
       msg: "Project shared via Email  successfully",
     });
   };
-  console.log("viewPhdData:", viewPhdData);
+
   if (!viewPhdData || viewPhdData.length === 0) {
     // Return a fallback or handle the case when viewPhdData is undefined or empty
-    console.log("No data available");
+
     return <div>No data available</div>;
   }
 
   const convertToPdf = async () => {
-    console.log("convertToPdf function called");
     if (!componentRef.current) return;
 
     // Temporarily store the current JSX
@@ -209,7 +207,6 @@ const ViewPhdAlt = () => {
 
       // Dispatch the mailPdf action with name, email, and PDF File object
       const pdfBlob = pdf.output("blob");
-      console.log("pdfBlob", pdfBlob);
 
       dispatch(
         mailPdf({
@@ -369,7 +366,7 @@ const ViewPhdAlt = () => {
                           </div>
                         </div>
                       </div>
-                      {items?.roominfo[0].feature[0].feature_name && (
+                      {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
                         <div className="my-3 progress-slidee p-4 bg-light-red rounded-2">
                           <h3 className="text-center d-flex ">
                             Buyer Road Blocks
