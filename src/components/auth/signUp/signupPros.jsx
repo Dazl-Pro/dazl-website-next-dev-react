@@ -281,7 +281,7 @@ const SignupPros = () => {
           <h6 className="text-center underline-red">
             <span>DAZL IS FOR</span>
           </h6>
-          <h2 className="text-uppercase">service professionals</h2>
+          <h2>Real estate agents and homeowners</h2>
           <p>
             Dazl is an online tool that enables service pros to streamline their
             project requests and to evaluate opportunities more selectively.

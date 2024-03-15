@@ -181,10 +181,6 @@ const RoomsInformation = (props) => {
       setErrorborder1(true);
       return;
     }
-    if (fileValue === null) {
-      setErrorborder2(true);
-      return;
-    }
 
     if (input.phd_description === "") {
       setErrorborder(true);
@@ -192,10 +188,8 @@ const RoomsInformation = (props) => {
     if (input.options === "") {
       setErrorborder1(true);
     }
-    if (fileValue === null) {
-      setErrorborder2(true);
-    }
-    if (fileValue !== null && input.phd_description && input.options) {
+
+    if (input.phd_description && input.options) {
       let formData = new FormData();
       formData.append("score", 100);
       formData.append("address", phdUserDetail?.location);

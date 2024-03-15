@@ -217,7 +217,7 @@ const CreatePhd = () => {
             <div className="content-full">
               <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
                 {steponeCompleted
-                  ? "Pre-Listing Home Dionostic Summary Report"
+                  ? "Pre-Listing Home Dionostic"
                   : "PROPERTY ADDRESS and Details"}
               </h2>
               <div className="">
@@ -243,7 +243,7 @@ const CreatePhd = () => {
                   )}
                   <lable className="fs-3">
                     {steponeCompleted
-                      ? "Adjust the high and low if you feel its needed,based on your knowledge"
+                      ? "Adjust the high and low as needed, based on your knowledge of the area."
                       : "Seller's Information"}
                   </lable>
                 </h5>

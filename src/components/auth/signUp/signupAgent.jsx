@@ -456,7 +456,7 @@ const SignupAgent = () => {
               <div className="form-row">
                 <FormGroup>
                   <h6 className="d-block mt-2 fw-bold mb-sm-0 mb-3">
-                    Choose Subscription:
+                    Start Subscription:
                   </h6>
                   <Controller
                     name="subscription"
@@ -475,18 +475,6 @@ const SignupAgent = () => {
                           }
                           label="$10 per month"
                           className={`col-md-4 col-sm-6 mb-3 mx-0 `}
-                        />
-                        <FormControlLabel
-                          value="yearly"
-                          control={
-                            <Radio
-                              className={`p-0 me-2  ${
-                                errors.subscription ? "errorSub" : ""
-                              }`}
-                            />
-                          }
-                          label="$100 per yearly"
-                          className="col-md-4 col-sm-6 mb-3 mx-0"
                         />
                       </RadioGroup>
                     )}
