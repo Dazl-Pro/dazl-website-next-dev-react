@@ -249,7 +249,7 @@ const ViewPhdAlt = () => {
                   const year = dateObject.getFullYear();
                   return (
                     <div div key={index}>
-                      <div className="col-inner h-100 bg-image-box position-relative rounded-4">
+                      <div className="col-inner h-100 bg-image-box2  position-relative rounded-4">
                         <div className="p-4 h-100 position-relative z-1">
                           <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
                             <span className="fw-bold">Homeowners Name: </span>
@@ -279,59 +279,58 @@ const ViewPhdAlt = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="col-inner h-100 bg-image-box2 position-relative rounded-4 mt-4">
-                        <div className="p-4 h-100 position-relative z-1 col d-flex flex-column">
-                          <h3 className="">
-                            Updated house details and condition
-                          </h3>
-                          {items?.roominfo.map((ele, index) => {
-                            const roomId = ele.room_id;
-                            const imagesGroup = items.images.filter(
-                              (image) => image.room_id === roomId
-                            );
-                            return (
-                              <div key={index}>
-                                <div className="d-flex align-items-center justify-content-between mt-2">
-                                  <h5>{ele?.room_name}</h5>
-                                  <div className="mt-2">
-                                    <h5>{ele?.status}</h5>
-                                  </div>
+
+                      <div className="p-4 bg-light-red d-flex flex-column rounded-4 mt-4">
+                        <h3 className="">
+                          Updated house details and condition
+                        </h3>
+                        {items?.roominfo.map((ele, index) => {
+                          const roomId = ele.room_id;
+                          const imagesGroup = items.images.filter(
+                            (image) => image.room_id === roomId
+                          );
+                          return (
+                            <div key={index}>
+                              <div className="d-flex align-items-center justify-content-between mt-2">
+                                <h5>{ele?.room_name}</h5>
+                                <div className="mt-2 text-danger">
+                                  <h5>{ele?.status}</h5>
                                 </div>
-                                <div>
-                                  {
-                                    items.images.filter(
-                                      (image) => image.room_id === roomId
-                                    )[0]?.description
-                                  }
-                                </div>
-                                <div className="container ps-0 mb-4 mt-2">
-                                  <div key={index}>
-                                    <div className="d-flex gap-1">
-                                      {/* Display images for the current room_id */}
-                                      {imagesGroup.map((image, imageIndex) => (
-                                        <div key={imageIndex}>
-                                          <a
-                                            href={image.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            <img
-                                              alt="img"
-                                              src={image.url}
-                                              className="object-fit-cover border"
-                                              width={"100px"}
-                                              height={"100px"}
-                                            />
-                                          </a>
-                                        </div>
-                                      ))}
-                                    </div>
+                              </div>
+                              <div>
+                                {
+                                  items.images.filter(
+                                    (image) => image.room_id === roomId
+                                  )[0]?.description
+                                }
+                              </div>
+                              <div className="container ps-0 mb-4 mt-2">
+                                <div key={index}>
+                                  <div className="d-flex gap-1">
+                                    {/* Display images for the current room_id */}
+                                    {imagesGroup.map((image, imageIndex) => (
+                                      <div key={imageIndex}>
+                                        <a
+                                          href={image.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          <img
+                                            alt="img"
+                                            src={image.url}
+                                            className="object-fit-cover border"
+                                            width={"100px"}
+                                            height={"100px"}
+                                          />
+                                        </a>
+                                      </div>
+                                    ))}
                                   </div>
                                 </div>
                               </div>
-                            );
-                          })}
-                        </div>
+                            </div>
+                          );
+                        })}
                       </div>
 
                       {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
