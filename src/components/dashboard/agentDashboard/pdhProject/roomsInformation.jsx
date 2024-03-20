@@ -470,6 +470,7 @@ const RoomsInformation = (props) => {
                           ? "error"
                           : ""
                       }`}
+                      accept="image/*"
                       onChange={(e) => handleImage(index, e)}
                     />
                     {photoFields.length > 1 && (

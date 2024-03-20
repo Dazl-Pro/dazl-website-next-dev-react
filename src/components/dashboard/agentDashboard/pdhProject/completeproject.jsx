@@ -48,7 +48,7 @@ const CompleteProject = () => {
                       <tr className="align-middle">
                         <th>Sr No.</th>
                         <th>Location</th>
-                        <th>Action</th>
+                        <th className="ps-3">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -57,17 +57,12 @@ const CompleteProject = () => {
                           <tr key={index} className="align-middle">
                             <td>{index + 1}</td>
                             <td>{item.location}</td>
-                            <td>
+                            <td className="ps-2">
                               <button
                                 className="btn btn-outline-success mx-1 btn-sm"
-                                onClick={(e) => (
-                                  e.preventDefault(),
-                                  dispatch(
-                                    viewPhd({ id: item.id, value: "open" })
-                                  )
-                                )}
+                                onClick={() => viewPhdAltHandler(item.id)}
                               >
-                                <RemoveRedEyeIcon />
+                                <PreviewIcon />
                               </button>
                               <button
                                 className="btn btn-outline-danger mx-1 btn-sm"
@@ -82,12 +77,6 @@ const CompleteProject = () => {
                               </button>
                               <button className="btn btn-outline-secondary mx-1 btn-sm">
                                 <SendIcon />
-                              </button>
-                              <button
-                                className="btn btn-outline-success mx-1 btn-sm"
-                                onClick={() => viewPhdAltHandler(item.id)}
-                              >
-                                <PreviewIcon />
                               </button>
                             </td>
                           </tr>
