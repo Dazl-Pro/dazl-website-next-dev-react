@@ -212,6 +212,12 @@
     right: 0;
     padding: 0 13px;
   }
+  .font-16{
+    font-size: 16px;
+  }
+  .font-18{
+    font-size: 18px;
+  }
 }
 .errorSub.MuiRadio-root .MuiSvgIcon-root {
   fill: red !important;

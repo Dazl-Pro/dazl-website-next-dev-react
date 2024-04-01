@@ -225,13 +225,13 @@ const ViewPhdAlt = () => {
   };
 
   return (
-    <div className="center-content">
+    <div className="center-content p-3">
       <div className="background-image"></div>
       <div
-        className="popup1 cs-dialogg-container px-4 pb-4 w-75 bg-white w-300"
+        className="popup1 cs-dialogg-container px-md-4 px-2 pb-md-4 pb-2 w-100 bg-white w-300 rounded-4"
         ref={componentRef}
       >
-        <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom pt-4">
+        <div className="d-flex justify-content-between align-items-center pb-3 border-bottom pt-4">
           <h2 className="fw-normal">PHD Report Summary</h2>
 
           <div className=" pe-4 me-4">
@@ -250,7 +250,7 @@ const ViewPhdAlt = () => {
           const year = dateObject.getFullYear();
           return (
             <div key={index}>
-              <div className="col-inner h-100 bg-image-box2  position-relative rounded-4">
+              <div className="col-inner h-100 bg-image-box2  position-relative rounded-4 mt-4">
                 <div className="p-4 h-100 position-relative z-1">
                   <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
                     <span className="fw-semibold">Homeowners Name: </span>
@@ -274,22 +274,23 @@ const ViewPhdAlt = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="p-4 bg-light-red d-flex flex-column rounded-4 mt-4">
-                <h3 className="">Updated House Details And Condition:-</h3>
+              <div className="bg-white shadow p-3 rounded-4 mt-4">
+              <h3 className="">Updated House Details And Condition:-</h3>
+              <div className="py-3 px-2 bg-light-red d-flex flex-md-row flex-column flex-wrap rounded-4 mt-4">
+                
                 {items?.roominfo.map((ele, index) => {
                   const roomId = ele.room_id;
                   const imagesGroup = items.images.filter(
                     (image) => image.room_id === roomId
                   );
                   return (
-                    <div key={index} className="mb-4 d-flex gap-1">
-                      <h3 className="fw-semibold">{index + 1}.) </h3>
-                      <div className="flex-grow-1 ms-1">
+                    <div key={index} className="mb-4 col-md-6">
+                      {/* <h3 className="fw-semibold">{index + 1}.) </h3> */}
+                      <div className="flex-grow-1 mx-2 bg-white shadow p-3 rounded-4">
                         <div className="d-flex  align-items-center justify-content-between">
-                          <h3 className="fw-semibold">{ele?.room_name}</h3>
+                          <h3 className="fw-semibold font-18">{index + 1}.) {ele?.room_name}</h3>
 
-                          <h5 className="text-danger mb-0">{ele?.status}</h5>
+                          <h5 className="text-danger mb-0 me-md-4 me-2 font-16">{ele?.status}</h5>
                         </div>
                         <div>
                           {
@@ -300,7 +301,7 @@ const ViewPhdAlt = () => {
                         </div>
                         <div className="ps-0 mb-4 mt-2">
                           <div key={index}>
-                            <div className="d-flex gap-1">
+                            <div className="d-flex gap-1 flex-wrap">
                               {/* Display images for the current room_id */}
                               {imagesGroup.map((image, imageIndex) => (
                                 <div key={imageIndex}>
@@ -396,7 +397,7 @@ const ViewPhdAlt = () => {
                                           setCurrentStatus(status);
                                         }}
                                       />
-                                      <span className="ps-2">{status}</span>
+                                      <span className=" ">{status}</span>
                                     </label>
                                   ))}
                                 </div>
@@ -427,6 +428,7 @@ const ViewPhdAlt = () => {
                     </div>
                   );
                 })}
+              </div>
               </div>
 
               {/* {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
@@ -539,8 +541,9 @@ const ViewPhdAlt = () => {
                         </div>
                       )} */}
 
-              <div className="progress-slidee mt-4">
-                <div className="border border-dark p-3 mb-4">
+              <div className="progress-slidee mt-4 bg-white shadow py-3 px-2 rounded-4 d-flex flex-wrap">
+                <div className=" mb-3 col-md-6 col-12">
+                <div className="border border-dark flex-grow-1 mx-2 p-2">
                   <h3>Preliminary Value/Score</h3>
                   <div>
                     <div className="d-flex justify-content-between mt-3 mb-2">
@@ -559,7 +562,9 @@ const ViewPhdAlt = () => {
                     />
                   </div>
                 </div>
-                <div className="value border border-dark p-3 mb-4">
+                </div>
+                <div className="mb-3 col-md-6 col-12">
+                <div className="border border-dark flex-grow-1 mx-2 p-2">
                   <h3>PHD Value/Score</h3>
                   <div>
                     <div className="d-flex justify-content-between mt-3 mb-2">
@@ -578,7 +583,9 @@ const ViewPhdAlt = () => {
                     />
                   </div>
                 </div>
-                <div className="border border-dark p-3">
+                </div>
+                <div className="mb-3 col-md-6 col-12">
+                <div className="border border-dark flex-grow-1 mx-2 p-2">
                   <h3>DAZL Value/Score</h3>
                   <div>
                     <div className="d-flex justify-content-between mt-3 mb-2">
@@ -597,7 +604,10 @@ const ViewPhdAlt = () => {
                     />
                   </div>
                 </div>
-                <div className="d-flex justify-content-end gap-4">
+                </div>
+              
+              </div>
+              <div className="d-flex justify-content-end gap-4">
                   <button
                     id="downloadPdfButton"
                     type="submit"
@@ -615,7 +625,6 @@ const ViewPhdAlt = () => {
                     Send {<SendIcon />}
                   </button>
                 </div>
-              </div>
             </div>
           );
         })}
