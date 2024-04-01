@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 
 import "./style.css";
@@ -224,120 +225,212 @@ const ViewPhdAlt = () => {
   };
 
   return (
-    <div>
-      <div className="py-0">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-md-6" ref={componentRef}>
-              <div className="popup1 cs-dialogg-container px-4 pb-4">
-                <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom pt-4">
-                  <h3>PHD Report Summary</h3>
+    <div className="center-content">
+      <div className="background-image"></div>
+      <div
+        className="popup1 cs-dialogg-container px-4 pb-4 w-75 bg-white w-300"
+        ref={componentRef}
+      >
+        <div className="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom pt-4">
+          <h2 className="fw-normal">PHD Report Summary</h2>
 
-                  <div className="header-logo pe-4 me-4">
-                    <img
-                      alt="img"
-                      src="/images/footerImages/footer.png"
-                      width={"70px"}
-                    />
+          <div className=" pe-4 me-4">
+            <img
+              alt="img"
+              src="/images/footerImages/footer.png"
+              width={"70px"}
+            />
+          </div>
+        </div>
+
+        {viewPhdData?.map((items, index) => {
+          const dateString = items?.house?.updated_at;
+          const dateObject = new Date(dateString);
+          //   setprogressbar(parseInt(items?.phd_price))
+          const year = dateObject.getFullYear();
+          return (
+            <div key={index}>
+              <div className="col-inner h-100 bg-image-box2  position-relative rounded-4">
+                <div className="p-4 h-100 position-relative z-1">
+                  <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
+                    <span className="fw-semibold">Homeowners Name: </span>
+                    <span className="w-50">
+                      {items?.customer?.first_name +
+                        " " +
+                        items?.customer?.last_name}
+                    </span>
+                  </p>
+                  <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
+                    <span className="fw-semibold">Email Address:</span>{" "}
+                    <span className="w-50">{items?.customer?.email}</span>
+                  </p>
+                  <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
+                    <span className="fw-semibold">Property Address: </span>
+                    <span className="w-50">{items?.house?.address}</span>
+                  </p>
+                  <div className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
+                    <h3>Dazl Value:</h3>
+                    <h3 className="w-50">${viewPhdData[0].phd_price}</h3>
                   </div>
                 </div>
+              </div>
 
-                {viewPhdData?.map((items, index) => {
-                  const dateString = items?.house?.updated_at;
-                  const dateObject = new Date(dateString);
-                  //   setprogressbar(parseInt(items?.phd_price))
-                  const year = dateObject.getFullYear();
+              <div className="p-4 bg-light-red d-flex flex-column rounded-4 mt-4">
+                <h3 className="">Updated House Details And Condition:-</h3>
+                {items?.roominfo.map((ele, index) => {
+                  const roomId = ele.room_id;
+                  const imagesGroup = items.images.filter(
+                    (image) => image.room_id === roomId
+                  );
                   return (
-                    <div div key={index}>
-                      <div className="col-inner h-100 bg-image-box2  position-relative rounded-4">
-                        <div className="p-4 h-100 position-relative z-1">
-                          <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
-                            <span className="fw-bold">Homeowners Name: </span>
-                            <span className="w-50">
-                              {items?.customer?.first_name +
-                                " " +
-                                items?.customer?.last_name}
-                            </span>
-                          </p>
-                          <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
-                            <span className="fw-bold">Email Address:</span>{" "}
-                            <span className="w-50">
-                              {items?.customer?.email}
-                            </span>
-                          </p>
-                          <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
-                            <span className="fw-bold">Property Address: </span>
-                            <span className="w-50">
-                              {items?.house?.address}
-                            </span>
-                          </p>
-                          <div className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
-                            <h3>Dazl Value:</h3>
-                            <h3 className="w-50">
-                              ${viewPhdData[0].phd_price}
-                            </h3>
+                    <div key={index} className="mb-4 d-flex gap-1">
+                      <h3 className="fw-semibold">{index + 1}.) </h3>
+                      <div className="flex-grow-1 ms-1">
+                        <div className="d-flex  align-items-center justify-content-between">
+                          <h3 className="fw-semibold">{ele?.room_name}</h3>
+
+                          <h5 className="text-danger mb-0">{ele?.status}</h5>
+                        </div>
+                        <div>
+                          {
+                            items.images.filter(
+                              (image) => image.room_id === roomId
+                            )[0]?.description
+                          }
+                        </div>
+                        <div className="ps-0 mb-4 mt-2">
+                          <div key={index}>
+                            <div className="d-flex gap-1">
+                              {/* Display images for the current room_id */}
+                              {imagesGroup.map((image, imageIndex) => (
+                                <div key={imageIndex}>
+                                  <a
+                                    href={image.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <img
+                                      alt="img"
+                                      src={image.url}
+                                      className="object-fit-cover border"
+                                      width={"100px"}
+                                      height={"100px"}
+                                    />
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="p-4 bg-light-red d-flex flex-column rounded-4 mt-4">
-                        <h3 className="">
-                          Updated house details and condition
-                        </h3>
-                        {items?.roominfo.map((ele, index) => {
-                          const roomId = ele.room_id;
-                          const imagesGroup = items.images.filter(
-                            (image) => image.room_id === roomId
-                          );
-                          return (
-                            <div key={index}>
-                              <div className="d-flex align-items-center justify-content-between mt-2">
-                                <h5>{ele?.room_name}</h5>
-                                <div className="mt-2 text-danger">
-                                  <h5>{ele?.status}</h5>
+                        <div
+                          key={index}
+                          className="border border-dark p-3 mt-3 bg-white"
+                        >
+                          <h3 className="text-center d-flex mb-3 mt-1">
+                            Buyer Road Blocks:
+                          </h3>
+                          {/* <div className="d-flex align-items-center justify-content-between mb-3">
+                                  <div className="d-flex gap-1 align-items-center">
+                                    Area:
+                                    <div className="fw-bolder">
+                                      {e?.room_name}
+                                    </div>
+                                  </div>
+                                  <div className="text-danger">{e?.status}</div>
+                                </div> */}
+                          {ele?.feature?.map((eleInner, eleindex) => {
+                            return (
+                              <div key={eleindex}>
+                                <h5 className=" mb-2 ms-2">
+                                  {eleInner.feature_name}:
+                                </h5>
+                                <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
+                                  <div>{eleInner?.imageDesc}</div>
                                 </div>
-                              </div>
-                              <div>
-                                {
-                                  items.images.filter(
-                                    (image) => image.room_id === roomId
-                                  )[0]?.description
-                                }
-                              </div>
-                              <div className="container ps-0 mb-4 mt-2">
-                                <div key={index}>
+                                <div className="ps-0 mb-3">
                                   <div className="d-flex gap-1">
-                                    {/* Display images for the current room_id */}
-                                    {imagesGroup.map((image, imageIndex) => (
-                                      <div key={imageIndex}>
-                                        <a
-                                          href={image.url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          <img
-                                            alt="img"
-                                            src={image.url}
-                                            className="object-fit-cover border"
-                                            width={"100px"}
-                                            height={"100px"}
-                                          />
-                                        </a>
-                                      </div>
-                                    ))}
+                                    {eleInner?.images?.map(
+                                      (image, imageIndex) => (
+                                        <div key={imageIndex}>
+                                          <a
+                                            href={image}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            <img
+                                              alt="img"
+                                              src={image}
+                                              className="object-fit-cover border"
+                                              width={"100px"}
+                                              height={"100px"}
+                                            />
+                                          </a>
+                                        </div>
+                                      )
+                                    )}
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    paddingBottom: "10px",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  {allStatus.map((status) => (
+                                    <label
+                                      key={status}
+                                      className="custom-radio-label"
+                                    >
+                                      <input
+                                        type="radio"
+                                        name={`status-${index}`}
+                                        onChange={() => {
+                                          onchangeStatus(
+                                            status,
 
-                      {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
+                                            ele.room_id
+                                          );
+                                          setCurrentStatus(status);
+                                        }}
+                                      />
+                                      <span className="ps-2">{status}</span>
+                                    </label>
+                                  ))}
+                                </div>
+                                {currentStatus !== "Pass" && (
+                                  <div className="pb-3">
+                                    <div className="d-flex justify-content-between mt-3 mb-2">
+                                      <p className="mb-0">$200k</p>
+                                      <p className="mb-0">
+                                        $
+                                        {progressBar
+                                          ? (progressBar / 1000).toFixed(1) +
+                                            "k"
+                                          : "2M"}
+                                      </p>
+                                      <p className="mb-0">$2M</p>
+                                    </div>
+                                    <BorderLinearProgress
+                                      variant="determinate"
+                                      value={(progressBar / 1800000) * 100}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
                         <div className="my-3 progress-slidee p-4 bg-light-red rounded-2">
-                          <h3 className="text-center d-flex ">
-                            Buyer Road Blocks
-                          </h3>
                           {items?.roominfo?.map((e, index) => {
                             return (
                               <div
@@ -444,99 +537,88 @@ const ViewPhdAlt = () => {
                             );
                           })}
                         </div>
-                      )}
+                      )} */}
 
-                      <div className="progress-slidee">
-                        <div className="border border-dark p-3 mb-4">
-                          <h3>Preliminary Value/Score</h3>
-                          <div>
-                            <div className="d-flex justify-content-between mt-3 mb-2">
-                              <p className="mb-0">$200k</p>
-                              <p className="mb-0">
-                                $
-                                {progressBarpre
-                                  ? (progressBarpre / 1000).toFixed(1) + "k"
-                                  : "2M"}
-                              </p>
-                              <p className="mb-0">$2M</p>
-                            </div>
-                            <BorderLinearProgress
-                              variant="determinate"
-                              value={(progressBarpre / 1800000) * 100}
-                            />
-                          </div>
-                        </div>
-                        <div className="value border border-dark p-3 mb-4">
-                          <h3>PHD Value/Score</h3>
-                          <div>
-                            <div className="d-flex justify-content-between mt-3 mb-2">
-                              <p className="mb-0">$200k</p>
-                              <p className="mb-0">
-                                ${" "}
-                                {progressBarpre
-                                  ? (progressBarpre / 1000).toFixed(1) + "k"
-                                  : "2M"}
-                              </p>
-                              <p className="mb-0">$2M</p>
-                            </div>
-                            <BorderLinearProgress
-                              variant="determinate"
-                              value={(progressBarpre / 1800000) * 100}
-                            />
-                          </div>
-                        </div>
-                        <div className="border border-dark p-3">
-                          <h3>DAZL Value/Score</h3>
-                          <div>
-                            <div className="d-flex justify-content-between mt-3 mb-2">
-                              <p className="mb-0">$200k</p>
-                              <p className="mb-0">
-                                $
-                                {progressBar
-                                  ? (progressBar / 1000).toFixed(1) + "k"
-                                  : "2M"}
-                              </p>
-                              <p className="mb-0">$2M</p>
-                            </div>
-                            <BorderLinearProgress
-                              variant="determinate"
-                              value={(progressBar / 1800000) * 100}
-                            />
-                          </div>
-                        </div>
-                        <div className="d-flex justify-content-end gap-4">
-                          <button
-                            id="downloadPdfButton"
-                            type="submit"
-                            className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
-                            onClick={convertToPdf}
-                          >
-                            Download Pdf {<PictureAsPdfIcon />}
-                          </button>
-                          <button
-                            id="sendEmailButton"
-                            type="submit"
-                            className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
-                            onClick={sendEmail}
-                          >
-                            Send {<SendIcon />}
-                          </button>
-                        </div>
-                      </div>
+              <div className="progress-slidee mt-4">
+                <div className="border border-dark p-3 mb-4">
+                  <h3>Preliminary Value/Score</h3>
+                  <div>
+                    <div className="d-flex justify-content-between mt-3 mb-2">
+                      <p className="mb-0">$200k</p>
+                      <p className="mb-0">
+                        $
+                        {progressBarpre
+                          ? (progressBarpre / 1000).toFixed(1) + "k"
+                          : "2M"}
+                      </p>
+                      <p className="mb-0">$2M</p>
                     </div>
-                  );
-                })}
+                    <BorderLinearProgress
+                      variant="determinate"
+                      value={(progressBarpre / 1800000) * 100}
+                    />
+                  </div>
+                </div>
+                <div className="value border border-dark p-3 mb-4">
+                  <h3>PHD Value/Score</h3>
+                  <div>
+                    <div className="d-flex justify-content-between mt-3 mb-2">
+                      <p className="mb-0">$200k</p>
+                      <p className="mb-0">
+                        ${" "}
+                        {progressBarpre
+                          ? (progressBarpre / 1000).toFixed(1) + "k"
+                          : "2M"}
+                      </p>
+                      <p className="mb-0">$2M</p>
+                    </div>
+                    <BorderLinearProgress
+                      variant="determinate"
+                      value={(progressBarpre / 1800000) * 100}
+                    />
+                  </div>
+                </div>
+                <div className="border border-dark p-3">
+                  <h3>DAZL Value/Score</h3>
+                  <div>
+                    <div className="d-flex justify-content-between mt-3 mb-2">
+                      <p className="mb-0">$200k</p>
+                      <p className="mb-0">
+                        $
+                        {progressBar
+                          ? (progressBar / 1000).toFixed(1) + "k"
+                          : "2M"}
+                      </p>
+                      <p className="mb-0">$2M</p>
+                    </div>
+                    <BorderLinearProgress
+                      variant="determinate"
+                      value={(progressBar / 1800000) * 100}
+                    />
+                  </div>
+                </div>
+                <div className="d-flex justify-content-end gap-4">
+                  <button
+                    id="downloadPdfButton"
+                    type="submit"
+                    className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
+                    onClick={convertToPdf}
+                  >
+                    Download Pdf {<PictureAsPdfIcon />}
+                  </button>
+                  <button
+                    id="sendEmailButton"
+                    type="submit"
+                    className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
+                    onClick={sendEmail}
+                  >
+                    Send {<SendIcon />}
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="col-md-6 position-relative form-contact-right">
-              <img
-                src="/images/contactImages/contact-img-1.jpg"
-                alt=""
-                className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
-              />
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -662,6 +662,7 @@ const dashboardSlice = createSlice({
       viewPhd: [],
       confirmPopup: false,
       addValueData: [],
+      price: "",
       addAnotherRoom: [],
     },
     loading: false,
@@ -814,6 +815,7 @@ const dashboardSlice = createSlice({
         state.data.phdRooms = action.payload.data;
         state.data.roomtype = action.payload.roomtype;
         state.data.addValueData = action.payload.addValueData;
+        state.data.price = action.payload.price;
         state.loading = false;
       })
       .addCase(phdRooms.rejected, (state, action) => {

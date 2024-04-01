@@ -16,7 +16,7 @@ const CommonRoomform = (props) => {
   const fieldOptions = [
     { value: 7, name: "Basement/Lower level" },
     { value: 10, name: "Bath-Additional" },
-    { value: 3, name: "Bath-Master" },
+    { value: 3, name: "Bath-Primary" },
     { value: 2, name: "Bed- main" },
     { value: 9, name: "Bedroom-Additional" },
     { value: 24, name: "Bonus room" },

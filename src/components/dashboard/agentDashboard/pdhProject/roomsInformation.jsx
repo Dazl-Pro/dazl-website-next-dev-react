@@ -1,3 +1,7 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -51,6 +55,8 @@ const RoomsInformation = (props) => {
 
   const roomtype = selector.data.roomtype;
   const addValueData = selector.data.addValueData;
+  const price = selector.data.price;
+  console.log("price", price);
   const phdStepOne = selector.data.phdStepOne;
   const agentData = selector.data.agentData;
   const phdUserDetail = JSON.parse(localStorage.getItem("phdUserDetail"));
@@ -164,6 +170,19 @@ const RoomsInformation = (props) => {
   const save = (e, value) => {
     e.preventDefault();
 
+    const selectedOption = input.options;
+
+    // Calculate price based on the selected option
+    let updatedPrice = price; // Initialize with the default price
+
+    if (selectedOption === "NEEDS DAZL") {
+      // Reduce price by 15% for 'NEEDS DAZL'
+      updatedPrice = price * 0.85;
+    } else if (selectedOption === "DAZLING") {
+      // Increase price by 15% for 'DAZLING'
+      updatedPrice = price * 1.15;
+    }
+
     // Get the values of the checkboxes
     const checkboxes = watch("checkboxes") || [];
 
@@ -210,6 +229,7 @@ const RoomsInformation = (props) => {
       formData.append("left", `calc(-50% - "4px")`);
       formData.append("mid_price", midValue);
       formData.append("highest_price", maxValue);
+      formData.append("dazlValue", updatedPrice);
       saved1 !== null ? "" : formData.append("true", true);
       formData.append("room_id", roomId);
       formData.append("phd_description", input?.phd_description);
@@ -547,7 +567,7 @@ const RoomsInformation = (props) => {
             <div className="row">
               {addValueData.map((valueItem, index) => {
                 return (
-                  <div className="col-md-4">
+                  <div className="col-md-4 d-flex align-items-center">
                     <Checkbox
                       checked={
                         checked.find((item) => item.id === valueItem.id)
@@ -557,6 +577,11 @@ const RoomsInformation = (props) => {
                       inputProps={{ "aria-label": "controlled" }}
                     />
                     {valueItem?.name}
+                    {/*{valueItem.price && (
+                      <div className="fst-italic text-danger ms-2 text-decoration-underline">
+                        ${valueItem.price}
+                      </div>
+                   )}*/}
                   </div>
                 );
               })}
@@ -575,27 +600,34 @@ const RoomsInformation = (props) => {
             required
           >
             <div className="row">
-              <div className="col-md-4">
+              <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
                   value="DAZLING"
+                  className="me-2"
                   control={
                     <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
                   }
                   label="DAZLING"
                 />
+                {/*
+                <div className="fst-italic text-danger text-decoration-underline">
+                  80% room value
+                </div>*/}
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
                   value="MARKET READY"
+                  className="me-2"
                   control={
                     <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
                   }
                   label="MARKET READY"
                 />
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
                   value="NEEDS DAZL"
+                  className="me-2"
                   control={
                     <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
                   }
