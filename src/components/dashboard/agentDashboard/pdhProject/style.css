@@ -194,7 +194,12 @@
   padding-block: 8px;
   padding-inline: 15px;
 }
-
+.bg-custom-red{
+    background-color: #dc35451f!important;
+}
+ /* .bg-custom-red-col {
+    background-color: #dc354533 !important;
+} */
 @media print {
   .d-print-none {
     display: none;
