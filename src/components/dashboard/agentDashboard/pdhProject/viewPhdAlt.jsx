@@ -274,9 +274,9 @@ const ViewPhdAlt = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-white shadow p-3 rounded-4 mt-4">
+              <div className="bg-custom-red bg-white shadow p-3 rounded-4 mt-4">
               <h3 className="">Updated House Details And Condition:-</h3>
-              <div className="py-3 px-2 bg-light-red d-flex flex-md-row flex-column flex-wrap rounded-4 mt-4">
+              <div className="d-flex flex-md-row flex-column flex-wrap rounded-4 mt-4">
                 
                 {items?.roominfo.map((ele, index) => {
                   const roomId = ele.room_id;
@@ -286,7 +286,7 @@ const ViewPhdAlt = () => {
                   return (
                     <div key={index} className="mb-4 col-md-6">
                       {/* <h3 className="fw-semibold">{index + 1}.) </h3> */}
-                      <div className="flex-grow-1 mx-2 bg-white shadow p-3 rounded-4">
+                      <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4">
                         <div className="d-flex  align-items-center justify-content-between">
                           <h3 className="fw-semibold font-18">{index + 1}.) {ele?.room_name}</h3>
 
