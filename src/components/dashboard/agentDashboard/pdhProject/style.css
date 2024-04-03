@@ -194,10 +194,10 @@
   padding-block: 8px;
   padding-inline: 15px;
 }
-.bg-custom-red{
-    background-color: #dc35451f!important;
+.bg-custom-red {
+  background-color: #dc35451f !important;
 }
- /* .bg-custom-red-col {
+/* .bg-custom-red-col {
     background-color: #dc354533 !important;
 } */
 @media print {
@@ -217,10 +217,10 @@
     right: 0;
     padding: 0 13px;
   }
-  .font-16{
+  .font-16 {
     font-size: 16px;
   }
-  .font-18{
+  .font-18 {
     font-size: 18px;
   }
 }
