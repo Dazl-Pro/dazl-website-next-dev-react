@@ -33,7 +33,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import CommonSidebar from "../dashboard/commonSidebar/commonSidebar";
-import { useDispatch } from "react-redux";
 import CommonProfile from "../dashboard/commonSidebar/commonProfile.jsx";
 const CustomerCreateProject = lazy(() =>
   import(
@@ -99,6 +98,9 @@ const ViewPhdAlt = lazy(() =>
 const AddRoom = lazy(() =>
   import("../dashboard/agentDashboard/pdhProject/addRoom")
 );
+const EditAddRoom = lazy(() =>
+  import("../dashboard/agentDashboard/pdhProject/editAddRoom")
+);
 const ProjectOpportunities = lazy(() =>
   import("../dashboard/professionalDashboard/projectOpportunities")
 );
@@ -162,10 +164,8 @@ const Header = () => {
     setIsActive(false);
   };
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
   const userType = localStorage.getItem("userType");
   const location = useLocation();
-  const dispatch = useDispatch();
   const routeNavigate = useNavigate();
   const sideItems = [
     { page: token ? "DAZL ON TREND" : "HOME", route: "/" },
@@ -503,6 +503,11 @@ const Header = () => {
                               element={<RouteGuard Components={AddRoom} />}
                             />
 
+                            <Route
+                              exact
+                              path="/agent/editPhd/rooms/:itemId"
+                              element={<RouteGuard Components={EditAddRoom} />}
+                            />
                             <Route
                               exact
                               path="/agent/createProject"

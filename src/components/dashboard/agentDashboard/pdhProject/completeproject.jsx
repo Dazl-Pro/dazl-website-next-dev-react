@@ -10,8 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import Nav from "react-bootstrap/Nav";
+import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 
 const CompleteProject = () => {
@@ -28,6 +27,10 @@ const CompleteProject = () => {
 
   const viewPhdAltHandler = (itemId) => {
     navigate(`/agent/viewPhdAlt/${itemId}`);
+  };
+
+  const editPhdAltHandler = (itemId) => {
+    navigate(`/agent/editPhd/rooms/${itemId}`);
   };
 
   return (
@@ -75,8 +78,11 @@ const CompleteProject = () => {
                               >
                                 <DeleteIcon />
                               </button>
-                              <button className="btn btn-outline-secondary mx-1 btn-sm">
-                                <SendIcon />
+                              <button
+                                className="btn btn-outline-primary mx-1 btn-sm"
+                                onClick={() => editPhdAltHandler(item.id)}
+                              >
+                                <EditIcon />
                               </button>
                             </td>
                           </tr>

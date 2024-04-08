@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-empty */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import http from "../../services/http/baseUrl";
 import { Toastify } from "../../services/toastify/toastContainer";
@@ -273,6 +275,32 @@ export const createPhd = createAsyncThunk(
     }
   }
 );
+
+export const updatePhd = createAsyncThunk(
+  "dashboard/updatePhd",
+  async ({ data, id }) => {
+    try {
+      const response = await http.put(
+        `/update-home-diagnostic-reports/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return (
+        error.response.data,
+        Toastify({ data: "error", msg: error.response.data.message })
+      );
+    }
+  }
+);
+
 export const addRoomFeatures = createAsyncThunk(
   "dashboard/addRoomFeatures",
   async (data, { dispatch }) => {
@@ -649,14 +677,14 @@ const dashboardSlice = createSlice({
       phdStepOne: null,
       companydata: [],
       projectOpportunities: null,
-      phdRooms: [],
+      phdRoomsData: [],
       diagnosticReports: null,
       uploadImage: [],
       roomtype: null,
       customerprojectData: [],
       agentProjectData: [],
       customerData: [],
-      completePhd: [],
+
       show: false,
       showAlt: false,
       viewPhd: [],
@@ -812,7 +840,7 @@ const dashboardSlice = createSlice({
         state.loading = true;
       })
       .addCase(phdRooms.fulfilled, (state, action) => {
-        state.data.phdRooms = action.payload.data;
+        state.data.phdRoomsData = action.payload.data;
         state.data.roomtype = action.payload.roomtype;
         state.data.addValueData = action.payload.addValueData;
         state.data.price = action.payload.price;

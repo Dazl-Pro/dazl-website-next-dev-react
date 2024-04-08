@@ -6,10 +6,6 @@ import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { Typography, TextField } from "@material-ui/core";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import {
   bidStatusUpdate,
   mailPdf,
@@ -24,8 +20,6 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { Toastify } from "../../../../services/toastify/toastContainer";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { uploadImage } from "../../../../store/dashboard/dashboardSlice";
-import { saveAs } from "file-saver";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -47,42 +41,10 @@ const ViewPhdAlt = () => {
   const selector = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selector?.data?.viewPhdAlt;
 
-  const defaultValues = {
-    photos: [{ file: null }],
-    firstName: "",
-    lastName: "",
-    email: "",
-    location: "",
-  };
-
-  const schema = yup.object().shape({
-    firstName: yup.string().required("First Name is required").trim(),
-    lastName: yup.string().required("Last Name is required").trim(),
-    email: yup
-      .string()
-      .email("Please enter valid email address")
-      .required("Email is required")
-      .trim(),
-    location: yup.string().required("Location is required").trim(),
-  });
-
   useEffect(() => {
     dispatch(viewPhdAlt({ id: itemId, value: "open" }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemId]);
-
-  const {
-    control,
-    reset,
-    register,
-    handleSubmit,
-    setValue,
-    setError,
-    clearErrors,
-    formState: { errors },
-  } = useForm({
-    defaultValues,
-    resolver: yupResolver(schema),
-  });
 
   const [progressBar, setProgressBar] = React.useState(
     viewPhdData?.[0]?.phd_price
@@ -92,9 +54,6 @@ const ViewPhdAlt = () => {
     viewPhdData?.[0]?.pre_price
   );
 
-  const [fileValue, setFileValue] = useState(null);
-  const [errorBorder2, setErrorborder2] = useState(false);
-  const [outerImage, setOuterimage] = React.useState([]);
   const [currentStatus, setCurrentStatus] = useState("Pass");
 
   const mainPrice = viewPhdData?.[0]?.phd_price;
@@ -108,7 +67,7 @@ const ViewPhdAlt = () => {
       })
     )
       .unwrap()
-      .then((response) => {
+      .then(() => {
         if (status == "Bid") {
           setProgressBar(Number(mainPrice) + 100000);
         }
@@ -119,53 +78,6 @@ const ViewPhdAlt = () => {
           setProgressBar(Number(mainPrice));
         }
       });
-  };
-
-  const {
-    fields: photoFields,
-    append: appendPhoto,
-    remove: removePhoto,
-  } = useFieldArray({
-    control,
-    name: "photos",
-  });
-
-  const handleImage = (index, e) => {
-    const file = e.target.files[0];
-    setFileValue(file);
-    setErrorborder2(false);
-    const isImage = file && file.type.startsWith("image/");
-    clearErrors(`photos[${index}].file`);
-
-    if (!isImage) {
-      setError(`photos[${index}].file`, {
-        type: "manual",
-        message: "Invalid file type. Please select a valid image.",
-      });
-    } else {
-      const formData = new FormData();
-      formData.append("image", file);
-      dispatch(uploadImage(formData))
-        .unwrap()
-        .then((res) => {
-          const responseImage = res.image;
-
-          const featuresIdDataIndex = outerImage.findIndex(
-            (item) => item === responseImage
-          );
-          if (featuresIdDataIndex !== -1) {
-            setOuterimage((prevData) => {
-              const newArray = [...prevData];
-              const existingObject = { ...newArray[featuresIdDataIndex] };
-              existingObject.images = [...existingObject.images, responseImage];
-              newArray[featuresIdDataIndex] = existingObject;
-              return newArray;
-            });
-          } else {
-            setOuterimage((prevData) => [...prevData, responseImage]);
-          }
-        });
-    }
   };
 
   const sendEmail = () => {
@@ -284,7 +196,6 @@ const ViewPhdAlt = () => {
                     );
                     return (
                       <div key={index} className="mb-4 col-md-6">
-                        {/* <h3 className="fw-semibold">{index + 1}.) </h3> */}
                         <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4">
                           <div className="d-flex  align-items-center justify-content-between">
                             <h3 className="fw-semibold font-18">
@@ -326,15 +237,15 @@ const ViewPhdAlt = () => {
                               </div>
                             </div>
                           </div>
-
-                          <div
-                            key={index}
-                            className="border border-dark p-3 mt-3 bg-white"
-                          >
-                            <h3 className="text-center d-flex mb-3 mt-1">
-                              Buyer Road Blocks:
-                            </h3>
-                            {/* <div className="d-flex align-items-center justify-content-between mb-3">
+                          {ele?.feature?.[0].feature_name !== "" && (
+                            <div
+                              key={index}
+                              className="border border-dark p-3 mt-3 bg-white"
+                            >
+                              <h3 className="text-center d-flex mb-3 mt-1">
+                                Buyer Road Blocks:
+                              </h3>
+                              {/* <div className="d-flex align-items-center justify-content-between mb-3">
                                   <div className="d-flex gap-1 align-items-center">
                                     Area:
                                     <div className="fw-bolder">
@@ -343,90 +254,92 @@ const ViewPhdAlt = () => {
                                   </div>
                                   <div className="text-danger">{e?.status}</div>
                                 </div> */}
-                            {ele?.feature?.map((eleInner, eleindex) => {
-                              return (
-                                <div key={eleindex}>
-                                  <h5 className=" mb-2 ms-2">
-                                    {eleInner.feature_name}:
-                                  </h5>
-                                  <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
-                                    <div>{eleInner?.imageDesc}</div>
-                                  </div>
-                                  <div className="ps-0 mb-3">
-                                    <div className="d-flex gap-1">
-                                      {eleInner?.images?.map(
-                                        (image, imageIndex) => (
-                                          <div key={imageIndex}>
-                                            <a
-                                              href={image}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                            >
-                                              <img
-                                                alt="img"
-                                                src={image}
-                                                className="object-fit-cover border"
-                                                width={"100px"}
-                                                height={"100px"}
-                                              />
-                                            </a>
-                                          </div>
-                                        )
-                                      )}
+                              {ele?.feature?.map((eleInner, eleindex) => {
+                                return (
+                                  <div key={eleindex}>
+                                    <h5 className=" mb-2 ms-2">
+                                      {eleInner.feature_name}:
+                                    </h5>
+                                    <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
+                                      <div>{eleInner?.imageDesc}</div>
                                     </div>
-                                  </div>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      gap: "10px",
-                                      paddingBottom: "10px",
-                                      marginBottom: "10px",
-                                    }}
-                                  >
-                                    {allStatus.map((status) => (
-                                      <label
-                                        key={status}
-                                        className="custom-radio-label"
-                                      >
-                                        <input
-                                          type="radio"
-                                          name={`status-${index}`}
-                                          onChange={() => {
-                                            onchangeStatus(
-                                              status,
-
-                                              ele.room_id
-                                            );
-                                            setCurrentStatus(status);
-                                          }}
-                                        />
-                                        <span className=" ">{status}</span>
-                                      </label>
-                                    ))}
-                                  </div>
-                                  {currentStatus !== "Pass" && (
-                                    <div className="pb-3">
-                                      <div className="d-flex justify-content-between mt-3 mb-2">
-                                        <p className="mb-0">$200k</p>
-                                        <p className="mb-0">
-                                          $
-                                          {progressBar
-                                            ? (progressBar / 1000).toFixed(1) +
-                                              "k"
-                                            : "2M"}
-                                        </p>
-                                        <p className="mb-0">$2M</p>
+                                    <div className="ps-0 mb-3">
+                                      <div className="d-flex gap-1">
+                                        {eleInner?.images?.map(
+                                          (image, imageIndex) => (
+                                            <div key={imageIndex}>
+                                              <a
+                                                href={image}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                <img
+                                                  alt="img"
+                                                  src={image}
+                                                  className="object-fit-cover border"
+                                                  width={"100px"}
+                                                  height={"100px"}
+                                                />
+                                              </a>
+                                            </div>
+                                          )
+                                        )}
                                       </div>
-                                      <BorderLinearProgress
-                                        variant="determinate"
-                                        value={(progressBar / 1800000) * 100}
-                                      />
                                     </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        gap: "10px",
+                                        paddingBottom: "10px",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
+                                      {allStatus.map((status) => (
+                                        <label
+                                          key={status}
+                                          className="custom-radio-label"
+                                        >
+                                          <input
+                                            type="radio"
+                                            name={`status-${index}`}
+                                            onChange={() => {
+                                              onchangeStatus(
+                                                status,
+
+                                                ele.room_id
+                                              );
+                                              setCurrentStatus(status);
+                                            }}
+                                          />
+                                          <span className=" ">{status}</span>
+                                        </label>
+                                      ))}
+                                    </div>
+                                    {currentStatus !== "Pass" && (
+                                      <div className="pb-3">
+                                        <div className="d-flex justify-content-between mt-3 mb-2">
+                                          <p className="mb-0">$200k</p>
+                                          <p className="mb-0">
+                                            $
+                                            {progressBar
+                                              ? (progressBar / 1000).toFixed(
+                                                  1
+                                                ) + "k"
+                                              : "2M"}
+                                          </p>
+                                          <p className="mb-0">$2M</p>
+                                        </div>
+                                        <BorderLinearProgress
+                                          variant="determinate"
+                                          value={(progressBar / 1800000) * 100}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

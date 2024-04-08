@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useRef } from "react";
 import FormControl from "@mui/material/FormControl";
 import "./commonRoomForm.css";
 import { useDispatch } from "react-redux";
@@ -53,12 +54,12 @@ const CommonRoomform = (props) => {
     setSelectvalue(selectedValue.name);
     dispatch(phdRooms(selectedValue.value))
       .unwrap()
-      .then((data) => {
+      .then(() => {
         setShow(true);
       });
   };
 
-  const onSubmit = (data) => {};
+  const onSubmit = () => {};
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl fullWidth variant="outlined" margin="normal">
