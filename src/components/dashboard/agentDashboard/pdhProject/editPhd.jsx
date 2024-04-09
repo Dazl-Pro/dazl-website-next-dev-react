@@ -110,7 +110,6 @@ const EditPhd = (props) => {
 
   const phdRoomsData = selector.data.phdRoomsData;
   const price = selector.data.price;
-  const agentData = selector.data.agentData;
   const roomselect = JSON.parse(localStorage.getItem("roomselect"));
   const midValue = localStorage.getItem("midValue");
   const roomId = localStorage.getItem("roomId");
@@ -119,6 +118,7 @@ const EditPhd = (props) => {
   const saved1 = JSON.parse(localStorage.getItem("saved1"));
 
   const [outerImage, setOuterimage] = React.useState([]);
+  const [checkBoxData, setCheckBoxData] = useState([]);
   const [input, setInput] = React.useState([]);
 
   const defaultValues = {
@@ -134,10 +134,6 @@ const EditPhd = (props) => {
       })
     ),
   };
-
-  const [errorBorder, setErrorborder] = useState(false);
-  const [errorBorder1, setErrorborder1] = useState(false);
-  const [phdCheckbox, setPhdCheckbox] = useState([]);
 
   const {
     control,
@@ -184,7 +180,7 @@ const EditPhd = (props) => {
   }, []);
 
   const handleCheckboxArrayChange = (id, index) => {
-    setPhdCheckbox((prev) => [...prev, { checkbox: id.id }]);
+    setCheckBoxData((prev) => [...prev, { checkbox: id.id }]);
     const checkboxes = watch("checkboxes") || [];
     checkboxes[index] = !checkboxes[index];
     setValue("checkboxes", checkboxes);
@@ -194,7 +190,6 @@ const EditPhd = (props) => {
     e.preventDefault();
 
     const selectedOption = input.options;
-
     let updatedPrice = price;
 
     if (selectedOption === "NEEDS DAZL") {
@@ -204,24 +199,20 @@ const EditPhd = (props) => {
     }
 
     const checkboxes = watch("checkboxes") || [];
-
-    const checkedCheckboxesData = phdCheckbox.filter(
+    const checkedCheckboxesData = checkBoxData.filter(
       (checkbox, index) => checkboxes[index]
     );
 
     if (input) {
       let formData = new FormData();
-
       formData.append("lowest_price", lowestValue);
       formData.append("mid_price", midValue);
       formData.append("highest_price", maxValue);
       formData.append("dazlValue", updatedPrice);
       saved1 !== null ? "" : formData.append("true", true);
-
       for (let i = 0; i < outerImage.length; i++) {
         formData.append(`images[${i}]`, outerImage[i]);
       }
-
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
       formData.append(
@@ -230,8 +221,8 @@ const EditPhd = (props) => {
       );
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
 
-      phdCheckbox.length > 0 &&
-        phdCheckbox?.forEach((item) => {
+      checkBoxData.length > 0 &&
+        checkBoxData?.forEach((item) => {
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
           formData.append(descriptionKey, item.description);
@@ -318,10 +309,9 @@ const EditPhd = (props) => {
             }
           } else if (name === "checkbox") {
             const textArray = getValues("textArea");
-            setPhdCheckbox((prev) => {
+            setCheckBoxData((prev) => {
               const newArray = [...prev];
               let updated = false;
-              const desc = textArray[index];
               newArray.forEach((item, i) => {
                 if (item.checkbox === phd.id) {
                   newArray[i] = {
@@ -332,7 +322,6 @@ const EditPhd = (props) => {
                   updated = true;
                 }
               });
-
               if (!updated) {
                 newArray.push({
                   checkbox: phd.id,
@@ -340,7 +329,6 @@ const EditPhd = (props) => {
                   images: [responseImage],
                 });
               }
-
               return newArray;
             });
           }
@@ -364,13 +352,6 @@ const EditPhd = (props) => {
         };
         return updatedRooms;
       });
-    }
-
-    // Reset error border based on the name
-    if (name === "phd_description") {
-      setErrorborder(false);
-    } else {
-      setErrorborder1(false);
     }
   };
 
@@ -425,7 +406,7 @@ const EditPhd = (props) => {
                     }
                     onChange={(e) => onChange(e, items.room_id, "description")}
                     required
-                    className={`${errorBorder ? "error" : ""} `}
+                    // className={`${errorBorder ? "error" : ""} `}
                   />
                 </div>
               </div>
@@ -579,7 +560,7 @@ const EditPhd = (props) => {
                         className="me-2"
                         control={
                           <Radio
-                            className={`${errorBorder1 ? "errorSub" : ""} `}
+                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
                           />
                         }
                         label="DAZLING"
@@ -591,7 +572,7 @@ const EditPhd = (props) => {
                         className="me-2"
                         control={
                           <Radio
-                            className={`${errorBorder1 ? "errorSub" : ""} `}
+                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
                           />
                         }
                         label="MARKET READY"
@@ -603,7 +584,7 @@ const EditPhd = (props) => {
                         className="me-2"
                         control={
                           <Radio
-                            className={`${errorBorder1 ? "errorSub" : ""} `}
+                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
                           />
                         }
                         label="NEEDS DAZL"
