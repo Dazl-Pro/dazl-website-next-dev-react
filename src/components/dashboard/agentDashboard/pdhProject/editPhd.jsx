@@ -370,10 +370,6 @@ const EditPhd = (props) => {
     }
   };
 
-  const getAudio = async () => {
-    Toastify({ data: "error", msg: "Your device may not have this feature" });
-  };
-
   const onChange = (e, roomId, name) => {
     const value = e.target.value;
 
@@ -435,11 +431,6 @@ const EditPhd = (props) => {
                 <div className="">
                   <p className="mb-1">
                     1.Note any exceptional features or selling advantages:
-                    <MicIcon
-                      onClick={getAudio}
-                      className=""
-                      style={{ cursor: "pointer" }}
-                    />
                   </p>
                 </div>
                 <div className="">
