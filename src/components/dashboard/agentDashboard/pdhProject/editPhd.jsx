@@ -374,7 +374,10 @@ const EditPhd = (props) => {
         const updatedRooms = [...prevState];
         updatedRooms[roomIndex] = {
           ...updatedRooms[roomIndex],
-          [name]: value,
+          type: {
+            ...updatedRooms[roomIndex].type,
+            [name]: value,
+          },
         };
         return updatedRooms;
       });
@@ -509,22 +512,11 @@ const EditPhd = (props) => {
                           size="small"
                           className="mob-space w-100"
                           value={
-                            item?.type?.name === "Flooring"
-                              ? input.find(
-                                  (room) => room.roomId === items.room_id
-                                )?.flooring
-                              : input.find(
-                                  (room) => room.roomId === items.room_id
-                                )?.fireplace || ""
+                            input.find((room) => room.roomId === items.room_id)
+                              ?.type?.[item?.type?.name] || ""
                           }
                           onChange={(event) =>
-                            onChange(
-                              event,
-                              items.room_id,
-                              item?.type?.name === "Flooring"
-                                ? "flooring"
-                                : "fireplace"
-                            )
+                            onChange(event, items.room_id, item?.type?.name)
                           }
                         >
                           {item?.type?.feature_options?.map(
