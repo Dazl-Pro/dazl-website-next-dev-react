@@ -280,7 +280,7 @@ export const updatePhd = createAsyncThunk(
   "dashboard/updatePhd",
   async ({ data, id }) => {
     try {
-      const response = await http.put(
+      const response = await http.post(
         `/update-home-diagnostic-reports/${id}`,
         data,
         {
