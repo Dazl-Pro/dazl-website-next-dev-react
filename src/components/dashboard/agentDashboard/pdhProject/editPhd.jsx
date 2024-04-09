@@ -69,6 +69,25 @@ const EditPhd = (props) => {
   const [roomData, setRoomData] = useState("");
 
   useEffect(() => {
+    // Initialize input state array
+    const initialInputState = [];
+
+    // Populate input state array with room descriptions and statuses
+    viewPhdData?.[0]?.roominfo.forEach((room) => {
+      const roomData = {
+        roomId: room.room_id,
+        description: room.description || "", // Use empty string if description is undefined
+        status: room.status || "", // Use empty string if status is undefined
+        additionalValues: room.additionalValues || [],
+      };
+      initialInputState.push(roomData);
+    });
+
+    // Set initial input state
+    setInput(initialInputState);
+  }, [viewPhdData]);
+
+  useEffect(() => {
     const fetchRoomData = async () => {
       const promises = roomIds.map((id) => {
         return dispatch(phdRooms(id))
@@ -94,8 +113,6 @@ const EditPhd = (props) => {
     }
   }, [dispatch, roomIds]);
 
-  console.log("roomData", roomData);
-
   const phdRoomsData = selector.data.phdRoomsData;
 
   const addValueData = selector.data.addValueData;
@@ -113,10 +130,7 @@ const EditPhd = (props) => {
     addValueData?.map((item) => ({ id: item.id, isChecked: false }))
   );
   const [outerImage, setOuterimage] = React.useState([]);
-  const [input, setInput] = React.useState({
-    phd_description: "",
-    options: "",
-  });
+  const [input, setInput] = React.useState([]);
 
   const defaultValues = {
     photos: [{ file: null }],
@@ -226,12 +240,7 @@ const EditPhd = (props) => {
       (checkbox, index) => checkboxes[index]
     );
 
-    if (input.phd_description === "") {
-      setErrorborder(true);
-      return;
-    }
-
-    if (input.phd_description) {
+    if (input) {
       let formData = new FormData();
 
       formData.append("lowest_price", lowestValue);
@@ -300,7 +309,7 @@ const EditPhd = (props) => {
           });
         });
 
-      dispatch(updatePhd({ data: formData, id: itemId }))
+      dispatch(updatePhd({ data: input, id: itemId }))
         .unwrap()
         .then((response) => {
           if (value === "save") {
@@ -413,38 +422,55 @@ const EditPhd = (props) => {
     Toastify({ data: "error", msg: "Your device may not have this feature" });
   };
 
-  const onChange = (e) => {
-    console.log("called");
-    const name = e.target.name;
+  const onChange = (e, roomId, name) => {
     const value = e.target.value;
-    setInput({ ...input, [name]: value });
+
+    // Find the index of the room in the input state array
+    const roomIndex = input.findIndex((room) => room.roomId === roomId);
+
+    // If the room exists in the input state array, update its description
+    if (roomIndex !== -1) {
+      setInput((prevState) => {
+        const updatedRooms = [...prevState];
+        updatedRooms[roomIndex] = {
+          ...updatedRooms[roomIndex],
+          [name]: value,
+        };
+        return updatedRooms;
+      });
+    }
+
+    // Reset error border based on the name
     if (name === "phd_description") {
       setErrorborder(false);
     } else {
       setErrorborder1(false);
     }
   };
-  const handleSelectChange = (event, typeId, roomId, name) => {
-    const selectedValue = event.target.value;
-    const data = `rooms[${roomId}][feature_type][${typeId}]`;
-    const value = { data, selectedValue };
-    setSelectedValues([...selectedValues, value]);
-    setSelectdrop((prevValues) => ({
-      ...prevValues,
-      [name]: selectedValue,
-    }));
+
+  // Function to handle changes in selected values for each room
+  // Function to handle changes in selected values for each room
+  const handleValueChange = (roomId, valueId, isChecked) => {
+    setInput((prevState) =>
+      prevState.map((room) => {
+        if (room.roomId === roomId) {
+          const updatedValues = [...room.additionalValues];
+          const existingIndex = updatedValues.findIndex(
+            (item) => item.id === valueId
+          );
+          if (existingIndex !== -1) {
+            updatedValues[existingIndex].isChecked = isChecked;
+          } else {
+            updatedValues.push({ id: valueId, isChecked });
+          }
+          return { ...room, additionalValues: updatedValues };
+        }
+        return room;
+      })
+    );
   };
 
-  console.log(input);
-
-  const onChangeRadio = (event, index) => {
-    const name = `${viewPhdData?.[0].roominfo?.[index].room_name}`;
-    const value = event.target.value;
-    setInput((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  console.log("inputttt", input);
 
   return (
     <div>
@@ -472,10 +498,13 @@ const EditPhd = (props) => {
                     rows={4}
                     variant="outlined"
                     fullWidth
-                    {...register("textArea")}
-                    name={"phd_description"}
-                    value={input.phd_description}
-                    onChange={onChange}
+                    {...register(`textArea[${index}]`)}
+                    name={`${items.room_id}`}
+                    value={
+                      input.find((room) => room.roomId === items.room_id)
+                        ?.description || ""
+                    }
+                    onChange={(e) => onChange(e, items.room_id, "description")}
                     required
                     className={`${errorBorder ? "error" : ""} `}
                   />
@@ -527,42 +556,42 @@ const EditPhd = (props) => {
                   </button>
                 </div>
               </div>
+
               {roomData[index]?.data?.roomtype?.length > 0 ? (
-                <Grid container spacing={2}>
-                  {roomData[index]?.data?.roomtype?.map((item) => {
-                    return (
-                      <Grid item xs={6}>
+                <>
+                  <Grid container spacing={2}>
+                    {roomData[index]?.data.roomtype.map((item, roomIndex) => (
+                      <Grid item xs={6} key={roomIndex}>
                         <FormLabel component="legend" className="text-body">
                           {item?.type?.name}
                         </FormLabel>
                         <TextField
                           sx={{ width: "50%" }}
-                          id="outlined-select-currency"
+                          id={`outlined-select-currency-${index}`}
                           select
                           label="Select"
                           variant="filled"
                           size="small"
                           className="mob-space w-100"
-                          value={selectdrop[item?.type?.name] || ""}
+                          value={
+                            selectdrop[`${index}-${item?.type?.name}`] || ""
+                          }
                           onChange={(event) =>
-                            handleSelectChange(
-                              event,
-                              item?.type?.id,
-                              item?.room_id,
-                              item?.type?.name
-                            )
+                            onChange(event, items.room_id, "flooring")
                           }
                         >
-                          {item?.type?.feature_options?.map((option, index) => (
-                            <MenuItem key={index} value={option?.id}>
-                              {option?.name}
-                            </MenuItem>
-                          ))}
+                          {item?.type?.feature_options?.map(
+                            (option, optionIndex) => (
+                              <MenuItem key={optionIndex} value={option?.id}>
+                                {option?.name}
+                              </MenuItem>
+                            )
+                          )}
                         </TextField>
                       </Grid>
-                    );
-                  })}{" "}
-                </Grid>
+                    ))}
+                  </Grid>
+                </>
               ) : (
                 ""
               )}
@@ -575,20 +604,32 @@ const EditPhd = (props) => {
                   </p>
                   <div className="row">
                     {roomData[index]?.data?.addValueData.map(
-                      (valueItem, index) => {
+                      (valueItem, valueIndex) => {
+                        const valueId = valueItem.id;
+
                         return (
-                          <div className="col-md-4 d-flex align-items-center">
+                          <div
+                            className="col-md-4 d-flex align-items-center"
+                            key={valueIndex}
+                          >
                             <Checkbox
-                              checked={
-                                checked.find((item) => item.id === valueItem.id)
-                                  ?.isChecked
-                              }
+                              checked={input
+                                .find((room) => room.roomId === items.room_id)
+                                ?.additionalValues.some(
+                                  (item) =>
+                                    item.id === valueId && item.isChecked
+                                )}
                               onChange={(e) =>
-                                handleChange(e, index, valueItem.id)
+                                handleValueChange(
+                                  items.room_id,
+                                  valueId,
+                                  e.target.checked
+                                )
                               }
                               inputProps={{ "aria-label": "controlled" }}
                             />
-                            {valueItem?.name}
+
+                            {valueItem.name}
                           </div>
                         );
                       }
@@ -603,13 +644,13 @@ const EditPhd = (props) => {
                   Overall first impressions
                 </FormLabel>
                 <RadioGroup
-                  aria-label={`${viewPhdData?.[0].roominfo?.[index].room_name}`}
-                  name={`${viewPhdData?.[0].roominfo?.[index].room_name}`}
+                  aria-label={`${items.room_id}`}
+                  name={`${items.room_id}`}
                   value={
-                    input[`${viewPhdData?.[0].roominfo?.[index].room_name}`] ||
-                    items.status
+                    input.find((room) => room.roomId === items.room_id)
+                      ?.status || ""
                   }
-                  onChange={(e) => onChangeRadio(e, index)}
+                  onChange={(e) => onChange(e, items.room_id, "status")}
                   required
                 >
                   <div className="row">

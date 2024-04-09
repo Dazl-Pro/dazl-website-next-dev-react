@@ -282,12 +282,12 @@ export const updatePhd = createAsyncThunk(
     try {
       const response = await http.post(
         `/update-home-diagnostic-reports/${id}`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        data
+        // {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        // }
       );
       if (response.status === 200) {
         return response.data;
