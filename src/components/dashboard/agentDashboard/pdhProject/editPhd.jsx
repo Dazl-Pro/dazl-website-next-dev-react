@@ -137,7 +137,6 @@ const EditPhd = (props) => {
 
   const [errorBorder, setErrorborder] = useState(false);
   const [errorBorder1, setErrorborder1] = useState(false);
-  const [errorBorder2, setErrorborder2] = useState(false);
   const [phdCheckbox, setPhdCheckbox] = useState([]);
 
   const {
@@ -218,8 +217,6 @@ const EditPhd = (props) => {
       formData.append("highest_price", maxValue);
       formData.append("dazlValue", updatedPrice);
       saved1 !== null ? "" : formData.append("true", true);
-      formData.append("room_id", roomId);
-      formData.append("phd_description", input?.phd_description);
       for (let i = 0; i < outerImage.length; i++) {
         formData.append(`images[${i}]`, outerImage[i]);
       }
@@ -239,8 +236,6 @@ const EditPhd = (props) => {
             formData.append(imageKey, image);
           });
         });
-      formData.append(`rooms[${roomId}][status]`, input.options);
-      formData.append("zip_code", agentData.zip_code ?? "123456");
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
       formData.append(
@@ -289,46 +284,17 @@ const EditPhd = (props) => {
     }
   };
 
-  const handleImage = (index, e) => {
+  const handleImage = (name, index, e, phd, description) => {
     const file = e.target.files[0];
-    setErrorborder2(false);
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${index}].file`);
-    if (!isImage) {
+    clearErrors(`checkbox_photos[${index}].file`);
+    if (!isImage && name === "main") {
       setError(`photos[${index}].file`, {
         type: "manual",
         message: "Invalid file type. Please select a valid image.",
       });
-    } else {
-      const formData = new FormData();
-      formData.append("image", file);
-      dispatch(uploadImage(formData))
-        .unwrap()
-        .then((res) => {
-          const responseImage = res.image;
-          const featuresIdDataIndex = outerImage.findIndex(
-            (item) => item === responseImage
-          );
-          if (featuresIdDataIndex !== -1) {
-            setOuterimage((prevData) => {
-              const newArray = [...prevData];
-              const existingObject = { ...newArray[featuresIdDataIndex] };
-              existingObject.images = [...existingObject.images, responseImage];
-              newArray[featuresIdDataIndex] = existingObject;
-              return newArray;
-            });
-          } else {
-            setOuterimage((prevData) => [...prevData, responseImage]);
-          }
-        });
-    }
-  };
-
-  const handleCheckboxImage = (phd, index, description, e) => {
-    const file = e.target.files[0];
-    const isImage = file && file.type.startsWith("image/");
-    clearErrors(`checkbox_photos[${index}].file`);
-    if (!isImage) {
+    } else if (!isImage && name === "checkbox") {
       setError(`checkbox_photos[${index}].file`, {
         type: "manual",
         message: "Invalid file type. Please select a valid image.",
@@ -340,32 +306,52 @@ const EditPhd = (props) => {
         .unwrap()
         .then((res) => {
           const responseImage = res.image;
-          const textArray = getValues("textArea");
-          setPhdCheckbox((prev) => {
-            const newArray = [...prev];
-            let updated = false;
-            const desc = textArray[index];
-            newArray.forEach((item, i) => {
-              if (item.checkbox === phd.id) {
-                newArray[i] = {
-                  checkbox: phd.id,
-                  description: description,
-                  images: [...(item.images || []), responseImage],
-                };
-                updated = true;
-              }
-            });
-
-            if (!updated) {
-              newArray.push({
-                checkbox: phd.id,
-                description: textArray[index],
-                images: [responseImage],
+          if (name === "main") {
+            const featuresIdDataIndex = outerImage.findIndex(
+              (item) => item === responseImage
+            );
+            if (featuresIdDataIndex !== -1) {
+              setOuterimage((prevData) => {
+                const newArray = [...prevData];
+                const existingObject = { ...newArray[featuresIdDataIndex] };
+                existingObject.images = [
+                  ...existingObject.images,
+                  responseImage,
+                ];
+                newArray[featuresIdDataIndex] = existingObject;
+                return newArray;
               });
+            } else {
+              setOuterimage((prevData) => [...prevData, responseImage]);
             }
+          } else if (name === "checkbox") {
+            const textArray = getValues("textArea");
+            setPhdCheckbox((prev) => {
+              const newArray = [...prev];
+              let updated = false;
+              const desc = textArray[index];
+              newArray.forEach((item, i) => {
+                if (item.checkbox === phd.id) {
+                  newArray[i] = {
+                    checkbox: phd.id,
+                    description: description,
+                    images: [...(item.images || []), responseImage],
+                  };
+                  updated = true;
+                }
+              });
 
-            return newArray;
-          });
+              if (!updated) {
+                newArray.push({
+                  checkbox: phd.id,
+                  description: textArray[index],
+                  images: [responseImage],
+                });
+              }
+
+              return newArray;
+            });
+          }
         });
     }
   };
@@ -465,13 +451,12 @@ const EditPhd = (props) => {
                             type="file"
                             {...register(`photos[${index}].file`)}
                             className={`form-control mb-3 ${
-                              (errors.photos && errors?.photos[index]?.file) ||
-                              errorBorder2
+                              errors.photos && errors?.photos[index]?.file
                                 ? "error"
                                 : ""
                             }`}
                             accept="image/*"
-                            onChange={(e) => handleImage(index, e)}
+                            onChange={(e) => handleImage("main", index, e)}
                           />
                           {photoFields.length > 1 && (
                             <button
@@ -695,11 +680,12 @@ const EditPhd = (props) => {
                                           }`}
                                           accept="image/*"
                                           onChange={(e) =>
-                                            handleCheckboxImage(
-                                              _,
+                                            handleImage(
+                                              "checkbox",
                                               imgIndex,
-                                              getValues("textArea")[index],
-                                              e
+                                              e,
+                                              _,
+                                              getValues("textArea")[index]
                                             )
                                           }
                                         />
