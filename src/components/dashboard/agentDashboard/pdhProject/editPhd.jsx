@@ -146,7 +146,6 @@ const EditPhd = (props) => {
     ),
   };
 
-  const [selectedValues, setSelectedValues] = useState([]);
   const [selectdrop, setSelectdrop] = useState({});
   const [addValueCheckbox, setAddvalueCheckbox] = useState([]);
   const [fileUploadError, setFileUploadError] = useState(null);
@@ -202,18 +201,6 @@ const EditPhd = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleChange = (event, index, id) => {
-    setChecked((prevChecked) =>
-      prevChecked.map((item) =>
-        item.id === id ? { ...item, isChecked: event.target.checked } : item
-      )
-    );
-    const data = `room[${roomId}][additional][${index}]`;
-    const val = id;
-    const value = { data, val };
-    setAddvalueCheckbox((prevCheckbox) => [...prevCheckbox, value]);
-  };
-
   const handleCheckboxArrayChange = (id, index) => {
     setPhdCheckbox((prev) => [...prev, { checkbox: id.id }]);
     const checkboxes = watch("checkboxes") || [];
@@ -254,10 +241,6 @@ const EditPhd = (props) => {
         formData.append(`images[${i}]`, outerImage[i]);
       }
 
-      selectedValues.length > 0 &&
-        selectedValues?.map((item, index) => {
-          return formData.append(`${item.data}`, item.selectedValue);
-        });
       if (
         addValueData.length > 0 &&
         Array.isArray(addValueCheckbox) &&
@@ -333,9 +316,9 @@ const EditPhd = (props) => {
         });
     }
   };
+
   const handleImage = (index, e) => {
     const file = e.target.files[0];
-
     setErrorborder2(false);
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${index}].file`);
@@ -351,7 +334,6 @@ const EditPhd = (props) => {
         .unwrap()
         .then((res) => {
           const responseImage = res.image;
-
           const featuresIdDataIndex = outerImage.findIndex(
             (item) => item === responseImage
           );
@@ -369,6 +351,7 @@ const EditPhd = (props) => {
         });
     }
   };
+
   const handleCheckboxImage = (phd, index, description, e) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");
@@ -403,7 +386,7 @@ const EditPhd = (props) => {
                 updated = true;
               }
             });
-            // If no existing entry was updated, create a new entry
+
             if (!updated) {
               newArray.push({
                 checkbox: phd.id,
@@ -448,8 +431,6 @@ const EditPhd = (props) => {
     }
   };
 
-  // Function to handle changes in selected values for each room
-  // Function to handle changes in selected values for each room
   const handleValueChange = (roomId, valueId, isChecked) => {
     setInput((prevState) =>
       prevState.map((room) => {
@@ -574,7 +555,8 @@ const EditPhd = (props) => {
                           size="small"
                           className="mob-space w-100"
                           value={
-                            selectdrop[`${index}-${item?.type?.name}`] || ""
+                            input.find((room) => room.roomId === items.room_id)
+                              ?.flooring || ""
                           }
                           onChange={(event) =>
                             onChange(event, items.room_id, "flooring")
