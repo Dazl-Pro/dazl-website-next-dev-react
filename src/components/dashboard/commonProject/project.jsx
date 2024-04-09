@@ -48,7 +48,7 @@ const schema = yup.object().shape({
 
 const Commonproject = () => {
   const selector = useSelector((state) => state.dashboardSlice);
-  const phdRooms = selector.data.phdRooms;
+  const phdRooms = selector.data.phdRoomsData;
   const addAnotherRoomState = selector.data.addAnotherRoom;
   const roomtype = selector.data.roomtype;
   const navigate = useNavigate();

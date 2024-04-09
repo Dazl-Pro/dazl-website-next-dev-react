@@ -51,7 +51,7 @@ const RoomsInformation = (props) => {
   const { setShow, setSelectvalue } = props;
   const navigate = useNavigate();
   const selector = useSelector((state) => state.dashboardSlice);
-  const phdRooms = selector.data.phdRooms;
+  const phdRooms = selector.data.phdRoomsData;
 
   const roomtype = selector.data.roomtype;
   const addValueData = selector.data.addValueData;
@@ -85,7 +85,7 @@ const RoomsInformation = (props) => {
     textArea: [],
     selectedOption: "",
     checkboxes: [],
-    checkbox_photos: Array.from({ length: phdRooms.length }, (_, index) => ({
+    checkbox_photos: Array.from({ length: phdRooms?.length }, (_, index) => ({
       indexId: index,
       image: null,
     })),

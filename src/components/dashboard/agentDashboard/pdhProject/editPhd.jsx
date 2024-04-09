@@ -433,7 +433,6 @@ const EditPhd = (props) => {
       ...prevValues,
       [name]: selectedValue,
     }));
-    // Add your logic or actions based on the selected value here
   };
 
   console.log(input);
