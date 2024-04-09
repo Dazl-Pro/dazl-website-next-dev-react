@@ -217,25 +217,11 @@ const EditPhd = (props) => {
       formData.append("highest_price", maxValue);
       formData.append("dazlValue", updatedPrice);
       saved1 !== null ? "" : formData.append("true", true);
+
       for (let i = 0; i < outerImage.length; i++) {
         formData.append(`images[${i}]`, outerImage[i]);
       }
 
-      phdCheckbox.length > 0 &&
-        phdCheckbox?.forEach((item) => {
-          const checkboxKey = `rooms[${roomId}][feature_status][${
-            item.checkbox ?? "description"
-          }]`;
-          const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
-          const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
-
-          formData.append(checkboxKey, "NEEDS DAZL");
-          formData.append(descriptionKey, item.description);
-          item?.images?.forEach((image, imgIndex) => {
-            const imageKey = `${imagesKey}[${imgIndex}]`;
-            formData.append(imageKey, image);
-          });
-        });
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
       formData.append(
@@ -244,15 +230,21 @@ const EditPhd = (props) => {
       );
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
 
-      checkedCheckboxesData.length > 0 &&
-        checkedCheckboxesData.forEach((item) => {
-          const checkboxKey = `rooms[${roomId}][feature_status][${
-            item.checkbox ?? "description"
-          }]`;
+      phdCheckbox.length > 0 &&
+        phdCheckbox?.forEach((item) => {
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
+          formData.append(descriptionKey, item.description);
+          item?.images?.forEach((image, imgIndex) => {
+            const imageKey = `${imagesKey}[${imgIndex}]`;
+            formData.append(imageKey, image);
+          });
+        });
 
-          formData.append(checkboxKey, "NEEDS DAZL");
+      checkedCheckboxesData.length > 0 &&
+        checkedCheckboxesData.forEach((item) => {
+          const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
+          const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
           formData.append(descriptionKey, item.description);
           item.images.forEach((image, imgIndex) => {
             const imageKey = `${imagesKey}[${imgIndex}]`;
