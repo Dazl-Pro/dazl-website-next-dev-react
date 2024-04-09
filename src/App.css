@@ -1,9 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700&display=swap");
 :root {
   --bs-light-rgb: 245, 245, 245 !important;
   --head-fonts: "Barlow", sans-serif;
   --para-fonts: "Lato", sans-serif;
 }
-@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700&display=swap");
 body,
 .para-font {
   font-family: var(--para-fonts) !important;
