@@ -12,7 +12,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createPhd,
   updatePhd,
   uploadImage,
 } from "../../../../store/dashboard/dashboardSlice";
@@ -69,21 +68,18 @@ const EditPhd = (props) => {
   const [roomData, setRoomData] = useState("");
 
   useEffect(() => {
-    // Initialize input state array
     const initialInputState = [];
 
-    // Populate input state array with room descriptions and statuses
     viewPhdData?.[0]?.roominfo.forEach((room) => {
       const roomData = {
         roomId: room.room_id,
-        description: room.description || "", // Use empty string if description is undefined
-        status: room.status || "", // Use empty string if status is undefined
+        description: room.description || "",
+        status: room.status || "",
         additionalValues: room.additionalValues || [],
       };
       initialInputState.push(roomData);
     });
 
-    // Set initial input state
     setInput(initialInputState);
   }, [viewPhdData]);
 
@@ -95,30 +91,26 @@ const EditPhd = (props) => {
           .then((response) => ({ id, data: response }))
           .catch((error) => {
             console.error(`Error fetching room data for room ID ${id}:`, error);
-            return { id, data: null }; // Or handle the error appropriately
+            return { id, data: null };
           });
       });
 
       const roomDataArray = await Promise.all(promises);
 
-      // Set the room data object in state or wherever you need it
       setRoomData(roomDataArray);
 
-      // If all room data is successfully fetched, set show to true
       setShow(true);
     };
 
     if (roomIds.length > 0) {
       fetchRoomData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, roomIds]);
 
   const phdRoomsData = selector.data.phdRoomsData;
-
-  const addValueData = selector.data.addValueData;
   const price = selector.data.price;
   const agentData = selector.data.agentData;
-  const phdUserDetail = JSON.parse(localStorage.getItem("phdUserDetail"));
   const roomselect = JSON.parse(localStorage.getItem("roomselect"));
   const midValue = localStorage.getItem("midValue");
   const roomId = localStorage.getItem("roomId");
@@ -126,9 +118,6 @@ const EditPhd = (props) => {
   const lowestValue = localStorage.getItem("lowestValue");
   const saved1 = JSON.parse(localStorage.getItem("saved1"));
 
-  const [checked, setChecked] = useState(
-    addValueData?.map((item) => ({ id: item.id, isChecked: false }))
-  );
   const [outerImage, setOuterimage] = React.useState([]);
   const [input, setInput] = React.useState([]);
 
@@ -146,18 +135,13 @@ const EditPhd = (props) => {
     ),
   };
 
-  const [selectdrop, setSelectdrop] = useState({});
-  const [addValueCheckbox, setAddvalueCheckbox] = useState([]);
-  const [fileUploadError, setFileUploadError] = useState(null);
   const [errorBorder, setErrorborder] = useState(false);
   const [errorBorder1, setErrorborder1] = useState(false);
   const [errorBorder2, setErrorborder2] = useState(false);
-  const [errorBorder3, setErrorborder3] = useState(false);
   const [phdCheckbox, setPhdCheckbox] = useState([]);
 
   const {
     control,
-    handleSubmit,
     formState: { errors },
     register,
     setValue,
@@ -191,7 +175,6 @@ const EditPhd = (props) => {
           field.indexId === photo.indexId &&
           field.file === photo.file &&
           field.description === photo.description
-        // Customize the conditions based on your object structure
       );
 
       if (existingIndex === -1) {
@@ -239,16 +222,6 @@ const EditPhd = (props) => {
       formData.append("phd_description", input?.phd_description);
       for (let i = 0; i < outerImage.length; i++) {
         formData.append(`images[${i}]`, outerImage[i]);
-      }
-
-      if (
-        addValueData.length > 0 &&
-        Array.isArray(addValueCheckbox) &&
-        addValueCheckbox.length > 0
-      ) {
-        addValueCheckbox.forEach((item, index) => {
-          formData.append(`${item.data}`, item.val);
-        });
       }
 
       phdCheckbox.length > 0 &&
@@ -309,7 +282,6 @@ const EditPhd = (props) => {
             localStorage.removeItem("roomId");
             localStorage.removeItem("maxValue");
             localStorage.removeItem("lowestValue");
-
             localStorage.removeItem("roomselect");
             localStorage.removeItem("saved1");
           }
@@ -362,8 +334,6 @@ const EditPhd = (props) => {
         message: "Invalid file type. Please select a valid image.",
       });
     } else {
-      setErrorborder3(false);
-      setFileUploadError(null);
       const formData = new FormData();
       formData.append("image", file);
       dispatch(uploadImage(formData))
@@ -373,8 +343,7 @@ const EditPhd = (props) => {
           const textArray = getValues("textArea");
           setPhdCheckbox((prev) => {
             const newArray = [...prev];
-            let updated = false; // Flag to check if an existing entry has been updated
-            // Check if an object with the same checkbox ID exists in the array
+            let updated = false;
             const desc = textArray[index];
             newArray.forEach((item, i) => {
               if (item.checkbox === phd.id) {
