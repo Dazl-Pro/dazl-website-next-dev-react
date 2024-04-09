@@ -76,6 +76,7 @@ const EditPhd = (props) => {
         description: room.description || "",
         status: room.status || "",
         additionalValues: room.additionalValues || [],
+        mainImages: room.mainImages || [],
       };
       initialInputState.push(roomData);
     });
@@ -117,9 +118,44 @@ const EditPhd = (props) => {
   const lowestValue = localStorage.getItem("lowestValue");
   const saved1 = JSON.parse(localStorage.getItem("saved1"));
 
-  const [outerImage, setOuterimage] = React.useState([]);
   const [checkBoxData, setCheckBoxData] = useState([]);
   const [input, setInput] = React.useState([]);
+
+  const [photoFields, setPhotoFields] = useState([]);
+
+  useEffect(() => {
+    if (roomIds.length > 0) {
+      const initialPhotoFields = roomIds.map((roomId) => [{ file: null }]);
+      setPhotoFields(initialPhotoFields);
+    }
+  }, [roomIds]);
+
+  const appendPhoto = (roomId) => {
+    setPhotoFields((prevPhotoFields) =>
+      prevPhotoFields.map((fields, index) =>
+        index === roomId ? [...fields, { file: null }] : fields
+      )
+    );
+  };
+
+  const removePhoto = (roomId, index, mainIndex) => {
+    setPhotoFields((prevPhotoFields) =>
+      prevPhotoFields.map((fields, i) =>
+        i === mainIndex ? fields.filter((_, j) => j !== index) : fields
+      )
+    );
+    setInput((prevState) =>
+      prevState.map((room) => {
+        if (room.roomId === roomId) {
+          const updatedMainImages = room.mainImages.filter(
+            (image) => image.id !== index
+          );
+          return { ...room, mainImages: updatedMainImages };
+        }
+        return room;
+      })
+    );
+  };
 
   const defaultValues = {
     photos: [{ file: null }],
@@ -150,14 +186,6 @@ const EditPhd = (props) => {
     resolver: yupResolver(schema),
   });
 
-  const {
-    fields: photoFields,
-    append: appendPhoto,
-    remove: removePhoto,
-  } = useFieldArray({
-    control,
-    name: "photos",
-  });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "checkbox_photos",
@@ -210,9 +238,7 @@ const EditPhd = (props) => {
       formData.append("highest_price", maxValue);
       formData.append("dazlValue", updatedPrice);
       saved1 !== null ? "" : formData.append("true", true);
-      for (let i = 0; i < outerImage.length; i++) {
-        formData.append(`images[${i}]`, outerImage[i]);
-      }
+
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
       formData.append(
@@ -267,18 +293,18 @@ const EditPhd = (props) => {
     }
   };
 
-  const handleImage = (name, index, e, phd, description) => {
+  const handleImage = (roomId, name, index, e, phd, description) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");
-    clearErrors(`photos[${index}].file`);
-    clearErrors(`checkbox_photos[${index}].file`);
+    clearErrors(`photos[${roomId}][${index}].file`);
+    clearErrors(`checkbox_photos[${roomId}][${index}].file`);
     if (!isImage && name === "main") {
-      setError(`photos[${index}].file`, {
+      setError(`photos[${roomId}][${index}].file`, {
         type: "manual",
         message: "Invalid file type. Please select a valid image.",
       });
     } else if (!isImage && name === "checkbox") {
-      setError(`checkbox_photos[${index}].file`, {
+      setError(`checkbox_photos[${roomId}][${index}].file`, {
         type: "manual",
         message: "Invalid file type. Please select a valid image.",
       });
@@ -290,24 +316,26 @@ const EditPhd = (props) => {
         .then((res) => {
           const responseImage = res.image;
           if (name === "main") {
-            const featuresIdDataIndex = outerImage.findIndex(
-              (item) => item === responseImage
+            setInput((prevState) =>
+              prevState.map((room) => {
+                if (room.roomId === roomId) {
+                  const updatedValues = [...room.mainImages];
+                  const existingIndex = updatedValues.findIndex(
+                    (item) => item.id === index
+                  );
+                  if (existingIndex !== -1) {
+                    // Update the existing image or add a new one
+                    updatedValues[existingIndex].responseImage = res.image; // Use res.image instead of responseImage
+                  } else {
+                    updatedValues.push({ id: index, responseImage: res.image }); // Use res.image instead of responseImage
+                  }
+                  return { ...room, mainImages: updatedValues }; // Change additionalValues to mainImages
+                }
+                return room;
+              })
             );
-            if (featuresIdDataIndex !== -1) {
-              setOuterimage((prevData) => {
-                const newArray = [...prevData];
-                const existingObject = { ...newArray[featuresIdDataIndex] };
-                existingObject.images = [
-                  ...existingObject.images,
-                  responseImage,
-                ];
-                newArray[featuresIdDataIndex] = existingObject;
-                return newArray;
-              });
-            } else {
-              setOuterimage((prevData) => [...prevData, responseImage]);
-            }
           } else if (name === "checkbox") {
+            // Handle checkbox section image upload
             const textArray = getValues("textArea");
             setCheckBoxData((prev) => {
               const newArray = [...prev];
@@ -339,10 +367,8 @@ const EditPhd = (props) => {
   const onChange = (e, roomId, name) => {
     const value = e.target.value;
 
-    // Find the index of the room in the input state array
     const roomIndex = input.findIndex((room) => room.roomId === roomId);
 
-    // If the room exists in the input state array, update its description
     if (roomIndex !== -1) {
       setInput((prevState) => {
         const updatedRooms = [...prevState];
@@ -376,6 +402,7 @@ const EditPhd = (props) => {
   };
 
   console.log("inputttt", input);
+  // console.log("photoFields", photoFields);
 
   return (
     <div>
@@ -415,27 +442,36 @@ const EditPhd = (props) => {
                   {" "}
                   2.Add photos of exceptional features or selling advantages
                 </p>
+
                 <div className="bg-light p-3 rounded-2">
                   <div className="row form-row ">
-                    {photoFields.map((item, index) => (
-                      <div className="col-md-6" key={item.id}>
+                    {photoFields[index]?.map((item, photoIndex) => (
+                      <div className="col-md-6" key={photoIndex}>
                         <div className="d-flex align-items-start gap-2">
                           <input
                             type="file"
-                            {...register(`photos[${index}].file`)}
+                            {...register(
+                              `photos[${items.room_id}][${photoIndex}].file`
+                            )}
                             className={`form-control mb-3 ${
-                              errors.photos && errors?.photos[index]?.file
+                              errors.photos &&
+                              errors?.photos[items.room_id] &&
+                              errors?.photos[items.room_id][photoIndex]?.file
                                 ? "error"
                                 : ""
                             }`}
                             accept="image/*"
-                            onChange={(e) => handleImage("main", index, e)}
+                            onChange={(e) =>
+                              handleImage(items.room_id, "main", photoIndex, e)
+                            }
                           />
-                          {photoFields.length > 1 && (
+                          {photoFields[index][photoIndex] && (
                             <button
                               type="button"
                               className="btn btn-light bg-light-red border-danger space"
-                              onClick={() => removePhoto(index)}
+                              onClick={() =>
+                                removePhoto(items.room_id, photoIndex, index)
+                              }
                             >
                               <DeleteIcon />
                             </button>
@@ -449,7 +485,7 @@ const EditPhd = (props) => {
                   <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={() => appendPhoto({ file: null })}
+                    onClick={() => appendPhoto(index)}
                   >
                     Upload more
                   </button>
@@ -654,6 +690,7 @@ const EditPhd = (props) => {
                                           accept="image/*"
                                           onChange={(e) =>
                                             handleImage(
+                                              roomId,
                                               "checkbox",
                                               imgIndex,
                                               e,
