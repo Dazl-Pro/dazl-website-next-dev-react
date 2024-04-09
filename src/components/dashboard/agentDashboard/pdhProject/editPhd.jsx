@@ -509,11 +509,22 @@ const EditPhd = (props) => {
                           size="small"
                           className="mob-space w-100"
                           value={
-                            input.find((room) => room.roomId === items.room_id)
-                              ?.flooring || ""
+                            item?.type?.name === "Flooring"
+                              ? input.find(
+                                  (room) => room.roomId === items.room_id
+                                )?.flooring
+                              : input.find(
+                                  (room) => room.roomId === items.room_id
+                                )?.fireplace || ""
                           }
                           onChange={(event) =>
-                            onChange(event, items.room_id, "flooring")
+                            onChange(
+                              event,
+                              items.room_id,
+                              item?.type?.name === "Flooring"
+                                ? "flooring"
+                                : "fireplace"
+                            )
                           }
                         >
                           {item?.type?.feature_options?.map(
