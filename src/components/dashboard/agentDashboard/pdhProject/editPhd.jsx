@@ -264,7 +264,7 @@ const EditPhd = (props) => {
         });
 
       dispatch(
-        updatePhd({ data: input, id: itemId, checkBoxData: checkBoxData })
+        updatePhd({ data: input, id: itemId, roadBlocksData: checkBoxData })
       )
         .unwrap()
         .then((response) => {
@@ -481,7 +481,7 @@ const EditPhd = (props) => {
 
   return (
     <div>
-      {viewPhdData?.[0].roominfo?.map((items, index) => {
+      {viewPhdData?.[0]?.roominfo?.map((items, index) => {
         return (
           <div key={index} className="mb-5">
             <h4 className="mb-4 text-danger">
