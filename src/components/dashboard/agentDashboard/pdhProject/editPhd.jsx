@@ -60,7 +60,7 @@ const EditPhd = (props) => {
 
   useEffect(() => {
     if (viewPhdData && viewPhdData.length > 0) {
-      const ids = viewPhdData[0].roominfo.map((item) => item.room_id);
+      const ids = viewPhdData[0].roominfo?.map((item) => item.room_id);
       setRoomIds(ids);
     }
   }, [viewPhdData]);
@@ -70,7 +70,7 @@ const EditPhd = (props) => {
   useEffect(() => {
     const initialInputState = [];
 
-    viewPhdData?.[0]?.roominfo.forEach((room) => {
+    viewPhdData?.[0]?.roominfo?.forEach((room) => {
       const roomData = {
         roomId: room.room_id,
         description: room.description || "",
@@ -481,7 +481,7 @@ const EditPhd = (props) => {
 
   return (
     <div>
-      {viewPhdData?.[0].roominfo.map((items, index) => {
+      {viewPhdData?.[0].roominfo?.map((items, index) => {
         return (
           <div key={index} className="mb-5">
             <h4 className="mb-4 text-danger">
