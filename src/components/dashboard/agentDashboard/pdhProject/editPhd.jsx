@@ -409,26 +409,62 @@ const EditPhd = (props) => {
 
             setCheckBoxData((prev) => {
               const newArray = [...prev];
-              let updated = false;
+              let updatedRoomIndex = -1;
+
               newArray.forEach((item, i) => {
-                if (item.checkbox === phd.id) {
+                if (item.room_id === roomId) {
+                  // If the room ID already exists, update its road blocks
+                  updatedRoomIndex = i;
                   newArray[i] = {
-                    room_id: roomId,
-                    roadBlockId: phd.id,
-                    description: description,
-                    images: [...(item.images || []), responseImage],
+                    ...item,
+                    roadBlocks: item.roadBlocks.map((block) => {
+                      if (block.roadBlockId === phd.id) {
+                        // If the road block ID already exists, update its images
+                        return {
+                          ...block,
+                          images: [...(block.images || []), responseImage],
+                        };
+                      }
+                      return block;
+                    }),
                   };
-                  updated = true;
                 }
               });
-              if (!updated) {
+
+              if (updatedRoomIndex === -1) {
+                // If the room ID doesn't exist, add a new object with road blocks and images
                 newArray.push({
                   room_id: roomId,
-                  roadBlockId: phd.id,
-                  description: textArray[index],
-                  images: [responseImage],
+                  roadBlocks: [
+                    {
+                      roadBlockId: phd.id,
+                      description: description,
+                      images: [responseImage],
+                    },
+                  ],
                 });
+              } else {
+                const room = newArray[updatedRoomIndex];
+                // Check if the road block with the specified ID already exists for the room
+                const existingRoadBlock = room.roadBlocks.find(
+                  (block) => block.roadBlockId === phd.id
+                );
+                if (!existingRoadBlock) {
+                  // If the road block doesn't exist, add it to the roadBlocks array
+                  newArray[updatedRoomIndex] = {
+                    ...room,
+                    roadBlocks: [
+                      ...room.roadBlocks,
+                      {
+                        roadBlockId: phd.id,
+                        description: description,
+                        images: [responseImage],
+                      },
+                    ],
+                  };
+                }
               }
+
               return newArray;
             });
           }
