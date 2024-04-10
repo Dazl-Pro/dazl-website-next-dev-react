@@ -77,6 +77,7 @@ const EditPhd = (props) => {
         status: room.status || "",
         additionalValues: room.additionalValues || [],
         mainImages: room.mainImages || [],
+        roadBlocks: room.roadBlocks || [],
       };
       initialInputState.push(roomData);
     });
@@ -141,7 +142,7 @@ const EditPhd = (props) => {
   const removePhoto = (roomId, index, mainIndex) => {
     setPhotoFields((prevPhotoFields) =>
       prevPhotoFields.map((fields, i) =>
-        i === mainIndex ? fields.filter((_, j) => j !== index) : fields
+        i === mainIndex ? fields.filter((data, j) => j !== index) : fields
       )
     );
     setInput((prevState) =>
@@ -164,7 +165,7 @@ const EditPhd = (props) => {
     checkboxes: [],
     checkbox_photos: Array.from(
       { length: phdRoomsData?.length },
-      (_, index) => ({
+      (data, index) => ({
         indexId: index,
         image: null,
       })
@@ -206,13 +207,6 @@ const EditPhd = (props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleCheckboxArrayChange = (id, index) => {
-    setCheckBoxData((prev) => [...prev, { checkbox: id.id }]);
-    const checkboxes = watch("checkboxes") || [];
-    checkboxes[index] = !checkboxes[index];
-    setValue("checkboxes", checkboxes);
-  };
 
   const save = (e, value) => {
     e.preventDefault();
@@ -269,7 +263,9 @@ const EditPhd = (props) => {
           });
         });
 
-      dispatch(updatePhd({ data: input, id: itemId }))
+      dispatch(
+        updatePhd({ data: input, id: itemId, checkBoxData: checkBoxData })
+      )
         .unwrap()
         .then((response) => {
           if (value === "save") {
@@ -293,7 +289,15 @@ const EditPhd = (props) => {
     }
   };
 
-  const handleImage = (roomId, name, index, e, phd, description) => {
+  const handleImage = (
+    roomId,
+    name,
+    index,
+    e,
+    phd,
+    description,
+    roadBlockIndex
+  ) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${roomId}][${index}].file`);
@@ -337,13 +341,34 @@ const EditPhd = (props) => {
           } else if (name === "checkbox") {
             // Handle checkbox section image upload
             const textArray = getValues("textArea");
+            setInput((prevState) =>
+              prevState.map((room) => {
+                if (room.roomId === roomId) {
+                  const updatedRoadBlocks = room.roadBlocks.map(
+                    (block, rbIndex) => {
+                      if (rbIndex === roadBlockIndex) {
+                        const updatedImages = [
+                          ...(block.roadBlockImages || []),
+                          { id: index, responseImage: res.image },
+                        ];
+                        return { ...block, roadBlockImages: updatedImages };
+                      }
+                      return block;
+                    }
+                  );
+                  return { ...room, roadBlocks: updatedRoadBlocks };
+                }
+                return room;
+              })
+            );
+
             setCheckBoxData((prev) => {
               const newArray = [...prev];
               let updated = false;
               newArray.forEach((item, i) => {
                 if (item.checkbox === phd.id) {
                   newArray[i] = {
-                    checkbox: phd.id,
+                    roadBlockId: phd.id,
                     description: description,
                     images: [...(item.images || []), responseImage],
                   };
@@ -352,7 +377,7 @@ const EditPhd = (props) => {
               });
               if (!updated) {
                 newArray.push({
-                  checkbox: phd.id,
+                  roadBlockId: phd.id,
                   description: textArray[index],
                   images: [responseImage],
                 });
@@ -368,36 +393,84 @@ const EditPhd = (props) => {
     const value = e.target.value;
 
     const roomIndex = input.findIndex((room) => room.roomId === roomId);
-
-    if (roomIndex !== -1) {
-      setInput((prevState) => {
-        const updatedRooms = [...prevState];
-        updatedRooms[roomIndex] = {
-          ...updatedRooms[roomIndex],
-          type: {
-            ...updatedRooms[roomIndex].type,
+    if (name !== "description" || name !== "status") {
+      if (roomIndex !== -1) {
+        setInput((prevState) => {
+          const updatedRooms = [...prevState];
+          updatedRooms[roomIndex] = {
+            ...updatedRooms[roomIndex],
             [name]: value,
-          },
-        };
-        return updatedRooms;
-      });
+          };
+          return updatedRooms;
+        });
+      }
+    } else {
+      if (roomIndex !== -1) {
+        setInput((prevState) => {
+          const updatedRooms = [...prevState];
+          updatedRooms[roomIndex] = {
+            ...updatedRooms[roomIndex],
+            type: {
+              ...updatedRooms[roomIndex].type,
+              [name]: value,
+            },
+          };
+          return updatedRooms;
+        });
+      }
     }
   };
 
-  const handleValueChange = (roomId, valueId, isChecked) => {
+  const onChangeRoadBlockDescription = (e, roomId, name, index) => {
+    const value = e.target.value;
+
+    setInput((prevState) => {
+      const updatedRooms = prevState.map((room) => {
+        if (room.roomId === roomId) {
+          const updatedRoadBlocks = [...room.roadBlocks];
+          updatedRoadBlocks[index] = {
+            ...updatedRoadBlocks[index],
+            [name]: value,
+            roadBlockImages: [],
+          };
+          return {
+            ...room,
+            roadBlocks: updatedRoadBlocks,
+          };
+        }
+        return room;
+      });
+      return updatedRooms;
+    });
+  };
+
+  const handleValueChange = (roomId, valueId, isChecked, name) => {
     setInput((prevState) =>
       prevState.map((room) => {
         if (room.roomId === roomId) {
-          const updatedValues = [...room.additionalValues];
-          const existingIndex = updatedValues.findIndex(
-            (item) => item.id === valueId
-          );
-          if (existingIndex !== -1) {
-            updatedValues[existingIndex].isChecked = isChecked;
-          } else {
-            updatedValues.push({ id: valueId, isChecked });
+          if (name === "additionalValue") {
+            const updatedValues = [...room.additionalValues];
+            const existingIndex = updatedValues.findIndex(
+              (item) => item.id === valueId
+            );
+            if (existingIndex !== -1) {
+              updatedValues[existingIndex].isChecked = isChecked;
+            } else {
+              updatedValues.push({ id: valueId, isChecked });
+            }
+            return { ...room, additionalValues: updatedValues };
+          } else if (name === "roadBlocks") {
+            const updatedValues = [...room.roadBlocks];
+            const existingIndex = updatedValues.findIndex(
+              (item) => item.id === valueId
+            );
+            if (existingIndex !== -1) {
+              updatedValues[existingIndex].isChecked = isChecked;
+            } else {
+              updatedValues.push({ id: valueId, isChecked });
+            }
+            return { ...room, roadBlocks: updatedValues };
           }
-          return { ...room, additionalValues: updatedValues };
         }
         return room;
       })
@@ -405,7 +478,6 @@ const EditPhd = (props) => {
   };
 
   console.log("inputttt", input);
-  // console.log("photoFields", photoFields);
 
   return (
     <div>
@@ -562,7 +634,8 @@ const EditPhd = (props) => {
                                 handleValueChange(
                                   items.room_id,
                                   valueId,
-                                  e.target.checked
+                                  e.target.checked,
+                                  "additionalValue"
                                 )
                               }
                               inputProps={{ "aria-label": "controlled" }}
@@ -640,42 +713,74 @@ const EditPhd = (props) => {
               <p className="mb-1">Buyer Road Blocks or Recommendations?</p>
               <div className="bg-light rounded-2 py-2 px-3">
                 <div className="">
-                  {roomData[index]?.data?.data.map((_, index) => {
+                  {roomData[index]?.data?.data.map((data, roadBlockIndex) => {
                     if (
-                      _.name === "Light Fixtures" ||
-                      _.name === "Plumbing Issues (Leaks)"
+                      data.name === "Light Fixtures" ||
+                      data.name === "Plumbing Issues (Leaks)"
                     ) {
                       return null;
                     }
                     const displayName =
-                      _.name === "Plumbing Fixtures" ? "Plumbing" : _.name;
+                      data.name === "Plumbing Fixtures"
+                        ? "Plumbing"
+                        : data.name;
+                    const valueId = data.id;
+
                     return (
-                      <div key={index} className="form-row">
+                      <div key={roadBlockIndex} className="form-row">
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={watch(`checkboxes[${index}]`) || false}
-                              onChange={() =>
-                                handleCheckboxArrayChange(_, index)
+                              checked={input
+                                .find((room) => room.roomId === items.room_id)
+                                ?.roadBlocks.some(
+                                  (item) =>
+                                    item.id === valueId && item.isChecked
+                                )}
+                              onChange={(e) =>
+                                handleValueChange(
+                                  items.room_id,
+                                  valueId,
+                                  e.target.checked,
+                                  "roadBlocks"
+                                )
                               }
                             />
                           }
                           label={`${displayName}`}
                         />
 
-                        {watch(`checkboxes[${index}]`) && (
+                        {input
+                          .find((room) => room.roomId === items.room_id)
+                          ?.roadBlocks.some(
+                            (item) => item.id === valueId && item.isChecked
+                          ) && (
                           <>
                             <TextField
                               multiline
                               rows={4}
                               variant="outlined"
                               fullWidth
-                              {...register(`textArea[${index}]`)}
+                              {...register(`textArea[${roadBlockIndex}]`)}
+                              value={
+                                input.find(
+                                  (room) => room.roomId === items.room_id
+                                )?.roadBlocks[roadBlockIndex]
+                                  ?.roadBlockDescription || ""
+                              }
+                              onChange={(e) =>
+                                onChangeRoadBlockDescription(
+                                  e,
+                                  items.room_id,
+                                  "roadBlockDescription",
+                                  roadBlockIndex
+                                )
+                              }
                             />
                             <div className="form-row bg-light rounded-2">
                               <div className="row">
                                 {fields?.map((field, imgIndex) => {
-                                  return field.indexId === index ? (
+                                  return field.indexId === roadBlockIndex ? (
                                     <div
                                       className="col-md-6 mt-4"
                                       key={imgIndex}
@@ -697,8 +802,11 @@ const EditPhd = (props) => {
                                               "checkbox",
                                               imgIndex,
                                               e,
-                                              _,
-                                              getValues("textArea")[index]
+                                              data,
+                                              getValues("textArea")[
+                                                roadBlockIndex
+                                              ],
+                                              roadBlockIndex
                                             )
                                           }
                                         />
@@ -723,7 +831,7 @@ const EditPhd = (props) => {
                               type="button"
                               className="btn btn-success btn btn-primary my-3"
                               onClick={() =>
-                                append({ indexId: index, file: null })
+                                append({ indexId: roadBlockIndex, file: null })
                               }
                             >
                               upload more

@@ -278,10 +278,10 @@ export const createPhd = createAsyncThunk(
 
 export const updatePhd = createAsyncThunk(
   "dashboard/updatePhd",
-  async ({ data, id }) => {
+  async (data) => {
     try {
       const response = await http.post(
-        `/update-home-diagnostic-reports/${id}`,
+        `/update-home-diagnostic-reports/${data.id}`,
         data
         // {
         //   headers: {
