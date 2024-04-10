@@ -413,6 +413,7 @@ const EditPhd = (props) => {
               newArray.forEach((item, i) => {
                 if (item.checkbox === phd.id) {
                   newArray[i] = {
+                    room_id: roomId,
                     roadBlockId: phd.id,
                     description: description,
                     images: [...(item.images || []), responseImage],
@@ -422,6 +423,7 @@ const EditPhd = (props) => {
               });
               if (!updated) {
                 newArray.push({
+                  room_id: roomId,
                   roadBlockId: phd.id,
                   description: textArray[index],
                   images: [responseImage],
@@ -542,14 +544,13 @@ const EditPhd = (props) => {
       setRoomImagesObject(updatedRoomImagesObject);
     }
   };
+  console.log("RoadBlocks", checkBoxData);
 
   return (
     <div>
       {viewPhdData?.[0]?.roominfo?.map((items, index) => {
         const roomIdIn = items?.room_id;
-        const imagesGroup = viewPhdData?.[0]?.images?.filter(
-          (image) => image.room_id === roomIdIn
-        );
+
         return (
           <div key={index} className="mb-5">
             <h4 className="mb-4 text-danger">
@@ -910,7 +911,7 @@ const EditPhd = (props) => {
                                           accept="image/*"
                                           onChange={(e) =>
                                             handleImage(
-                                              roomId,
+                                              roomIdIn,
                                               "checkbox",
                                               imgIndex,
                                               e,
