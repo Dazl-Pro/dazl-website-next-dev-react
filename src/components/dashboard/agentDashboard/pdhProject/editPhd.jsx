@@ -60,7 +60,7 @@ const EditPhd = (props) => {
 
   useEffect(() => {
     if (viewPhdData && viewPhdData.length > 0) {
-      const ids = viewPhdData[0].roominfo?.map((item) => item.room_id);
+      const ids = viewPhdData?.[0]?.roominfo?.map((item) => item.room_id);
       setRoomIds(ids);
     }
   }, [viewPhdData]);
