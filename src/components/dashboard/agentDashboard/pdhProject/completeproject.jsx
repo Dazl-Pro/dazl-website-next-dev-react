@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.css";
 import {
@@ -8,7 +8,6 @@ import {
 } from "../../../../store/dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
-import SendIcon from "@mui/icons-material/Send";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
@@ -59,7 +58,7 @@ const CompleteProject = () => {
                         return (
                           <tr key={index} className="align-middle">
                             <td>{index + 1}</td>
-                            <td>{item.location}</td>
+                            <td className="w-75">{item.location}</td>
                             <td className="ps-2">
                               <button
                                 className="btn btn-outline-success mx-1 btn-sm"
