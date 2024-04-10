@@ -124,6 +124,21 @@ const EditPhd = (props) => {
 
   const [photoFields, setPhotoFields] = useState([]);
 
+  const [roomImagesObject, setRoomImagesObject] = useState([]);
+
+  useEffect(() => {
+    const updatedRoomImagesArray = viewPhdData?.[0]?.roominfo?.map((room) => {
+      const images = viewPhdData?.[0]?.images?.filter(
+        (image) => image.room_id === room.room_id
+      );
+
+      const imageUrls = images.map((image) => image.url);
+      return { room_id: room.room_id, images: imageUrls };
+    });
+
+    setRoomImagesObject(updatedRoomImagesArray || []);
+  }, [viewPhdData]);
+
   useEffect(() => {
     if (roomIds.length > 0) {
       const initialPhotoFields = roomIds.map((roomId) => [{ file: null }]);
@@ -263,29 +278,59 @@ const EditPhd = (props) => {
           });
         });
 
-      dispatch(
-        updatePhd({ data: input, id: itemId, roadBlocksData: checkBoxData })
-      )
-        .unwrap()
-        .then((response) => {
-          if (value === "save") {
-            setShow(false);
-            localStorage.setItem("saved1", JSON.stringify(response));
-            setSelectvalue("");
-            Toastify({
-              data: "success",
-              msg: "Your item is saved now you can add more ",
-            });
-          } else {
-            navigate("/agent/phdproject");
-            localStorage.removeItem("midValue");
-            localStorage.removeItem("roomId");
-            localStorage.removeItem("maxValue");
-            localStorage.removeItem("lowestValue");
-            localStorage.removeItem("roomselect");
-            localStorage.removeItem("saved1");
+      if (input) {
+        const updatedInput = input.map((room) => {
+          const roomImages = roomImagesObject.find(
+            (imageRoom) => imageRoom.room_id === room.roomId
+          );
+
+          if (roomImages) {
+            const existingImagesCount = room.mainImages.length;
+            const updatedMainImages = [
+              ...room.mainImages,
+              ...roomImages.images.map((image, index) => ({
+                id: existingImagesCount + index,
+                responseImage: image,
+              })),
+            ];
+
+            return {
+              ...room,
+              mainImages: updatedMainImages,
+            };
           }
+
+          return room; // If no corresponding roomImages found, return the original room object
         });
+
+        dispatch(
+          updatePhd({
+            data: updatedInput,
+            id: itemId,
+            roadBlocksData: checkBoxData,
+          })
+        )
+          .unwrap()
+          .then((response) => {
+            if (value === "save") {
+              setShow(false);
+              localStorage.setItem("saved1", JSON.stringify(response));
+              setSelectvalue("");
+              Toastify({
+                data: "success",
+                msg: "Your item is saved now you can add more ",
+              });
+            } else {
+              navigate("/agent/phdproject");
+              localStorage.removeItem("midValue");
+              localStorage.removeItem("roomId");
+              localStorage.removeItem("maxValue");
+              localStorage.removeItem("lowestValue");
+              localStorage.removeItem("roomselect");
+              localStorage.removeItem("saved1");
+            }
+          });
+      }
     }
   };
 
@@ -393,7 +438,7 @@ const EditPhd = (props) => {
     const value = e.target.value;
 
     const roomIndex = input.findIndex((room) => room.roomId === roomId);
-    if (name !== "description" || name !== "status") {
+    if (name === "description" || name === "status") {
       if (roomIndex !== -1) {
         setInput((prevState) => {
           const updatedRooms = [...prevState];
@@ -477,11 +522,34 @@ const EditPhd = (props) => {
     );
   };
 
-  console.log("inputttt", input);
+  const handleRemoveImage = (room_id, imageIndex) => {
+    const updatedRoomImagesObject = [...roomImagesObject];
+
+    const roomIndex = updatedRoomImagesObject.findIndex(
+      (room) => room.room_id === room_id
+    );
+
+    if (roomIndex !== -1) {
+      const updatedImages = [...updatedRoomImagesObject[roomIndex].images];
+
+      updatedImages.splice(imageIndex, 1);
+
+      updatedRoomImagesObject[roomIndex] = {
+        ...updatedRoomImagesObject[roomIndex],
+        images: updatedImages,
+      };
+
+      setRoomImagesObject(updatedRoomImagesObject);
+    }
+  };
 
   return (
     <div>
       {viewPhdData?.[0]?.roominfo?.map((items, index) => {
+        const roomIdIn = items?.room_id;
+        const imagesGroup = viewPhdData?.[0]?.images?.filter(
+          (image) => image.room_id === roomIdIn
+        );
         return (
           <div key={index} className="mb-5">
             <h4 className="mb-4 text-danger">
@@ -504,7 +572,11 @@ const EditPhd = (props) => {
                     name={`${items.room_id}`}
                     value={
                       input.find((room) => room.roomId === items.room_id)
-                        ?.description || ""
+                        ?.description ||
+                      viewPhdData?.[0]?.images?.filter(
+                        (image) => image.room_id === roomIdIn
+                      )[0]?.description ||
+                      ""
                     }
                     onChange={(e) => onChange(e, items.room_id, "description")}
                     required
@@ -519,6 +591,46 @@ const EditPhd = (props) => {
                 </p>
 
                 <div className="bg-light p-3 rounded-2">
+                  <div className="ps-0 mb-3 mt-2">
+                    <div className="d-flex gap-1 flex-wrap">
+                      {/* Display images for the current room_id */}
+                      {roomImagesObject?.[index]?.images.map(
+                        (image, imageIndex) => (
+                          <div key={imageIndex} className="d-flex flex-column">
+                            {image && (
+                              <a
+                                href={image}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <img
+                                  alt="img"
+                                  src={image}
+                                  className="object-fit-cover border"
+                                  width={"100px"}
+                                  height={"100px"}
+                                />
+                              </a>
+                            )}
+                            <div className="d-flex justify-content-center">
+                              <button
+                                type="button"
+                                className="btn btn-primary btn-sm mt-2"
+                                onClick={() =>
+                                  handleRemoveImage(
+                                    roomImagesObject[index].room_id,
+                                    imageIndex
+                                  )
+                                }
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
                   <div className="row form-row ">
                     {photoFields[index]?.map((item, photoIndex) => (
                       <div className="col-md-6" key={photoIndex}>

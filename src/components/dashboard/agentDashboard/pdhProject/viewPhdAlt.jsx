@@ -190,8 +190,8 @@ const ViewPhdAlt = () => {
                 <h3 className="">Updated House Details And Condition:-</h3>
                 <div className="d-flex flex-md-row flex-column flex-wrap rounded-4 mt-4">
                   {items?.roominfo.map((ele, index) => {
-                    const roomId = ele.room_id;
-                    const imagesGroup = items.images.filter(
+                    const roomId = ele?.room_id;
+                    const imagesGroup = items?.images?.filter(
                       (image) => image.room_id === roomId
                     );
                     return (
@@ -217,21 +217,23 @@ const ViewPhdAlt = () => {
                             <div key={index}>
                               <div className="d-flex gap-1 flex-wrap">
                                 {/* Display images for the current room_id */}
-                                {imagesGroup.map((image, imageIndex) => (
+                                {imagesGroup?.map((image, imageIndex) => (
                                   <div key={imageIndex}>
-                                    <a
-                                      href={image.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      <img
-                                        alt="img"
-                                        src={image.url}
-                                        className="object-fit-cover border"
-                                        width={"100px"}
-                                        height={"100px"}
-                                      />
-                                    </a>
+                                    {image?.url && (
+                                      <a
+                                        href={image.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        <img
+                                          alt="img"
+                                          src={image.url}
+                                          className="object-fit-cover border"
+                                          width={"100px"}
+                                          height={"100px"}
+                                        />
+                                      </a>
+                                    )}{" "}
                                   </div>
                                 ))}
                               </div>
