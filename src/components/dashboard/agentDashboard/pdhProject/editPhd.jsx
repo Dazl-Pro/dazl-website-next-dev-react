@@ -334,7 +334,6 @@ const EditPhd = (props) => {
           updatePhd({
             data: updatedInputFinal,
             id: itemId,
-            roadBlocksData: roomImagesObjectCheckbox,
           })
         )
           .unwrap()
