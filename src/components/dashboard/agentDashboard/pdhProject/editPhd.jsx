@@ -68,7 +68,7 @@ const EditPhd = (props) => {
         mainImages: room.mainImages || [],
         roadBlocks:
           room.roadBlocks ||
-          room.feature.map((item) => ({
+          room.feature?.map((item) => ({
             id: item.feature_id,
             isChecked: true, // You can set this value as needed
             roadBlockDescription: item.imageDesc, // Set description as needed
@@ -84,7 +84,7 @@ const EditPhd = (props) => {
 
   useEffect(() => {
     const fetchRoomData = async () => {
-      const promises = roomIds.map((id) => {
+      const promises = roomIds?.map((id) => {
         return dispatch(phdRooms(id))
           .unwrap()
           .then((response) => ({ id, data: response }))
@@ -125,7 +125,7 @@ const EditPhd = (props) => {
         (image) => image.room_id === room.room_id
       );
 
-      const imageUrls = images.map((image) => image.url);
+      const imageUrls = images?.map((image) => image.url);
       return { room_id: room.room_id, images: imageUrls };
     });
 
@@ -134,8 +134,8 @@ const EditPhd = (props) => {
 
   useEffect(() => {
     const updatedRoomImagesArray = viewPhdData?.[0]?.roominfo?.map((room) => {
-      const featuresWithImages = room.feature.map((feature) => {
-        const imageUrls = feature.images.map((image) => image);
+      const featuresWithImages = room.feature?.map((feature) => {
+        const imageUrls = feature.images?.map((image) => image);
         return {
           roadBlock_id: feature.feature_id,
           images: imageUrls,
@@ -156,7 +156,7 @@ const EditPhd = (props) => {
 
   useEffect(() => {
     if (roomIds.length > 0) {
-      const initialPhotoFields = roomIds.map((roomId) => [{ file: null }]);
+      const initialPhotoFields = roomIds?.map((roomId) => [{ file: null }]);
       setPhotoFields(initialPhotoFields);
     }
   }, [roomIds]);
@@ -164,7 +164,7 @@ const EditPhd = (props) => {
   useEffect(() => {
     if (roomIds.length > 0) {
       const updatedRoomImagesArray = viewPhdData?.[0]?.roominfo?.map((room) => {
-        const featuresWithImages = room.feature.map((feature) => {
+        const featuresWithImages = room.feature?.map((feature) => {
           const imageUrls = [{ file: null }];
           return {
             roadBlock_id: feature.feature_id,
@@ -185,7 +185,7 @@ const EditPhd = (props) => {
 
   const appendPhoto = (roomId) => {
     setPhotoFields((prevPhotoFields) =>
-      prevPhotoFields.map((fields, index) =>
+      prevPhotoFields?.map((fields, index) =>
         index === roomId ? [...fields, { file: null }] : fields
       )
     );
@@ -207,12 +207,12 @@ const EditPhd = (props) => {
 
   const removePhoto = (roomId, index, mainIndex) => {
     setPhotoFields((prevPhotoFields) =>
-      prevPhotoFields.map((fields, i) =>
+      prevPhotoFields?.map((fields, i) =>
         i === mainIndex ? fields.filter((data, j) => j !== index) : fields
       )
     );
     setInput((prevState) =>
-      prevState.map((room) => {
+      prevState?.map((room) => {
         if (room.roomId === roomId) {
           const updatedMainImages = room.mainImages.filter(
             (image) => image?.id !== index
@@ -265,7 +265,7 @@ const EditPhd = (props) => {
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
 
       if (input) {
-        const updatedInput = input.map((room) => {
+        const updatedInput = input?.map((room) => {
           const roomImages = roomImagesObject.find(
             (imageRoom) => imageRoom.room_id === room.roomId
           );
@@ -332,7 +332,7 @@ const EditPhd = (props) => {
         const responseImage = res.image;
         if (name === "main") {
           setInput((prevState) =>
-            prevState.map((room) => {
+            prevState?.map((room) => {
               if (room.roomId === roomId) {
                 const updatedValues = [...room.mainImages];
                 const existingIndex = updatedValues.findIndex(
@@ -353,9 +353,9 @@ const EditPhd = (props) => {
           // Handle checkbox section image upload
 
           setInput((prevState) =>
-            prevState.map((room) => {
+            prevState?.map((room) => {
               if (room.roomId === roomId) {
-                const updatedRoadBlocks = room.roadBlocks.map(
+                const updatedRoadBlocks = room.roadBlocks?.map(
                   (block, rbIndex) => {
                     if (rbIndex === roadBlockIndex) {
                       const updatedImages = [
@@ -412,7 +412,7 @@ const EditPhd = (props) => {
     const value = e.target.value;
 
     setInput((prevState) => {
-      const updatedRooms = prevState.map((room) => {
+      const updatedRooms = prevState?.map((room) => {
         if (room.roomId === roomId) {
           const updatedRoadBlocks = [...room.roadBlocks];
           updatedRoadBlocks[index] = {
@@ -433,7 +433,7 @@ const EditPhd = (props) => {
 
   const handleValueChange = (roomId, valueId, isChecked, name) => {
     setInput((prevState) =>
-      prevState.map((room) => {
+      prevState?.map((room) => {
         if (room.roomId === roomId) {
           if (name === "additionalValue") {
             const updatedValues = [...room.additionalValues];
@@ -487,7 +487,7 @@ const EditPhd = (props) => {
 
   const handleRemoveCheckBoxImage = (room_id, roadBlockIndex, imageIndex) => {
     setRoomImagesObjectCheckbox((prevRoomImages) => {
-      const updatedRooms = prevRoomImages.map((room) => {
+      const updatedRooms = prevRoomImages?.map((room) => {
         if (room.room_id === room_id) {
           const updatedRoadBlocks = room.roadBlocks?.[
             roadBlockIndex
@@ -639,7 +639,7 @@ const EditPhd = (props) => {
               {roomData[index]?.data?.roomtype?.length > 0 ? (
                 <>
                   <Grid container spacing={2}>
-                    {roomData[index]?.data.roomtype.map((item, roomIndex) => (
+                    {roomData[index]?.data.roomtype?.map((item, roomIndex) => (
                       <Grid item xs={6} key={roomIndex}>
                         <FormLabel component="legend" className="text-body">
                           {item?.type?.name}
@@ -683,7 +683,7 @@ const EditPhd = (props) => {
                     3. Are there any additional value added items
                   </p>
                   <div className="row">
-                    {roomData[index]?.data?.addValueData.map(
+                    {roomData[index]?.data?.addValueData?.map(
                       (valueItem, valueIndex) => {
                         const valueId = valueItem?.id;
 
@@ -777,7 +777,7 @@ const EditPhd = (props) => {
               <p className="mb-1">Buyer Road Blocks or Recommendations?</p>
               <div className="bg-light rounded-2 py-2 px-3">
                 <div className="">
-                  {roomData[index]?.data?.data.map((data, roadBlockIndex) => {
+                  {roomData[index]?.data?.data?.map((data, roadBlockIndex) => {
                     if (
                       data.name === "Light Fixtures" ||
                       data.name === "Plumbing Issues (Leaks)"
@@ -852,7 +852,7 @@ const EditPhd = (props) => {
                                   index
                                 ]?.roadBlocks?.[
                                   matchingRoadBlockIndex
-                                ]?.images.map((image, imageIndex) => (
+                                ]?.images?.map((image, imageIndex) => (
                                   <div key={imageIndex}>
                                     {image && (
                                       <div>
