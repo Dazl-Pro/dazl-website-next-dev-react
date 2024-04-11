@@ -15,7 +15,6 @@ import {
   updatePhd,
   uploadImage,
 } from "../../../../store/dashboard/dashboardSlice";
-import MicIcon from "@mui/icons-material/Mic";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./style.css";
 import { Grid, TextField, MenuItem, FormLabel } from "@mui/material";
@@ -70,14 +69,27 @@ const EditPhd = (props) => {
   useEffect(() => {
     const initialInputState = [];
 
-    viewPhdData?.[0]?.roominfo?.forEach((room) => {
+    viewPhdData?.[0]?.roominfo?.forEach((room, index) => {
       const roomData = {
         roomId: room.room_id,
-        description: room.description || "",
+        description:
+          room.description ||
+          viewPhdData?.[0]?.images?.filter(
+            (image) => image.room_id === room.room_id
+          )[0]?.description ||
+          "",
         status: room.status || "",
         additionalValues: room.additionalValues || [],
         mainImages: room.mainImages || [],
-        roadBlocks: room.roadBlocks || [],
+        roadBlocks:
+          room.roadBlocks ||
+          room.feature.map((item) => ({
+            id: item.feature_id,
+            isChecked: true, // You can set this value as needed
+            roadBlockDescription: item.imageDesc, // Set description as needed
+            roadBlockImages: [], // Set images as needed
+          })) ||
+          [],
       };
       initialInputState.push(roomData);
     });
@@ -125,6 +137,7 @@ const EditPhd = (props) => {
   const [photoFields, setPhotoFields] = useState([]);
 
   const [roomImagesObject, setRoomImagesObject] = useState([]);
+  const [roomImagesObjectCheckbox, setRoomImagesObjectCheckbox] = useState([]);
 
   useEffect(() => {
     const updatedRoomImagesArray = viewPhdData?.[0]?.roominfo?.map((room) => {
@@ -137,6 +150,25 @@ const EditPhd = (props) => {
     });
 
     setRoomImagesObject(updatedRoomImagesArray || []);
+  }, [viewPhdData]);
+
+  useEffect(() => {
+    const updatedRoomImagesArray = viewPhdData?.[0]?.roominfo?.map((room) => {
+      const featuresWithImages = room.feature.map((feature) => {
+        const imageUrls = feature.images.map((image) => image);
+        return {
+          roadBlock_id: feature.feature_id,
+          images: imageUrls,
+        };
+      });
+
+      return {
+        room_id: room.room_id,
+        roadBlocks: featuresWithImages,
+      };
+    });
+
+    setRoomImagesObjectCheckbox(updatedRoomImagesArray || []);
   }, [viewPhdData]);
 
   useEffect(() => {
@@ -164,7 +196,7 @@ const EditPhd = (props) => {
       prevState.map((room) => {
         if (room.roomId === roomId) {
           const updatedMainImages = room.mainImages.filter(
-            (image) => image.id !== index
+            (image) => image?.id !== index
           );
           return { ...room, mainImages: updatedMainImages };
         }
@@ -370,7 +402,7 @@ const EditPhd = (props) => {
                 if (room.roomId === roomId) {
                   const updatedValues = [...room.mainImages];
                   const existingIndex = updatedValues.findIndex(
-                    (item) => item.id === index
+                    (item) => item?.id === index
                   );
                   if (existingIndex !== -1) {
                     // Update the existing image or add a new one
@@ -418,7 +450,7 @@ const EditPhd = (props) => {
                   newArray[i] = {
                     ...item,
                     roadBlocks: item.roadBlocks.map((block) => {
-                      if (block.roadBlockId === phd.id) {
+                      if (block.roadBlockId === phd?.id) {
                         // If the road block ID already exists, update its images
                         return {
                           ...block,
@@ -437,7 +469,7 @@ const EditPhd = (props) => {
                   room_id: roomId,
                   roadBlocks: [
                     {
-                      roadBlockId: phd.id,
+                      roadBlockId: phd?.id,
                       description: description,
                       images: [responseImage],
                     },
@@ -447,7 +479,7 @@ const EditPhd = (props) => {
                 const room = newArray[updatedRoomIndex];
                 // Check if the road block with the specified ID already exists for the room
                 const existingRoadBlock = room.roadBlocks.find(
-                  (block) => block.roadBlockId === phd.id
+                  (block) => block.roadBlockId === phd?.id
                 );
                 if (!existingRoadBlock) {
                   // If the road block doesn't exist, add it to the roadBlocks array
@@ -456,7 +488,7 @@ const EditPhd = (props) => {
                     roadBlocks: [
                       ...room.roadBlocks,
                       {
-                        roadBlockId: phd.id,
+                        roadBlockId: phd?.id,
                         description: description,
                         images: [responseImage],
                       },
@@ -534,7 +566,7 @@ const EditPhd = (props) => {
           if (name === "additionalValue") {
             const updatedValues = [...room.additionalValues];
             const existingIndex = updatedValues.findIndex(
-              (item) => item.id === valueId
+              (item) => item?.id === valueId
             );
             if (existingIndex !== -1) {
               updatedValues[existingIndex].isChecked = isChecked;
@@ -545,7 +577,7 @@ const EditPhd = (props) => {
           } else if (name === "roadBlocks") {
             const updatedValues = [...room.roadBlocks];
             const existingIndex = updatedValues.findIndex(
-              (item) => item.id === valueId
+              (item) => item?.id === valueId
             );
             if (existingIndex !== -1) {
               updatedValues[existingIndex].isChecked = isChecked;
@@ -580,7 +612,41 @@ const EditPhd = (props) => {
       setRoomImagesObject(updatedRoomImagesObject);
     }
   };
-  console.log("RoadBlocks", checkBoxData);
+
+  const handleRemoveCheckBoxImage = (room_id, roadBlockIndex, imageIndex) => {
+    setRoomImagesObjectCheckbox((prevRoomImages) => {
+      const updatedRooms = prevRoomImages.map((room) => {
+        if (room.room_id === room_id) {
+          const updatedRoadBlocks = room.roadBlocks?.[
+            roadBlockIndex
+          ].images.filter((image, index) => index !== imageIndex);
+
+          return {
+            ...room,
+            roadBlocks: room.roadBlocks?.map((feature, index) => {
+              if (index === roadBlockIndex) {
+                return {
+                  ...feature,
+                  images: updatedRoadBlocks,
+                };
+              }
+              return feature;
+            }),
+          };
+        }
+        return room;
+      });
+
+      return updatedRooms;
+    });
+  };
+
+  console.log("Input", input);
+  console.log("roomImagesObjectCheckbox", roomImagesObjectCheckbox);
+  console.log(
+    "Images",
+    roomImagesObjectCheckbox[0]?.roadBlocks?.map((item) => item)
+  );
 
   return (
     <div>
@@ -609,11 +675,7 @@ const EditPhd = (props) => {
                     name={`${items.room_id}`}
                     value={
                       input.find((room) => room.roomId === items.room_id)
-                        ?.description ||
-                      viewPhdData?.[0]?.images?.filter(
-                        (image) => image.room_id === roomIdIn
-                      )[0]?.description ||
-                      ""
+                        ?.description || ""
                     }
                     onChange={(e) => onChange(e, items.room_id, "description")}
                     required
@@ -630,39 +692,40 @@ const EditPhd = (props) => {
                 <div className="bg-light p-3 rounded-2">
                   <div className="ps-0 mb-3 mt-2">
                     <div className="d-flex gap-1 flex-wrap">
-                      {/* Display images for the current room_id */}
-                      {roomImagesObject?.[index]?.images.map(
+                      {roomImagesObject?.[index]?.images?.map(
                         (image, imageIndex) => (
-                          <div key={imageIndex} className="d-flex flex-column">
+                          <div key={imageIndex}>
                             {image && (
-                              <a
-                                href={image}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <img
-                                  alt="img"
-                                  src={image}
-                                  className="object-fit-cover border"
-                                  width={"100px"}
-                                  height={"100px"}
-                                />
-                              </a>
+                              <div>
+                                <a
+                                  href={image}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <img
+                                    alt="img"
+                                    src={image}
+                                    className="object-fit-cover border"
+                                    width={"100px"}
+                                    height={"100px"}
+                                  />
+                                </a>
+                                <div className="d-flex justify-content-center">
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-2"
+                                    onClick={() =>
+                                      handleRemoveImage(
+                                        roomImagesObject[index].room_id,
+                                        imageIndex
+                                      )
+                                    }
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
                             )}
-                            <div className="d-flex justify-content-center">
-                              <button
-                                type="button"
-                                className="btn btn-primary btn-sm mt-2"
-                                onClick={() =>
-                                  handleRemoveImage(
-                                    roomImagesObject[index].room_id,
-                                    imageIndex
-                                  )
-                                }
-                              >
-                                Remove
-                              </button>
-                            </div>
                           </div>
                         )
                       )}
@@ -765,7 +828,7 @@ const EditPhd = (props) => {
                   <div className="row">
                     {roomData[index]?.data?.addValueData.map(
                       (valueItem, valueIndex) => {
-                        const valueId = valueItem.id;
+                        const valueId = valueItem?.id;
 
                         return (
                           <div
@@ -777,7 +840,7 @@ const EditPhd = (props) => {
                                 .find((room) => room.roomId === items.room_id)
                                 ?.additionalValues.some(
                                   (item) =>
-                                    item.id === valueId && item.isChecked
+                                    item?.id === valueId && item.isChecked
                                 )}
                               onChange={(e) =>
                                 handleValueChange(
@@ -873,8 +936,12 @@ const EditPhd = (props) => {
                       data.name === "Plumbing Fixtures"
                         ? "Plumbing"
                         : data.name;
-                    const valueId = data.id;
-
+                    const valueId = data?.id;
+                    const matchingRoadBlockIndex = input
+                      .find((room) => room.roomId === items.room_id)
+                      ?.roadBlocks.findIndex(
+                        (item) => item?.id === valueId && item.isChecked
+                      );
                     return (
                       <div key={roadBlockIndex} className="form-row">
                         <FormControlLabel
@@ -884,7 +951,7 @@ const EditPhd = (props) => {
                                 .find((room) => room.roomId === items.room_id)
                                 ?.roadBlocks.some(
                                   (item) =>
-                                    item.id === valueId && item.isChecked
+                                    item?.id === valueId && item.isChecked
                                 )}
                               onChange={(e) =>
                                 handleValueChange(
@@ -902,7 +969,7 @@ const EditPhd = (props) => {
                         {input
                           .find((room) => room.roomId === items.room_id)
                           ?.roadBlocks.some(
-                            (item) => item.id === valueId && item.isChecked
+                            (item) => item?.id === valueId && item.isChecked
                           ) && (
                           <>
                             <TextField
@@ -910,28 +977,74 @@ const EditPhd = (props) => {
                               rows={4}
                               variant="outlined"
                               fullWidth
-                              {...register(`textArea[${roadBlockIndex}]`)}
                               value={
-                                input.find(
-                                  (room) => room.roomId === items.room_id
-                                )?.roadBlocks[roadBlockIndex]
-                                  ?.roadBlockDescription || ""
+                                matchingRoadBlockIndex !== -1
+                                  ? input.find(
+                                      (room) => room.roomId === items?.room_id
+                                    )?.roadBlocks[matchingRoadBlockIndex]
+                                      ?.roadBlockDescription || ""
+                                  : ""
                               }
                               onChange={(e) =>
                                 onChangeRoadBlockDescription(
                                   e,
                                   items.room_id,
                                   "roadBlockDescription",
-                                  roadBlockIndex
+                                  matchingRoadBlockIndex
                                 )
                               }
                             />
+                            <div className="ps-0 mt-3">
+                              <div className="d-flex gap-1">
+                                {roomImagesObjectCheckbox?.[
+                                  index
+                                ]?.roadBlocks?.[
+                                  matchingRoadBlockIndex
+                                ]?.images.map((image, imageIndex) => (
+                                  <div key={imageIndex}>
+                                    {image && (
+                                      <div>
+                                        <a
+                                          href={image}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          <img
+                                            alt="img"
+                                            src={image}
+                                            className="object-fit-cover border"
+                                            width={"100px"}
+                                            height={"100px"}
+                                          />
+                                        </a>
+                                        <div className="d-flex justify-content-center">
+                                          <button
+                                            type="button"
+                                            className="btn btn-primary btn-sm mt-2"
+                                            onClick={() =>
+                                              handleRemoveCheckBoxImage(
+                                                roomImagesObjectCheckbox[index]
+                                                  .room_id,
+                                                matchingRoadBlockIndex,
+                                                imageIndex
+                                              )
+                                            }
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
                             <div className="form-row bg-light rounded-2">
                               <div className="row">
                                 {fields?.map((field, imgIndex) => {
                                   return field.indexId === roadBlockIndex ? (
                                     <div
-                                      className="col-md-6 mt-4"
+                                      className="col-md-6 mt-3"
                                       key={imgIndex}
                                     >
                                       <div className="d-flex align-items-start gap-2">
@@ -955,7 +1068,7 @@ const EditPhd = (props) => {
                                               getValues("textArea")[
                                                 roadBlockIndex
                                               ],
-                                              roadBlockIndex
+                                              matchingRoadBlockIndex
                                             )
                                           }
                                         />
