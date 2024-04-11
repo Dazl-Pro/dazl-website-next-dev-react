@@ -289,9 +289,50 @@ const EditPhd = (props) => {
           return room; // If no corresponding roomImages found, return the original room object
         });
 
+        const updatedInputFinal = updatedInput.map((room) => {
+          // Find the corresponding roomImages for the current room
+          const roomImages = roomImagesObjectCheckbox.find(
+            (imageRoom) => imageRoom.room_id === room.roomId
+          );
+
+          if (roomImages) {
+            // Append images from roomImages to roadBlockImages for each road block
+            const updatedRoadBlocks = room?.roadBlocks?.map((block) => {
+              const matchingImages = roomImages?.roadBlocks?.find(
+                (imageBlock) => imageBlock.roadBlock_id === block.id
+              );
+
+              if (matchingImages) {
+                const existingImagesCount = block.roadBlockImages.length;
+                const mergedImages = [
+                  ...block.roadBlockImages, // Keep existing images
+                  ...(matchingImages.images?.map((image, index) => ({
+                    id: existingImagesCount + index, // Assuming you have an ID for each image
+                    responseImage: image, // Assuming image structure contains responseImage
+                  })) || []),
+                ];
+                return {
+                  ...block,
+                  roadBlockImages: mergedImages,
+                };
+              }
+              return block;
+            });
+
+            return {
+              ...room,
+              roadBlocks: updatedRoadBlocks,
+            };
+          }
+
+          return room; // If no corresponding roomImages found, return the original room object
+        });
+
+        console.log("updatedInput", updatedInput);
+
         dispatch(
           updatePhd({
-            data: updatedInput,
+            data: updatedInputFinal,
             id: itemId,
             roadBlocksData: roomImagesObjectCheckbox,
           })
@@ -322,7 +363,6 @@ const EditPhd = (props) => {
 
   const handleImage = (roomId, name, index, e, roadBlockIndex) => {
     const file = e.target.files[0];
-    const isImage = file && file.type.startsWith("image/");
 
     const formData = new FormData();
     formData.append("image", file);
