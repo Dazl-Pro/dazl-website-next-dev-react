@@ -341,6 +341,7 @@ const EditPhd = (props) => {
             if (value === "save") {
               setShow(false);
               localStorage.setItem("saved1", JSON.stringify(response));
+              navigate("/agent/createPhd/rooms");
               setSelectvalue("");
               Toastify({
                 data: "success",
