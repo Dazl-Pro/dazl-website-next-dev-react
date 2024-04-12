@@ -35,10 +35,10 @@ const EditPhd = (props) => {
   const selectorPhd = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selectorPhd?.data?.viewPhdAlt;
 
-  useEffect(() => {
-    dispatch(viewPhdAlt({ id: itemId, value: "open" }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemId]);
+  // useEffect(() => {
+  //   dispatch(viewPhdAlt({ id: itemId, value: "open" }));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [itemId]);
 
   const [roomIds, setRoomIds] = useState([]);
 
@@ -50,6 +50,10 @@ const EditPhd = (props) => {
   }, [viewPhdData]);
 
   const [roomData, setRoomData] = useState("");
+
+  const [input, setInput] = React.useState([]);
+
+  console.log("inputtttttt", input);
 
   useEffect(() => {
     const initialInputState = [];
@@ -114,8 +118,6 @@ const EditPhd = (props) => {
   const lowestValue = localStorage.getItem("lowestValue");
   const saved1 = JSON.parse(localStorage.getItem("saved1"));
 
-  const [input, setInput] = React.useState([]);
-
   const [roomImagesObject, setRoomImagesObject] = useState([]);
   const [roomImagesObjectCheckbox, setRoomImagesObjectCheckbox] = useState([]);
 
@@ -135,7 +137,7 @@ const EditPhd = (props) => {
   useEffect(() => {
     const updatedRoomImagesArray = viewPhdData?.[0]?.roominfo?.map((room) => {
       const featuresWithImages = room.feature?.map((feature) => {
-        const imageUrls = feature.images?.map((image) => image);
+        const imageUrls = feature?.images?.map((image) => image);
         return {
           roadBlock_id: feature.feature_id,
           images: imageUrls,
@@ -229,8 +231,8 @@ const EditPhd = (props) => {
       const updatedPhotoFieldsCheckBox = [...prevPhotoFieldsCheckBox];
       const currentRoadBlocks =
         updatedPhotoFieldsCheckBox[index]?.roadBlocks?.[matchingRoadBlockIndex];
-      if (currentRoadBlocks && currentRoadBlocks.images) {
-        currentRoadBlocks.images.splice(imgIndex, 1);
+      if (currentRoadBlocks && currentRoadBlocks?.images) {
+        currentRoadBlocks?.images.splice(imgIndex, 1);
       }
       return updatedPhotoFieldsCheckBox;
     });
@@ -306,7 +308,7 @@ const EditPhd = (props) => {
                 const existingImagesCount = block.roadBlockImages.length;
                 const mergedImages = [
                   ...block.roadBlockImages, // Keep existing images
-                  ...(matchingImages.images?.map((image, index) => ({
+                  ...(matchingImages?.images?.map((image, index) => ({
                     id: existingImagesCount + index, // Assuming you have an ID for each image
                     responseImage: image, // Assuming image structure contains responseImage
                   })) || []),
@@ -531,7 +533,7 @@ const EditPhd = (props) => {
         if (room.room_id === room_id) {
           const updatedRoadBlocks = room.roadBlocks?.[
             roadBlockIndex
-          ].images.filter((image, index) => index !== imageIndex);
+          ]?.images.filter((image, index) => index !== imageIndex);
 
           return {
             ...room,
@@ -553,7 +555,7 @@ const EditPhd = (props) => {
     });
   };
 
-  console.log("roomImagesObjectCheckbox", roomImagesObjectCheckbox);
+  console.log("roomImagesObjectCheckbox", photoFieldsCheckBox);
 
   return (
     <div>
@@ -1011,7 +1013,7 @@ const EditPhd = (props) => {
           className="room btn btn-success m-2"
           onClick={(e) => save(e, "submit")}
         >
-          Complete
+          Update
         </button>
       </div>
     </div>

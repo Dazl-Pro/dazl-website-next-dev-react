@@ -5,6 +5,7 @@ import {
   getCompletePhd,
   openConfirmPopup,
   viewPhd,
+  viewPhdAlt,
 } from "../../../../store/dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
 import Table from "react-bootstrap/Table";
@@ -29,7 +30,9 @@ const CompleteProject = () => {
   };
 
   const editPhdAltHandler = (itemId) => {
-    navigate(`/agent/editPhd/rooms/${itemId}`);
+    dispatch(viewPhdAlt({ id: itemId, value: "open" }))
+      .unwrap()
+      .then(() => navigate(`/agent/editPhd/rooms/${itemId}`));
   };
 
   return (

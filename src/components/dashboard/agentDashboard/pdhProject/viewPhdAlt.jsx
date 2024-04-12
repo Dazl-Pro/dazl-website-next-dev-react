@@ -239,7 +239,7 @@ const ViewPhdAlt = () => {
                               </div>
                             </div>
                           </div>
-                          {ele?.feature?.[0].feature_name !== "" && (
+                          {ele?.feature?.length !== 0 && (
                             <div
                               key={index}
                               className="border border-dark p-3 mt-3 bg-white"
