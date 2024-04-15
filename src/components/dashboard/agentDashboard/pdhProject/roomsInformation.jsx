@@ -212,6 +212,23 @@ const RoomsInformation = (props) => {
       return;
     }
 
+    // Check if road block descriptions are provided for all selected checkboxes
+    const roadBlocksDescriptions = fields.map(
+      (field) => watch(`textArea[${field.indexId}]`) || ""
+    );
+    const roadBlocksChecked = watch("checkboxes") || [];
+    const roadBlocksIncomplete = roadBlocksChecked.some((checked, index) => {
+      return checked && !roadBlocksDescriptions[index];
+    });
+
+    if (roadBlocksIncomplete) {
+      Toastify({
+        data: "error",
+        msg: "Please provide descriptions for all selected road blocks.",
+      });
+      return;
+    }
+
     if (input.phd_description && input.options) {
       let formData = new FormData();
       formData.append("score", 100);
@@ -250,7 +267,7 @@ const RoomsInformation = (props) => {
         Array.isArray(addValueCheckbox) &&
         addValueCheckbox.length > 0
       ) {
-        addValueCheckbox.forEach((item, index) => {
+        addValueCheckbox?.forEach((item, index) => {
           formData.append(`${item.data}`, item.val);
         });
       }
@@ -281,7 +298,7 @@ const RoomsInformation = (props) => {
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
 
       checkedCheckboxesData.length > 0 &&
-        checkedCheckboxesData.forEach((item) => {
+        checkedCheckboxesData?.forEach((item) => {
           const checkboxKey = `rooms[${roomId}][feature_status][${
             item.checkbox ?? "description"
           }]`;
@@ -290,7 +307,7 @@ const RoomsInformation = (props) => {
 
           formData.append(checkboxKey, "NEEDS DAZL");
           formData.append(descriptionKey, item.description);
-          item.images.forEach((image, imgIndex) => {
+          item.images?.forEach((image, imgIndex) => {
             const imageKey = `${imagesKey}[${imgIndex}]`;
             formData.append(imageKey, image);
           });
@@ -380,7 +397,7 @@ const RoomsInformation = (props) => {
             let updated = false; // Flag to check if an existing entry has been updated
             // Check if an object with the same checkbox ID exists in the array
             const desc = textArray[index];
-            newArray.forEach((item, i) => {
+            newArray?.forEach((item, i) => {
               if (item.checkbox === phd.id) {
                 newArray[i] = {
                   checkbox: phd.id,
@@ -679,7 +696,9 @@ const RoomsInformation = (props) => {
                         variant="outlined"
                         fullWidth
                         {...register(`textArea[${index}]`)}
-                        className={`${errorBorder1 ? "error" : ""} `}
+                        className={`${
+                          watch(`textArea[${index}]`) === "" ? "error" : ""
+                        } `}
                       />
                       <div className="form-row bg-light rounded-2">
                         <div className="row">
