@@ -53,8 +53,6 @@ const EditPhd = (props) => {
 
   const [input, setInput] = React.useState([]);
 
-  console.log("inputtttttt", input);
-
   useEffect(() => {
     const initialInputState = [];
 
@@ -93,7 +91,6 @@ const EditPhd = (props) => {
           .unwrap()
           .then((response) => ({ id, data: response }))
           .catch((error) => {
-            console.error(`Error fetching room data for room ID ${id}:`, error);
             return { id, data: null };
           });
       });
@@ -185,6 +182,8 @@ const EditPhd = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomIds]);
 
+  console.log("photoFieldsCheckBox", photoFieldsCheckBox);
+
   const appendPhoto = (roomId) => {
     setPhotoFields((prevPhotoFields) =>
       prevPhotoFields?.map((fields, index) =>
@@ -238,8 +237,18 @@ const EditPhd = (props) => {
     });
   };
 
+  const [descriptionError, setDescriptionError] = useState(false);
+
   const save = (e, value) => {
     e.preventDefault();
+
+    const requiresDescription = input.some((room) =>
+      room.roadBlocks.some(
+        (block) => block.isChecked && !block.roadBlockDescription
+      )
+    );
+
+    setDescriptionError(requiresDescription);
 
     const selectedOption = input.options;
     let updatedPrice = price;
@@ -250,7 +259,7 @@ const EditPhd = (props) => {
       updatedPrice = price * 1.15;
     }
 
-    if (input) {
+    if (input && !requiresDescription) {
       let formData = new FormData();
       formData.append("lowest_price", lowestValue);
       formData.append("mid_price", midValue);
@@ -329,8 +338,6 @@ const EditPhd = (props) => {
 
           return room; // If no corresponding roomImages found, return the original room object
         });
-
-        console.log("updatedInput", updatedInput);
 
         dispatch(
           updatePhd({
@@ -504,6 +511,32 @@ const EditPhd = (props) => {
         return room;
       })
     );
+    if (name === "roadBlocks") {
+      setPhotoFieldsCheckBox((prevPhotoFieldsCheckBox) => {
+        const updatedPhotoFieldsCheckBox = [...prevPhotoFieldsCheckBox];
+        const updatedPhotoFields = updatedPhotoFieldsCheckBox.map((photo) => {
+          const roadBlocks = photo.roadBlocks || [];
+          const existingIndex = roadBlocks.findIndex(
+            (block) => block.roadBlock_id === valueId
+          );
+
+          if (existingIndex !== -1) {
+            // If valueId is present, remove it
+            roadBlocks.splice(existingIndex, 1);
+          } else {
+            // If valueId is not present, add it
+            roadBlocks.push({
+              roadBlock_id: valueId,
+              images: [{ file: null }],
+            });
+          }
+
+          return { ...photo, roadBlocks };
+        });
+
+        return updatedPhotoFields;
+      });
+    }
   };
 
   const handleRemoveImage = (room_id, imageIndex) => {
@@ -554,8 +587,6 @@ const EditPhd = (props) => {
       return updatedRooms;
     });
   };
-
-  console.log("roomImagesObjectCheckbox", photoFieldsCheckBox);
 
   return (
     <div>
@@ -852,7 +883,10 @@ const EditPhd = (props) => {
                                   items.room_id,
                                   valueId,
                                   e.target.checked,
-                                  "roadBlocks"
+                                  "roadBlocks",
+                                  index,
+                                  matchingRoadBlockIndex,
+                                  null
                                 )
                               }
                             />
@@ -886,6 +920,14 @@ const EditPhd = (props) => {
                                   "roadBlockDescription",
                                   matchingRoadBlockIndex
                                 )
+                              }
+                              error={
+                                descriptionError &&
+                                matchingRoadBlockIndex !== -1 &&
+                                !input.find(
+                                  (room) => room.roomId === items?.room_id
+                                )?.roadBlocks[matchingRoadBlockIndex]
+                                  ?.roadBlockDescription
                               }
                             />
                             <div className="ps-0 mt-3">

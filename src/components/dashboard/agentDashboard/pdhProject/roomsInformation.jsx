@@ -56,7 +56,6 @@ const RoomsInformation = (props) => {
   const roomtype = selector.data.roomtype;
   const addValueData = selector.data.addValueData;
   const price = selector.data.price;
-  console.log("price", price);
   const phdStepOne = selector.data.phdStepOne;
   const agentData = selector.data.agentData;
   const phdUserDetail = JSON.parse(localStorage.getItem("phdUserDetail"));
@@ -161,7 +160,19 @@ const RoomsInformation = (props) => {
   };
 
   const handleCheckboxArrayChange = (id, index) => {
-    setPhdCheckbox((prev) => [...prev, { checkbox: id.id }]);
+    setPhdCheckbox((prev) => {
+      const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
+      if (existingIndex !== -1) {
+        // If the id is already present, remove it
+        const updatedCheckbox = [...prev];
+        updatedCheckbox.splice(existingIndex, 1);
+        return updatedCheckbox;
+      } else {
+        // If the id is not present, add it
+        return [...prev, { checkbox: id.id }];
+      }
+    });
+
     const checkboxes = watch("checkboxes") || [];
     checkboxes[index] = !checkboxes[index];
     setValue("checkboxes", checkboxes);
@@ -199,13 +210,6 @@ const RoomsInformation = (props) => {
     if (input.options === "") {
       setErrorborder1(true);
       return;
-    }
-
-    if (input.phd_description === "") {
-      setErrorborder(true);
-    }
-    if (input.options === "") {
-      setErrorborder1(true);
     }
 
     if (input.phd_description && input.options) {
@@ -675,6 +679,7 @@ const RoomsInformation = (props) => {
                         variant="outlined"
                         fullWidth
                         {...register(`textArea[${index}]`)}
+                        className={`${errorBorder1 ? "error" : ""} `}
                       />
                       <div className="form-row bg-light rounded-2">
                         <div className="row">
