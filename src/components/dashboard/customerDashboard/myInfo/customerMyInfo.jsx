@@ -9,7 +9,7 @@ import {
   customerProfile,
   updatehomeOwnerProfile,
 } from "../../../../store/dashboard/dashboardSlice";
-import "./customerMyinfo.css";
+import "./customerMyInfo.css";
 
 const defaultValues = {
   firstName: "",

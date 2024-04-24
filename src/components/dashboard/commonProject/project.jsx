@@ -46,7 +46,7 @@ const schema = yup.object().shape({
   photos: photosSchema,
 });
 
-const Commonproject = () => {
+const Commonproject = ({ show, setShow }) => {
   const selector = useSelector((state) => state.dashboardSlice);
   const phdRooms = selector.data.phdRoomsData;
   const addAnotherRoomState = selector.data.addAnotherRoom;
@@ -54,7 +54,6 @@ const Commonproject = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const [show, setShow] = React.useState(false);
   const [checkboxValues, setCheckboxValues] = React.useState(
     Array(phdRooms?.length).fill(false)
   );
@@ -186,11 +185,57 @@ const Commonproject = () => {
       }
     }
   };
+
   const addAnother = () => {
+    setImagesFinal(true);
+    const roomId = localStorage.getItem("roomId");
+
+    // Check if there are no selected images
     if (selectedImages.length === 0) {
-      setShowErrors(true);
+      // Collect checkbox IDs and descriptions for the selected checkboxes
+      const selectedCheckboxes = checkboxValues
+        .map((isChecked, index) => {
+          if (isChecked) {
+            return {
+              checkboxId: phdRooms[index].id, // Assuming phdRooms contains the ids
+              description: textValues[index] || "", // Include description if provided
+            };
+          }
+          return null;
+        })
+        .filter((item) => item !== null); // Filter out null values
+
+      if (selectedCheckboxes.length > 0) {
+        // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
+        dispatch(addAnotherRoom({ roomId, selectedCheckboxes }))
+          .unwrap()
+          .then((response) => {
+            setShow(false);
+            setSelectvalue("");
+            setCheckboxValues(Array(phdRooms?.length).fill(false));
+            setTextValues([]);
+            Toastify({
+              data: "success",
+              msg: "Room saved with selected checkboxes and descriptions. You can add more.",
+            });
+          });
+      } else {
+        // If no checkboxes are selected, just dispatch the room ID
+        dispatch(addAnotherRoom({ roomId }))
+          .unwrap()
+          .then((response) => {
+            setShow(false);
+            setSelectvalue("");
+            setCheckboxValues(Array(phdRooms?.length).fill(false));
+            setTextValues([]);
+            Toastify({
+              data: "success",
+              msg: "Room saved without images or checkboxes. You can add more.",
+            });
+          });
+      }
     } else {
-      setImagesFinal(true);
+      // Process selected images and room ID as in the original code
       selectedImages.forEach((item) => {
         dispatch(addAnotherRoom(item))
           .unwrap()
@@ -203,14 +248,16 @@ const Commonproject = () => {
       });
       Toastify({
         data: "success",
-        msg: "Your item is saved now you can add more ",
-      });
-      setSelectedImages([]);
-      reset({
-        photos: [],
+        msg: "Your item is saved, now you can add more.",
       });
     }
+
+    setSelectedImages([]);
+    reset({ photos: [] });
   };
+
+  console.log(selectedImages);
+
   const handleImage = (phd, index, e) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");

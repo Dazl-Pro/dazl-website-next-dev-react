@@ -127,7 +127,7 @@ const MyProject = () => {
     <div className="py-0">
       <div className="">
         <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
-          {userType === "agent" ? " My Project " : " My Project"}
+          My Project
         </h2>
         <div className="">
           <div className="mb-4">
