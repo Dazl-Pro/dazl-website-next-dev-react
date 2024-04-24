@@ -325,7 +325,7 @@ const RoomsInformation = (props) => {
               msg: "Your item is saved now you can add more ",
             });
           } else {
-            navigate("/agent/phdproject");
+            navigate(`/agent/viewPhdAlt/${response.id}`);
             localStorage.removeItem("midValue");
             localStorage.removeItem("roomId");
             localStorage.removeItem("maxValue");

@@ -46,7 +46,7 @@ const schema = yup.object().shape({
   photos: photosSchema,
 });
 
-const Commonproject = ({ show, setShow }) => {
+const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
   const selector = useSelector((state) => state.dashboardSlice);
   const phdRooms = selector.data.phdRoomsData;
   const addAnotherRoomState = selector.data.addAnotherRoom;
@@ -57,7 +57,7 @@ const Commonproject = ({ show, setShow }) => {
   const [checkboxValues, setCheckboxValues] = React.useState(
     Array(phdRooms?.length).fill(false)
   );
-  const [selectValue, setSelectvalue] = React.useState("");
+
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [selectImagesFinal, setselectImagesFinal] = React.useState([]);
   const [ImagesFinal, setImagesFinal] = React.useState(false);
@@ -123,16 +123,64 @@ const Commonproject = ({ show, setShow }) => {
 
   const handleGetCheckboxValues = () => {
     let payload;
-    if (selectedImages.length === 0) {
-      setShowErrors(true);
-    } else if (showErrors === false) {
-      if (location.pathname === "/agent/createProject") {
-        payload = "realtorprojects";
+    if (location.pathname === "/agent/createProject") {
+      payload = "realtorprojects";
+    } else {
+      payload = "projects";
+    }
+
+    const selectedCheckboxes = checkboxValues
+      .map((isChecked, index) => {
+        if (isChecked) {
+          return {
+            checkboxId: phdRooms[index].id, // Assuming phdRooms contains the ids
+            description: textValues[index] || "", // Include description if provided
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null);
+
+    if (ImagesFinal === true) {
+      let completedPromises = 0;
+      if (selectedCheckboxes.length > 0) {
+        // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
+        selectedCheckboxes.forEach((item) => {
+          dispatch(
+            addAnotherRoom({
+              roomId,
+              features: item.checkboxId,
+              inspectionNotes: item.description,
+            })
+          )
+            .unwrap()
+            .then((response) => {
+              const value = [...selectedCheckboxes, response];
+              dispatch(addRoomFeatures({ value, payload }))
+                .unwrap()
+                .then((res) => {
+                  completedPromises++;
+                  if (completedPromises === selectedImages.length) {
+                    Toastify({ data: "success", msg: res.message });
+                  }
+                  if (location.pathname === "/agent/createProject") {
+                    navigate("/agent/my-project");
+                  } else {
+                    navigate("/homeOwner/my-project");
+                  }
+                  setImagesFinal(false);
+                  setShow(false);
+                  setSelectvalue("");
+                  setCheckboxValues(Array(phdRooms?.length).fill(false));
+                  setTextValues([]);
+                  setSelectedImages([]);
+                  localStorage.removeItem("roomselect");
+                  localStorage.removeItem("roomId");
+                  localStorage.removeItem("value");
+                });
+            });
+        });
       } else {
-        payload = "projects";
-      }
-      if (ImagesFinal === true) {
-        let completedPromises = 0;
         selectedImages.forEach((item) => {
           dispatch(addAnotherRoom(item))
             .unwrap()
@@ -162,27 +210,27 @@ const Commonproject = ({ show, setShow }) => {
                 });
             });
         });
-      } else {
-        dispatch(addRoomFeatures({ selectedImages, payload }))
-          .unwrap()
-          .then((res) => {
-            Toastify({ data: "success", msg: res.message });
-            if (location.pathname === "/agent/createProject") {
-              navigate("/agent/my-project");
-            } else {
-              navigate("/homeOwner/my-project");
-            }
-            setImagesFinal(false);
-            setShow(false);
-            setSelectvalue("");
-            setCheckboxValues(Array(phdRooms?.length).fill(false));
-            setTextValues([]);
-            setSelectedImages([]);
-            localStorage.removeItem("roomselect");
-            localStorage.removeItem("roomId");
-            localStorage.removeItem("value");
-          });
       }
+    } else {
+      dispatch(addRoomFeatures({ selectedImages, payload }))
+        .unwrap()
+        .then((res) => {
+          Toastify({ data: "success", msg: res.message });
+          if (location.pathname === "/agent/createProject") {
+            navigate("/agent/my-project");
+          } else {
+            navigate("/homeOwner/my-project");
+          }
+          setImagesFinal(false);
+          setShow(false);
+          setSelectvalue("");
+          setCheckboxValues(Array(phdRooms?.length).fill(false));
+          setTextValues([]);
+          setSelectedImages([]);
+          localStorage.removeItem("roomselect");
+          localStorage.removeItem("roomId");
+          localStorage.removeItem("value");
+        });
     }
   };
 
@@ -207,32 +255,42 @@ const Commonproject = ({ show, setShow }) => {
 
       if (selectedCheckboxes.length > 0) {
         // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
-        dispatch(addAnotherRoom({ roomId, selectedCheckboxes }))
-          .unwrap()
-          .then((response) => {
-            setShow(false);
-            setSelectvalue("");
-            setCheckboxValues(Array(phdRooms?.length).fill(false));
-            setTextValues([]);
-            Toastify({
-              data: "success",
-              msg: "Room saved with selected checkboxes and descriptions. You can add more.",
+        selectedCheckboxes.forEach((item) => {
+          dispatch(
+            addAnotherRoom({
+              roomId,
+              features: item.checkboxId,
+              inspectionNotes: item.description,
+            })
+          )
+            .unwrap()
+            .then((response) => {
+              setShow(false);
+              setSelectvalue("");
+              setCheckboxValues(Array(phdRooms?.length).fill(false));
+              setTextValues([]);
+              Toastify({
+                data: "success",
+                msg: "Room saved with selected checkboxes and descriptions. You can add more.",
+              });
             });
-          });
+        });
       } else {
         // If no checkboxes are selected, just dispatch the room ID
-        dispatch(addAnotherRoom({ roomId }))
-          .unwrap()
-          .then((response) => {
-            setShow(false);
-            setSelectvalue("");
-            setCheckboxValues(Array(phdRooms?.length).fill(false));
-            setTextValues([]);
-            Toastify({
-              data: "success",
-              msg: "Room saved without images or checkboxes. You can add more.",
+        selectedCheckboxes.forEach((item) => {
+          dispatch(addAnotherRoom({ roomId }))
+            .unwrap()
+            .then((response) => {
+              setShow(false);
+              setSelectvalue("");
+              setCheckboxValues(Array(phdRooms?.length).fill(false));
+              setTextValues([]);
+              Toastify({
+                data: "success",
+                msg: "Room saved without images or checkboxes. You can add more.",
+              });
             });
-          });
+        });
       }
     } else {
       // Process selected images and room ID as in the original code

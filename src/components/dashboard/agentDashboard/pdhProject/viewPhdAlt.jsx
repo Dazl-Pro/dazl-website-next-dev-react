@@ -239,15 +239,16 @@ const ViewPhdAlt = () => {
                               </div>
                             </div>
                           </div>
-                          {ele?.feature?.length !== 0 && (
-                            <div
-                              key={index}
-                              className="border border-dark p-3 mt-3 bg-white"
-                            >
-                              <h3 className="text-center d-flex mb-3 mt-1">
-                                Buyer Road Blocks:
-                              </h3>
-                              {/* <div className="d-flex align-items-center justify-content-between mb-3">
+                          {ele?.feature?.length !== 0 &&
+                            ele?.feature[0]?.feature_name !== "" && (
+                              <div
+                                key={index}
+                                className="border border-dark p-3 mt-3 bg-white"
+                              >
+                                <h3 className="text-center d-flex mb-3 mt-1">
+                                  Buyer Road Blocks:
+                                </h3>
+                                {/* <div className="d-flex align-items-center justify-content-between mb-3">
                                   <div className="d-flex gap-1 align-items-center">
                                     Area:
                                     <div className="fw-bolder">
@@ -256,92 +257,94 @@ const ViewPhdAlt = () => {
                                   </div>
                                   <div className="text-danger">{e?.status}</div>
                                 </div> */}
-                              {ele?.feature?.map((eleInner, eleindex) => {
-                                return (
-                                  <div key={eleindex}>
-                                    <h5 className=" mb-2 ms-2">
-                                      {eleInner.feature_name}:
-                                    </h5>
-                                    <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
-                                      <div>{eleInner?.imageDesc}</div>
-                                    </div>
-                                    <div className="ps-0 mb-3">
-                                      <div className="d-flex gap-1">
-                                        {eleInner?.images?.map(
-                                          (image, imageIndex) => (
-                                            <div key={imageIndex}>
-                                              <a
-                                                href={image}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                              >
-                                                <img
-                                                  alt="img"
-                                                  src={image}
-                                                  className="object-fit-cover border"
-                                                  width={"100px"}
-                                                  height={"100px"}
-                                                />
-                                              </a>
-                                            </div>
-                                          )
-                                        )}
+                                {ele?.feature?.map((eleInner, eleindex) => {
+                                  return (
+                                    <div key={eleindex}>
+                                      <h5 className=" mb-2 ms-2">
+                                        {eleInner.feature_name}:
+                                      </h5>
+                                      <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
+                                        <div>{eleInner?.imageDesc}</div>
                                       </div>
-                                    </div>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        gap: "10px",
-                                        paddingBottom: "10px",
-                                        marginBottom: "10px",
-                                      }}
-                                    >
-                                      {allStatus.map((status) => (
-                                        <label
-                                          key={status}
-                                          className="custom-radio-label"
-                                        >
-                                          <input
-                                            type="radio"
-                                            name={`status-${index}`}
-                                            onChange={() => {
-                                              onchangeStatus(
-                                                status,
-
-                                                ele.room_id
-                                              );
-                                              setCurrentStatus(status);
-                                            }}
-                                          />
-                                          <span className=" ">{status}</span>
-                                        </label>
-                                      ))}
-                                    </div>
-                                    {currentStatus !== "Pass" && (
-                                      <div className="pb-3">
-                                        <div className="d-flex justify-content-between mt-3 mb-2">
-                                          <p className="mb-0">$200k</p>
-                                          <p className="mb-0">
-                                            $
-                                            {progressBar
-                                              ? (progressBar / 1000).toFixed(
-                                                  1
-                                                ) + "k"
-                                              : "2M"}
-                                          </p>
-                                          <p className="mb-0">$2M</p>
+                                      <div className="ps-0 mb-3">
+                                        <div className="d-flex gap-1">
+                                          {eleInner?.images?.map(
+                                            (image, imageIndex) => (
+                                              <div key={imageIndex}>
+                                                <a
+                                                  href={image}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  <img
+                                                    alt="img"
+                                                    src={image}
+                                                    className="object-fit-cover border"
+                                                    width={"100px"}
+                                                    height={"100px"}
+                                                  />
+                                                </a>
+                                              </div>
+                                            )
+                                          )}
                                         </div>
-                                        <BorderLinearProgress
-                                          variant="determinate"
-                                          value={(progressBar / 1800000) * 100}
-                                        />
                                       </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          gap: "10px",
+                                          paddingBottom: "10px",
+                                          marginBottom: "10px",
+                                        }}
+                                      >
+                                        {allStatus.map((status) => (
+                                          <label
+                                            key={status}
+                                            className="custom-radio-label"
+                                          >
+                                            <input
+                                              type="radio"
+                                              name={`status-${index}`}
+                                              onChange={() => {
+                                                onchangeStatus(
+                                                  status,
+
+                                                  ele.room_id
+                                                );
+                                                setCurrentStatus(status);
+                                              }}
+                                            />
+                                            <span className=" ">{status}</span>
+                                          </label>
+                                        ))}
+                                      </div>
+                                      {currentStatus !== "Pass" && (
+                                        <div className="pb-3">
+                                          <div className="d-flex justify-content-between mt-3 mb-2">
+                                            <p className="mb-0">$200k</p>
+                                            <p className="mb-0">
+                                              $
+                                              {progressBar
+                                                ? (progressBar / 1000).toFixed(
+                                                    1
+                                                  ) + "k"
+                                                : "2M"}
+                                            </p>
+                                            <p className="mb-0">$2M</p>
+                                          </div>
+                                          <BorderLinearProgress
+                                            variant="determinate"
+                                            value={
+                                              (progressBar / 1800000) * 100
+                                            }
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
                         </div>
                       </div>
                     );
