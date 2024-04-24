@@ -231,7 +231,7 @@ const CreatePhd = () => {
                           </div>
                           <h4>Client Email: {email}</h4>
                         </div>
-                        <div className="header-logo me-5">
+                        <div className="header-logo me-md-5 me-0">
                           <LazyLoadImage
                             alt="img"
                             src="/images/footerImages/footer.png"
@@ -390,7 +390,7 @@ const CreatePhd = () => {
                   <>
                     <Box sx={{ width: 300 }} className="w-100">
                       {/* <Typography gutterBottom>{total}K</Typography> */}
-                      <Typography gutterBottom>{formattedTotal()}</Typography>
+                      {/* <Typography gutterBottom>{formattedTotal()}</Typography>
                       <Slider
                         getAriaLabel={() => "Temperature range"}
                         value={value}
@@ -400,7 +400,15 @@ const CreatePhd = () => {
                         min={1}
                         max={2000}
                         className="slider-rangee"
-                      />
+                      /> */}
+                      
+                      <div className="position-relative cs-price-slider-main">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges">
+                          <Typography gutterBottom className="start-n40px">{formattedTotal()}</Typography>
+                          <Typography gutterBottom className="end-n40px text-black">{formattedTotal()}</Typography>
+                        </div>
+                        <Slider defaultValue={20} aria-label="Default" valueLabelDisplay="on" className="cs-price-slider" />
+                      </div>
                     </Box>
 
                     <div className="">
