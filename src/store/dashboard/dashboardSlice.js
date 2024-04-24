@@ -726,6 +726,7 @@ const dashboardSlice = createSlice({
       })
       .addCase(addAnotherRoom.fulfilled, (state, action) => {
         state.loading = false;
+        console.log("Payload", action.payload);
         const value = [...state.data.addAnotherRoom, action.payload];
         localStorage.setItem("projectItem", JSON.stringify(value));
         state.data.addAnotherRoom = value;
