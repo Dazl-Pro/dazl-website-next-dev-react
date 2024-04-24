@@ -130,7 +130,7 @@ const MyProject = () => {
           My Project
         </h2>
         <div className="">
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <div className="row pb-3">
               <div className="col-md-6 text-start">
                 <h5>
@@ -157,7 +157,7 @@ const MyProject = () => {
                 </h5>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="">
             <div className="d-flex flex-wrap">
@@ -172,7 +172,10 @@ const MyProject = () => {
                           (roominfoItems, indexroomInfo) => {
                             return (
                               <div key={indexroomInfo}>
-                                <h4 className="text-start my-projects-head">
+                                <h4 className="text-start my-projects-head d-flex">
+                                  <div className="text-dark me-1">
+                                    Project Name:{" "}
+                                  </div>{" "}
                                   {roominfoItems?.room_name}
                                 </h4>
                                 <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4">

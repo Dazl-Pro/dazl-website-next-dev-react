@@ -200,14 +200,19 @@ const CreatePhd = () => {
   const letStart = () => {
     navigate("/agent/createPhd/rooms");
   };
+
+  const [maxValue, setMaxValue] = useState(0);
   const formattedTotal = () => {
     const absTotal = Math.abs(total); // Handle negative values if needed
     if (absTotal >= 1000) {
+      setMaxValue((absTotal / 1000).toFixed(2));
       return (absTotal / 1000).toFixed(2) + "M";
     } else {
       return total + "K";
     }
   };
+
+  console.log("maxValue", maxValue);
 
   return (
     <div className="py-0">
@@ -401,13 +406,27 @@ const CreatePhd = () => {
                         max={2000}
                         className="slider-rangee"
                       /> */}
-                      
+
                       <div className="position-relative cs-price-slider-main">
                         <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges">
-                          <Typography gutterBottom className="start-n40px">{formattedTotal()}</Typography>
-                          <Typography gutterBottom className="end-n40px text-black">{formattedTotal()}</Typography>
+                          <Typography gutterBottom className="start-n40px">
+                            {total}
+                          </Typography>
+                          <Typography
+                            gutterBottom
+                            className="end-n40px text-black"
+                          >
+                            {formattedTotal()}
+                          </Typography>
                         </div>
-                        <Slider defaultValue={20} aria-label="Default" valueLabelDisplay="on" className="cs-price-slider" />
+                        <Slider
+                          defaultValue={20}
+                          aria-label="Default"
+                          valueLabelDisplay="on"
+                          min={total}
+                          max={750000}
+                          className="cs-price-slider"
+                        />
                       </div>
                     </Box>
 
