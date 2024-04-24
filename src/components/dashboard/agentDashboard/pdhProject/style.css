@@ -200,6 +200,82 @@
 /* .bg-custom-red-col {
     background-color: #dc354533 !important;
 } */
+body .cs-price-slider {
+  height: 25px;
+  padding: 0;
+  border-radius: 0;
+}
+.cs-price-ranges > p {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  margin: 0;
+  padding-inline: 15px;
+  z-index: 1;
+  color: #fff;
+  line-height: 25px;
+}
+.cs-price-slider-main {
+  width: calc(100% - 80px);
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.cs-price-slider span.MuiSlider-thumb {
+  width: 80px;
+  height: 32px;
+  background: #c6303e;
+  border-radius: 10px;
+  z-index: 5;
+}
+.cs-price-slider span.MuiSlider-track {
+  background: #000;
+  border-color: #000;
+  border: 0;
+  top: 0;
+  transform: none;
+}
+.cs-price-slider span.MuiSlider-valueLabelOpen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: none;
+  background: no-repeat;
+  width: 100%;
+  height: 100%;
+  padding: 0 5px;
+  line-height: 31px;
+}
+.cs-price-slider:before, .cs-price-slider:after {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: -40px;
+  border-radius: 10px 0px 0px 10px;
+  width: 40px;
+  height: calc(100% + 0px);
+  background: #000;
+}
+body .cs-price-slider:after {
+  right: -40px;
+  left: auto;
+  border-radius: 0px 10px 10px 0px;
+  background: #c6303e;
+  opacity: .3;
+  top: 0;
+  height: 100%;
+}
+.cs-price-slider span.MuiSlider-rail {
+  background: #c6303e;
+  opacity: 0.3;
+  transform: none;
+  top: 0;
+}
+.start-n40px {
+  left: -40px;
+} 
+.end-n40px {
+  right: -40px;
+}
 @media print {
   .d-print-none {
     display: none;
@@ -223,6 +299,35 @@
   .font-18 {
     font-size: 18px;
   }
+}
+@media (max-width: 767.98px) {
+.cs-price-ranges > p {
+  font-size: 13px;
+  padding-inline: 5px;
+}
+.cs-price-slider span.MuiSlider-thumb {
+  width: 60px;
+}
+body .cs-price-slider:after {
+  right: -30px;
+}
+body .cs-price-slider:before {
+  left: -30px;
+}
+.cs-price-ranges .start-n40px {
+  left: -30px;
+} 
+.cs-price-ranges .end-n40px {
+  right: -30px;
+}
+.cs-price-slider:before, .cs-price-slider:after {
+  width: 30px;
+}
+.cs-price-slider-main {
+  width: calc(100% - 60px);
+  margin-left: 30px;
+  margin-right: 30px;
+}
 }
 .errorSub.MuiRadio-root .MuiSvgIcon-root {
   fill: red !important;

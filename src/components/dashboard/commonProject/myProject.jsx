@@ -160,12 +160,12 @@ const MyProject = () => {
           </div>
 
           <div className="">
-            <div className="column-count">
+            <div className="d-flex flex-wrap">
               {projectData?.data?.length > 0
                 ? projectData.data.map((items, index) => (
-                    <div class="column-count-item" key={index}>
+                    <div class="column-count-item w-100 mb-0" key={index}>
                       <div
-                        className="grid-item rounded-4 p-0 border-0"
+                        className="grid-item rounded-4 p-0 border-0 mb-4"
                         key={index}
                       >
                         {items?.roominfo?.map(
@@ -175,7 +175,7 @@ const MyProject = () => {
                                 <h4 className="text-start my-projects-head">
                                   {roominfoItems?.room_name}
                                 </h4>
-                                <div className="d-flex flex-column gap-4 rounded-4 p-4 border">
+                                <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4">
                                   {roominfoItems.feature?.map((item, index) => (
                                     <div key={index}>
                                       <div className="ooo">
@@ -197,18 +197,20 @@ const MyProject = () => {
                                             {item?.inspectionNotes}
                                           </p>
                                         )}
-                                        <div className="mt-2 text-start images-project-all">
-                                          {item?.images?.map((img, index) => (
-                                            <ModalImage
-                                              key={index}
-                                              small={img}
-                                              large={img}
-                                              alt="Full Size"
-                                              hideDownload={true}
-                                              isOpen={isViewerOpen}
-                                              onClose={closeViewer}
-                                            />
-                                          ))}
+                                        <div className="mt-2 text-start images-project-all px-0 me-0">
+                                          <div className="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 d-flex flex-wrap pe-0">
+                                            {item?.images?.map((img, index) => (
+                                              <ModalImage
+                                                key={index}
+                                                small={img}
+                                                large={img}
+                                                alt="Full Size"
+                                                hideDownload={true}
+                                                isOpen={isViewerOpen}
+                                                onClose={closeViewer}
+                                              />
+                                            ))}
+                                          </div>
                                         </div>
                                       </div>
 
@@ -237,7 +239,7 @@ const MyProject = () => {
                                             </button>
                                           )}
                                         </div>
-                                        <div className="ed-del-icons-div">
+                                        <div className="ed-del-icons-div me-0">
                                           <button
                                             className="btn btn-danger"
                                             onClick={() =>
