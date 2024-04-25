@@ -193,40 +193,38 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
           });
         } else {
           console.log("Wrong Called");
-          selectedCheckboxes.forEach((item) => {
-            dispatch(
-              addAnotherRoom({
-                roomId,
-              })
-            )
-              .unwrap()
-              .then((response) => {
-                const data = [...selectImagesFinal, response];
-                dispatch(addRoomFeatures({ data, payload }))
-                  .unwrap()
-                  .then((res) => {
-                    completedPromises++;
-                    if (completedPromises === selectedImages.length) {
-                      Toastify({ data: "success", msg: res.message });
-                    }
-                    if (location.pathname === "/agent/createProject") {
-                      navigate("/agent/my-project");
-                    } else {
-                      navigate("/homeOwner/my-project");
-                    }
-                    setImagesFinal(false);
-                    setShow(false);
-                    setSelectvalue("");
-                    setCheckboxValues(Array(phdRooms?.length).fill(false));
-                    setTextValues([]);
-                    setSelectedImages([]);
-                    localStorage.removeItem("roomselect");
-                    localStorage.removeItem("roomId");
-                    localStorage.removeItem("value");
-                    localStorage.removeItem("projectItem");
-                  });
-              });
-          });
+          dispatch(
+            addAnotherRoom({
+              roomId,
+            })
+          )
+            .unwrap()
+            .then((response) => {
+              const data = [...selectImagesFinal, response];
+              dispatch(addRoomFeatures({ data, payload }))
+                .unwrap()
+                .then((res) => {
+                  completedPromises++;
+                  if (completedPromises === selectedImages.length) {
+                    Toastify({ data: "success", msg: res.message });
+                  }
+                  if (location.pathname === "/agent/createProject") {
+                    navigate("/agent/my-project");
+                  } else {
+                    navigate("/homeOwner/my-project");
+                  }
+                  setImagesFinal(false);
+                  setShow(false);
+                  setSelectvalue("");
+                  setCheckboxValues(Array(phdRooms?.length).fill(false));
+                  setTextValues([]);
+                  setSelectedImages([]);
+                  localStorage.removeItem("roomselect");
+                  localStorage.removeItem("roomId");
+                  localStorage.removeItem("value");
+                  localStorage.removeItem("projectItem");
+                });
+            });
         }
       } else {
         selectedImages.forEach((item) => {
@@ -284,7 +282,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
               localStorage.removeItem("projectItem");
             });
         } else {
-          dispatch(addRoomFeatures({ data: roomId, payload }))
+          dispatch(addRoomFeatures({ data: { roomId: roomId }, payload }))
             .unwrap()
             .then((res) => {
               Toastify({ data: "success", msg: res.message });
@@ -373,20 +371,19 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
         });
       } else {
         // If no checkboxes are selected, just dispatch the room ID
-        selectedCheckboxes.forEach((item) => {
-          dispatch(addAnotherRoom({ roomId }))
-            .unwrap()
-            .then((response) => {
-              setShow(false);
-              setSelectvalue("");
-              setCheckboxValues(Array(phdRooms?.length).fill(false));
-              setTextValues([]);
-              Toastify({
-                data: "success",
-                msg: "Room saved without images or checkboxes. You can add more.",
-              });
+        console.log("called");
+        dispatch(addAnotherRoom({ roomId }))
+          .unwrap()
+          .then((response) => {
+            setShow(false);
+            setSelectvalue("");
+            setCheckboxValues(Array(phdRooms?.length).fill(false));
+            setTextValues([]);
+            Toastify({
+              data: "success",
+              msg: "Room saved without images or checkboxes. You can add more.",
             });
-        });
+          });
       }
     } else {
       // Process selected images and room ID as in the original code
@@ -398,6 +395,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
             setSelectvalue("");
             setCheckboxValues(Array(phdRooms?.length).fill(false));
             setTextValues([]);
+            reset({ photos: [] });
           });
       });
       Toastify({
@@ -407,7 +405,6 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
     }
 
     setSelectedImages([]);
-    reset({ photos: [] });
   };
 
   console.log(selectedImages);
