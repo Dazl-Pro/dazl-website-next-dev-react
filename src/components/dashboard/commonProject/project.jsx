@@ -282,7 +282,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
               localStorage.removeItem("projectItem");
             });
         } else {
-          dispatch(addRoomFeatures({ data: { roomId: roomId }, payload }))
+          dispatch(addRoomFeatures({ data: [{ roomId: roomId }], payload }))
             .unwrap()
             .then((res) => {
               Toastify({ data: "success", msg: res.message });
