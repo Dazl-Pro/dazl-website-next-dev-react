@@ -121,6 +121,9 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
     setTextValues(updatedTextValues);
   };
 
+  console.log("checkboxValues", checkboxValues);
+  console.log("phdRooms", phdRooms);
+
   const handleGetCheckboxValues = () => {
     let payload;
     if (location.pathname === "/agent/createProject") {
@@ -129,64 +132,109 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
       payload = "projects";
     }
 
+    const roomId = localStorage.getItem("roomId");
+
     const selectedCheckboxes = checkboxValues
       .map((isChecked, index) => {
         if (isChecked) {
           return {
-            checkboxId: phdRooms[index].id, // Assuming phdRooms contains the ids
-            description: textValues[index] || "", // Include description if provided
+            roomId,
+            features: phdRooms[index].id, // Assuming phdRooms contains the ids
+            inspectionNotes: textValues[index] || "", // Include description if provided
           };
         }
         return null;
       })
       .filter((item) => item !== null);
 
+    console.log("selectedCheckboxes", selectedCheckboxes);
+
     if (ImagesFinal === true) {
       let completedPromises = 0;
-      if (selectedCheckboxes.length > 0) {
-        // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
-        selectedCheckboxes.forEach((item) => {
-          dispatch(
-            addAnotherRoom({
-              roomId,
-              features: item.checkboxId,
-              inspectionNotes: item.description,
-            })
-          )
-            .unwrap()
-            .then((response) => {
-              const value = [...selectedCheckboxes, response];
-              dispatch(addRoomFeatures({ value, payload }))
-                .unwrap()
-                .then((res) => {
-                  completedPromises++;
-                  if (completedPromises === selectedImages.length) {
-                    Toastify({ data: "success", msg: res.message });
-                  }
-                  if (location.pathname === "/agent/createProject") {
-                    navigate("/agent/my-project");
-                  } else {
-                    navigate("/homeOwner/my-project");
-                  }
-                  setImagesFinal(false);
-                  setShow(false);
-                  setSelectvalue("");
-                  setCheckboxValues(Array(phdRooms?.length).fill(false));
-                  setTextValues([]);
-                  setSelectedImages([]);
-                  localStorage.removeItem("roomselect");
-                  localStorage.removeItem("roomId");
-                  localStorage.removeItem("value");
-                });
-            });
-        });
+      if (selectedImages.length === 0) {
+        if (selectedCheckboxes.length > 0) {
+          console.log("called");
+          // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
+          selectedCheckboxes.forEach((item) => {
+            dispatch(
+              addAnotherRoom({
+                roomId,
+                features: item.features,
+                inspectionNotes: item.inspectionNotes,
+              })
+            )
+              .unwrap()
+              .then((response) => {
+                const data = [...selectImagesFinal, response];
+                dispatch(addRoomFeatures({ data, payload }))
+                  .unwrap()
+                  .then((res) => {
+                    completedPromises++;
+                    if (completedPromises === selectedImages.length) {
+                      Toastify({ data: "success", msg: res.message });
+                    }
+                    if (location.pathname === "/agent/createProject") {
+                      navigate("/agent/my-project");
+                    } else {
+                      navigate("/homeOwner/my-project");
+                    }
+                    setImagesFinal(false);
+                    setShow(false);
+                    setSelectvalue("");
+                    setCheckboxValues(Array(phdRooms?.length).fill(false));
+                    setTextValues([]);
+                    setSelectedImages([]);
+                    localStorage.removeItem("roomselect");
+                    localStorage.removeItem("roomId");
+                    localStorage.removeItem("value");
+                    localStorage.removeItem("projectItem");
+                  });
+              });
+          });
+        } else {
+          console.log("Wrong Called");
+          selectedCheckboxes.forEach((item) => {
+            dispatch(
+              addAnotherRoom({
+                roomId,
+              })
+            )
+              .unwrap()
+              .then((response) => {
+                const data = [...selectImagesFinal, response];
+                dispatch(addRoomFeatures({ data, payload }))
+                  .unwrap()
+                  .then((res) => {
+                    completedPromises++;
+                    if (completedPromises === selectedImages.length) {
+                      Toastify({ data: "success", msg: res.message });
+                    }
+                    if (location.pathname === "/agent/createProject") {
+                      navigate("/agent/my-project");
+                    } else {
+                      navigate("/homeOwner/my-project");
+                    }
+                    setImagesFinal(false);
+                    setShow(false);
+                    setSelectvalue("");
+                    setCheckboxValues(Array(phdRooms?.length).fill(false));
+                    setTextValues([]);
+                    setSelectedImages([]);
+                    localStorage.removeItem("roomselect");
+                    localStorage.removeItem("roomId");
+                    localStorage.removeItem("value");
+                    localStorage.removeItem("projectItem");
+                  });
+              });
+          });
+        }
       } else {
         selectedImages.forEach((item) => {
           dispatch(addAnotherRoom(item))
             .unwrap()
             .then((response) => {
-              const value = [...selectImagesFinal, response];
-              dispatch(addRoomFeatures({ value, payload }))
+              const data = [...selectImagesFinal, response];
+              dispatch(addRoomFeatures({ data, payload }))
                 .unwrap()
                 .then((res) => {
                   completedPromises++;
@@ -207,30 +255,78 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
                   localStorage.removeItem("roomselect");
                   localStorage.removeItem("roomId");
                   localStorage.removeItem("value");
+                  localStorage.removeItem("projectItem");
                 });
             });
         });
       }
     } else {
-      dispatch(addRoomFeatures({ selectedImages, payload }))
-        .unwrap()
-        .then((res) => {
-          Toastify({ data: "success", msg: res.message });
-          if (location.pathname === "/agent/createProject") {
-            navigate("/agent/my-project");
-          } else {
-            navigate("/homeOwner/my-project");
-          }
-          setImagesFinal(false);
-          setShow(false);
-          setSelectvalue("");
-          setCheckboxValues(Array(phdRooms?.length).fill(false));
-          setTextValues([]);
-          setSelectedImages([]);
-          localStorage.removeItem("roomselect");
-          localStorage.removeItem("roomId");
-          localStorage.removeItem("value");
-        });
+      if (selectedImages.length === 0) {
+        if (selectedCheckboxes.length > 0) {
+          dispatch(addRoomFeatures({ data: selectedCheckboxes, payload }))
+            .unwrap()
+            .then((res) => {
+              Toastify({ data: "success", msg: res.message });
+              if (location.pathname === "/agent/createProject") {
+                navigate("/agent/my-project");
+              } else {
+                navigate("/homeOwner/my-project");
+              }
+              setImagesFinal(false);
+              setShow(false);
+              setSelectvalue("");
+              setCheckboxValues(Array(phdRooms?.length).fill(false));
+              setTextValues([]);
+              setSelectedImages([]);
+              localStorage.removeItem("roomselect");
+              localStorage.removeItem("roomId");
+              localStorage.removeItem("value");
+              localStorage.removeItem("projectItem");
+            });
+        } else {
+          dispatch(addRoomFeatures({ data: roomId, payload }))
+            .unwrap()
+            .then((res) => {
+              Toastify({ data: "success", msg: res.message });
+              if (location.pathname === "/agent/createProject") {
+                navigate("/agent/my-project");
+              } else {
+                navigate("/homeOwner/my-project");
+              }
+              setImagesFinal(false);
+              setShow(false);
+              setSelectvalue("");
+              setCheckboxValues(Array(phdRooms?.length).fill(false));
+              setTextValues([]);
+              setSelectedImages([]);
+              localStorage.removeItem("roomselect");
+              localStorage.removeItem("roomId");
+              localStorage.removeItem("value");
+              localStorage.removeItem("projectItem");
+            });
+        }
+      } else {
+        dispatch(addRoomFeatures({ selectedImages, payload }))
+          .unwrap()
+          .then((res) => {
+            Toastify({ data: "success", msg: res.message });
+            if (location.pathname === "/agent/createProject") {
+              navigate("/agent/my-project");
+            } else {
+              navigate("/homeOwner/my-project");
+            }
+            setImagesFinal(false);
+            setShow(false);
+            setSelectvalue("");
+            setCheckboxValues(Array(phdRooms?.length).fill(false));
+            setTextValues([]);
+            setSelectedImages([]);
+            localStorage.removeItem("roomselect");
+            localStorage.removeItem("roomId");
+            localStorage.removeItem("value");
+            localStorage.removeItem("projectItem");
+          });
+      }
     }
   };
 

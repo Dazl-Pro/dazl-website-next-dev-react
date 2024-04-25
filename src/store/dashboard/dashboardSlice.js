@@ -307,7 +307,7 @@ export const addRoomFeatures = createAsyncThunk(
     try {
       const response = await http.post(
         `/${data.payload}`,
-        data.selectedImages ?? data.value
+        data.selectedImages ?? data.data
       );
       if (response.status === 200) {
         if (data.payload === "realtorprojects") {
@@ -887,6 +887,7 @@ const dashboardSlice = createSlice({
         state.loading = true;
       })
       .addCase(addRoomFeatures.fulfilled, (state, action) => {
+        state.data.addAnotherRoom = [];
         state.loading = false;
       })
       .addCase(addRoomFeatures.rejected, (state, action) => {
