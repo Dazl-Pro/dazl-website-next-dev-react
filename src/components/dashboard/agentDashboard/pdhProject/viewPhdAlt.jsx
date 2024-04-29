@@ -254,9 +254,9 @@ const ViewPhdAlt = () => {
                                 key={index}
                                 className="p-3 mt-3 bg-white"
                                 style={{
-                                  border: "4px solid",
-                                  borderColor: "red",
-                                  borderRadius: "5px",
+                                  border: "1px solid",
+                                  borderColor: "#666",
+                                  borderRadius: "10px",
                                   margin: "10px",
                                 }}
                               >
