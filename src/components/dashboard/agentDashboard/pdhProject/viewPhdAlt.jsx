@@ -6,6 +6,10 @@ import "./style.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Masonry from "@mui/lab/Masonry";
+
 import {
   bidStatusUpdate,
   mailPdf,
@@ -186,9 +190,14 @@ const ViewPhdAlt = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-custom-red bg-white shadow p-3 rounded-4 mt-4">
-                <h3 className="">Updated House Details And Condition:-</h3>
-                <div className="d-flex flex-md-row flex-column flex-wrap rounded-4 mt-4">
+              <div
+                className=" shadow p-3 rounded-4 mt-4"
+                style={{ backgroundColor: "#000" }}
+              >
+                <h3 className="text-white">
+                  Updated House Details And Condition:-
+                </h3>
+                <Masonry columns={2} spacing={2}>
                   {items?.roominfo.map((ele, index) => {
                     const roomId = ele?.room_id;
                     const imagesGroup = items?.images?.filter(
@@ -243,7 +252,13 @@ const ViewPhdAlt = () => {
                             ele?.feature[0]?.feature_name !== "" && (
                               <div
                                 key={index}
-                                className="border border-dark p-3 mt-3 bg-white"
+                                className="p-3 mt-3 bg-white"
+                                style={{
+                                  border: "4px solid",
+                                  borderColor: "red",
+                                  borderRadius: "5px",
+                                  margin: "10px",
+                                }}
                               >
                                 <h3 className="text-center d-flex mb-3 mt-1">
                                   Buyer Road Blocks:
@@ -349,7 +364,7 @@ const ViewPhdAlt = () => {
                       </div>
                     );
                   })}
-                </div>
+                </Masonry>
               </div>
 
               {/* {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
