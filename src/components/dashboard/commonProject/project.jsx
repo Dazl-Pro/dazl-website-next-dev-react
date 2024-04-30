@@ -473,6 +473,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
         setSelectvalue={setSelectvalue}
         selectValue={selectValue}
         setInitialFields={setInitialFields}
+        width="w-50"
       />
       {show ? (
         <>

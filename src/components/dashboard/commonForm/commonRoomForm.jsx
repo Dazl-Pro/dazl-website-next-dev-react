@@ -9,8 +9,14 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
 const CommonRoomform = (props) => {
-  const { setShow, setSelectvalue, selectValue, show, setInitialFields } =
-    props;
+  const {
+    setShow,
+    setSelectvalue,
+    selectValue,
+    show,
+    setInitialFields,
+    width,
+  } = props;
   const dispatch = useDispatch();
 
   const { handleSubmit, control } = useForm();
@@ -70,6 +76,7 @@ const CommonRoomform = (props) => {
           defaultValue={selectValue === "" ? selectValue : ""}
           render={({ field }) => (
             <Autocomplete
+              className={`${width}`}
               {...field}
               value={selectValue}
               onChange={(event, newValue) => {
