@@ -197,7 +197,7 @@ const ViewPhdAlt = () => {
                 <h3 className="text-white">
                   Updated House Details And Condition:-
                 </h3>
-                <Masonry columns={2} spacing={2}>
+                <Masonry columns={{ xs: 1, sm: 1, md: 2 }} spacing={2}>
                   {items?.roominfo.map((ele, index) => {
                     const roomId = ele?.room_id;
                     const imagesGroup = items?.images?.filter(
