@@ -12,6 +12,10 @@ const ProjectOpportunities = () => {
   const Selector = useSelector((state) => state.dashboardSlice)
   const projectOpportunitiesData = Selector.data.projectOpportunities
   console.log(projectOpportunitiesData)
+  const viewPhdHandler = (itemId) => {
+    navigate(`/company/projectOpportunity/${itemId}`);
+  };
+
   return (
     <div className='py-0'>
       <div className="">
@@ -34,7 +38,7 @@ const ProjectOpportunities = () => {
                 <td className="ps-2">
                   <button
                     className="btn btn-outline-success mx-1 btn-sm"
-                  // onClick={() => viewPhdAltHandler(item.id)}
+                    onClick={() => viewPhdHandler(item.project_id)}
                   >
                     <PreviewIcon />
                   </button>

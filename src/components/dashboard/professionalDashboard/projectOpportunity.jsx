@@ -1,8 +1,17 @@
 import React from 'react'
 import "./professional.css"
 import SendIcon from '@mui/icons-material/Send';
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const ProjectOpportunity = () => {
+    const dispatch = useDispatch();
+    const { id } = useParams();
+    useEffect(() => {
+        dispatch(viewPhdAlt({ id: itemId, value: "open" }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [itemId]);
+      
     return (
         <div className='py-0'>
             <div className="">
