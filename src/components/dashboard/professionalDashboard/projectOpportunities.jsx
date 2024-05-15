@@ -1,8 +1,13 @@
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector,useDispatch } from 'react-redux'
+import {  projectOpportunities } from '../../../store/dashboard/dashboardSlice'
 
 const ProjectOpportunities = () => {
+  const dispatch= useDispatch()
+  useEffect(() => {dispatch(projectOpportunities()) }, [])
   const Selector = useSelector((state) => state.dashboardSlice)
   const projectOpportunitiesData = Selector.data.projectOpportunities
+  console.log(projectOpportunitiesData)
   return (
     <div className='py-0'>
       <div className="">

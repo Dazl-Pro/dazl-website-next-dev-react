@@ -29,10 +29,10 @@ const ProfessionalDashboard = () => {
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.   <span style={{cursor:"pointer"}} className='text-primary fw-bold'  onClick={() => (
                           localStorage.clear(), navigate("/")
                         )}>Log Out</span></p>
-          {/* <div className='console-flex d-flex justify-content-center align-items-baseline'>
+          <div className='console-flex d-flex justify-content-center align-items-baseline'>
           <button className='btn btn-primary mw-200px w-100  mx-1 mob' style={{color:"white"}} onClick={()=>(navigate("/company/projectOpportunities"), dispatch(projectOpportunities()))} >Project opportunities</button>
           <button className='btn btn-primary mw-200px w-100  mx-1 mb' onClick={()=>(dispatch(getCompanyProfile(userId)), navigate("/company/companyProfile"))} style={{color:"white"}}>My Company Profile</button>
-        </div> */}
+        </div>
         </div>
       </div>
     </div>
