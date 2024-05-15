@@ -553,6 +553,38 @@ export const viewPhdAlt = createAsyncThunk(
   }
 );
 
+export const viewServicePhd = createAsyncThunk(
+  "dashboard/viewServicePhd",
+  async (value) => {
+    try {
+      const response = await http.get(
+        `/project-opportunities/project/${value}`
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+      // Toastify({ data: "error", msg: error.response.data.message })
+    }
+  }
+);
+
+export const sendMailHomeOwner = createAsyncThunk(
+  "dashboard/sendMailHomeOwner",
+  async (value) => {
+    try {
+      const response = await http.post(`/sendtestnote`, value);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+      // Toastify({ data: "error", msg: error.response.data.message })
+    }
+  }
+);
+
 export const deletePhd = createAsyncThunk(
   "dashboard/deletePhd",
   async (value, { dispatch }) => {
@@ -681,10 +713,11 @@ const dashboardSlice = createSlice({
       diagnosticReports: null,
       uploadImage: [],
       roomtype: null,
+      sendMailHomeOwner: null,
       customerprojectData: [],
       agentProjectData: [],
       customerData: [],
-
+      viewPhdAlt: null,
       show: false,
       showAlt: false,
       viewPhd: [],
@@ -692,6 +725,7 @@ const dashboardSlice = createSlice({
       addValueData: [],
       price: "",
       addAnotherRoom: [],
+      viewServicePhd: null,
     },
     loading: false,
   },
@@ -973,6 +1007,32 @@ const dashboardSlice = createSlice({
         state.loading = false;
       })
       .addCase(viewPhdAlt.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(viewServicePhd.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(viewServicePhd.fulfilled, (state, action) => {
+        state.data.viewServicePhd = action.payload;
+        if (action.payload.value === "open") {
+          state.data.showAlt = true;
+        }
+        state.loading = false;
+      })
+      .addCase(viewServicePhd.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(sendMailHomeOwner.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(sendMailHomeOwner.fulfilled, (state, action) => {
+        state.data.sendMailHomeOwner = action.payload;
+        if (action.payload.value === "open") {
+          state.data.showAlt = true;
+        }
+        state.loading = false;
+      })
+      .addCase(sendMailHomeOwner.rejected, (state, action) => {
         state.loading = false;
       })
       //  close view phd
