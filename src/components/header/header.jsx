@@ -104,6 +104,10 @@ const EditAddRoom = lazy(() =>
 const ProjectOpportunities = lazy(() =>
   import("../dashboard/professionalDashboard/projectOpportunities")
 );
+
+const ProjectOpportunity = lazy(() =>
+  import("../dashboard/professionalDashboard/projectOpportunity")
+);
 const companyProfile = lazy(() =>
   import("../dashboard/professionalDashboard/profile/companyProfile")
 );
@@ -543,6 +547,13 @@ const Header = () => {
                             path="/company/projectOpportunities"
                             element={
                               <RouteGuard Components={ProjectOpportunities} />
+                            }
+                          />
+                           <Route
+                            exact
+                            path="/company/projectOpportunities/:id"
+                            element={
+                              <RouteGuard Components={ProjectOpportunity} />
                             }
                           />
                         </Route>
