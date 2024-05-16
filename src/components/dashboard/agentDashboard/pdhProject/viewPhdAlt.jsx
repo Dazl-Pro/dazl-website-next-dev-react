@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Masonry from "@mui/lab/Masonry";
+import SaveIcon from "@mui/icons-material/Save";
 
 import {
   bidStatusUpdate,
@@ -42,6 +43,7 @@ const ViewPhdAlt = () => {
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selector?.data?.viewPhdAlt;
+  console.log(viewPhdData?.[0]?.projectOpportunityReplies);
 
   useEffect(() => {
     dispatch(viewPhdAlt({ id: itemId, value: "open" }));
@@ -476,7 +478,7 @@ const ViewPhdAlt = () => {
                       )} */}
 
               <div className="progress-slidee mt-4 bg-white shadow py-3 px-2 rounded-4 d-flex flex-wrap">
-                <div className=" mb-3 col-12">
+                <div className="mb-3 col-12">
                   <div className="border border-dark flex-grow-1 mx-2 p-2">
                     <h3>Preliminary Value/Score</h3>
                     <div>
@@ -539,6 +541,127 @@ const ViewPhdAlt = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="progress-slidee mt-4 bg-white shadow py-3 px-3 rounded-4 d-flex flex-wrap">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ fontWeight: "bold", fontSize: 30 }}>
+                    Service Pro Replies:
+                  </div>
+                  <div style={{ fontWeight: "bold", fontSize: 20 }}>
+                    You have{" "}
+                    {viewPhdData?.[0]?.projectOpportunityReplies.length} replies
+                  </div>
+                </div>
+                {viewPhdData?.[0]?.projectOpportunityReplies.map(
+                  (opportunity, index) => (
+                    <div
+                      key={index}
+                      className="mb-3 col-12 d-flex border border-dark flex-grow-1 px-3 py-2"
+                    >
+                      <div className="col-5">
+                        <div>Name</div>
+                        <div>Address</div>
+                        <div>Email</div>
+                        <div>Number</div>
+                        <div>View Profie</div>
+                      </div>
+                      <div className="col-6">
+                        <div>Re: Address</div>
+                        <div className="mt-1 gap-4">
+                          <div className="d-flex gap-1">
+                            <div>
+                              <input
+                                type="checkbox"
+                                id="checkbox"
+                                checked={opportunity.is_interested === 1}
+                              />
+                            </div>
+                            <span className="fw-bold fs-6"> YES </span>, I'm
+                            interseted.
+                          </div>
+                          <div className="d-flex gap-1">
+                            <div>
+                              <input
+                                type="checkbox"
+                                id="checkbox"
+                                checked={opportunity.is_interested !== 1}
+                              />
+                            </div>
+                            <span className="fw-bold fs-6"> NO </span>, I'm not
+                            interseted.{" "}
+                          </div>
+                        </div>
+                        <div className="d-flex gap-1 flex-wrap">
+                          <div style={{ fontWeight: "bold" }}>Message: </div>
+                          <div>{opportunity.message}</div>
+                        </div>
+                      </div>
+                      <div
+                        className="col-1"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            marginBottom: 8,
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "red",
+                              padding: 4,
+                              borderRadius: "50%", // Set borderRadius to 50% for a circular shape
+                              width: 40, // Specify width (adjust as needed)
+                              height: 40, // Specify height (adjust as needed)
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <SendIcon />
+                          </div>
+                          <div>Reply</div>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "lightblue",
+                              padding: 4,
+                              borderRadius: "50%", // Set borderRadius to 50% for a circular shape
+                              width: 40, // Specify width (adjust as needed)
+                              height: 40, // Specify height (adjust as needed)
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <SaveIcon />
+                          </div>
+                          <div>Save</div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
               <div className="d-flex justify-content-end gap-4">
                 <button
