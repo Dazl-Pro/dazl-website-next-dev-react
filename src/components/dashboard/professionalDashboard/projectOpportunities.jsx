@@ -44,7 +44,7 @@ const ProjectOpportunities = () => {
                   return (
                     <tr key={index} className="align-middle">
                       <td>{index + 1}</td>
-                      <td className="w-75">{item.customer.email}</td>
+                      <td className="w-75">{item.customer?.house?.address}</td>
                       <td className="ps-2">
                         <button
                           className="btn btn-outline-success mx-1 btn-sm"

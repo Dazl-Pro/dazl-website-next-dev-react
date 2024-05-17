@@ -248,7 +248,7 @@ const CreatePhd = () => {
                   )}
                   <lable className="fs-3">
                     {steponeCompleted
-                      ? "Adjust the high and low as needed, based on your knowledge of the area."
+                      ? "Add the low and high, based on your knowledge of the area."
                       : "Seller's Information"}
                   </lable>
                 </h5>
@@ -419,15 +419,24 @@ const CreatePhd = () => {
                             {formattedTotal()}
                           </Typography>
                         </div>
-                        <Slider
-                          defaultValue={20}
-                          aria-label="Default"
-                          valueLabelDisplay="on"
-                          min={total}
-                          max={750000}
-                          className="cs-price-slider"
-                        />
-                      </div>
+                        <div className="slider-container position-relative">
+          <Slider
+            defaultValue={20}
+            aria-label="Default"
+            valueLabelDisplay="on"
+            min={total}
+            max={750000}
+            className="cs-price-slider"
+            onChange={handleChange}
+          />
+          <Typography variant="body2" className="slider-label start-label">
+            Low
+          </Typography>
+          <Typography variant="body2" className="slider-label end-label">
+            High
+          </Typography>
+        </div>
+      </div>
                     </Box>
 
                     <div className="">

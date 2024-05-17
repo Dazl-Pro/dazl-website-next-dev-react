@@ -127,7 +127,7 @@ const MyProject = () => {
     <div className="py-0">
       <div className="">
         <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
-          My Project
+          My Projects
         </h2>
         <div className="">
           {/* <div className="mb-4">

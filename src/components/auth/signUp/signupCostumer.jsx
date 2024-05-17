@@ -21,13 +21,15 @@ const schema = yup.object().shape({
     .email("Please enter valid email address")
     .required("Email is required")
     .trim(),
-  password: yup
+    password: yup
     .string()
-    .min(8, "Password must be at least 8 characters")
+    .required("Password is required")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-      "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number"
+      /^(?=.*[A-Z])/,
+      "Password must contain at least one uppercase letter"
     )
+    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(8, "Password must be atleast 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -90,10 +92,13 @@ const SignupCostumer = () => {
     dispatch(customerSignUp(data))
       .unwrap()
       .then((data) => {
-        if (data === undefined) {
+        // if (data === undefined) {
+          if (data === undefined) {
         } else {
-          Toastify({ data: "success", msg: "Successfully Signed Up" });
-          navigate("/login/customer");
+          localStorage.setItem("token", data.data.token);
+          localStorage.setItem("userType", "customer");
+          Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
+          navigate("/homeOwner/dashboard");
         }
       });
     reset();

@@ -123,6 +123,22 @@
   height: 25px;
   border-radius: 5px;
 }
+.slider-container {
+  position: relative;
+  width: 100%;
+}
+.start-label {
+  left: 0;
+}
+
+.end-label {
+  right: 0;
+}
+
+.slider-label {
+  position: absolute;
+  top: 35px; /* Adjust as needed to position above the slider */
+}
 .progress-slidee .MuiLinearProgress-bar {
   background-color: #dc3545;
 }
@@ -219,6 +235,7 @@ body .cs-price-slider {
   width: calc(100% - 80px);
   margin-left: 40px;
   margin-right: 40px;
+  position: relative;
 }
 .cs-price-slider span.MuiSlider-thumb {
   width: 80px;

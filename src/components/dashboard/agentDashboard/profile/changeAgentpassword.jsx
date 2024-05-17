@@ -20,22 +20,26 @@ const defaultValues = {
 };
 
 const schema = yup.object().shape({
-  newPassword: yup
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Password must contain at least 8 characters, one uppercase, one number and one special case character"
-    )
+  password: yup
+  .string()
+  .required("Password is required")
+  .matches(
+    /^(?=.*[A-Z])/,
+    "Password must contain at least one uppercase letter"
+  )
+  .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+  .min(8, "Password must be atleast 8 characters long")
     .required("Password is required")
     .trim(),
   currentPassword: yup
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Password must contain at least 8 characters, one uppercase, one number and one special case character"
-    )
+  .string()
+  .required("Password is required")
+  .matches(
+    /^(?=.*[A-Z])/,
+    "Password must contain at least one uppercase letter"
+  )
+  .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+  .min(8, "Password must be atleast 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup

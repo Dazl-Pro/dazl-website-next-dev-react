@@ -80,13 +80,15 @@ const schema = yup.object().shape({
     .email("Please enter valid email address")
     .required("Email is required")
     .trim(),
-  password: yup
+    password: yup
     .string()
-    .min(8, "Password must be at least 8 characters")
+    .required("Password is required")
     .matches(
-      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Password must contain at least 8 characters, one uppercase, one number and one special case character"
+      /^(?=.*[A-Z])/,
+      "Password must contain at least one uppercase letter"
     )
+    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(8, "Password must be atleast 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -218,8 +220,11 @@ const SignupPros = () => {
       .then((data) => {
         if (data === undefined) {
         } else {
-          Toastify({ data: "success", msg: "Successfully Signed Up" });
-          navigate("/login/professional");
+          console.log(data)
+          localStorage.setItem("token", data.data.token);
+          localStorage.setItem("userType", "professional");
+          Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
+          navigate("/company/professional");
           window.open(data.data.payment_url);
         }
       });
@@ -672,7 +677,7 @@ const SignupPros = () => {
                             className={`form-control ${
                               errors.insuranceCompany ? "error" : ""
                             }`}
-                            placeholder="Insurance Certificate"
+                            placeholder="Insurance Company"
                           />
                           {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
                         </>
@@ -691,7 +696,7 @@ const SignupPros = () => {
                             className={`form-control ${
                               errors.contactPerson ? "error" : ""
                             }`}
-                            placeholder="Insurance Contact Number"
+                            placeholder="Contact Person or Agent"
                             onKeyPress={(e) => {
                               const isValidInput = /^[0-9\b]+$/.test(e.key);
                               if (!isValidInput) {
@@ -716,7 +721,7 @@ const SignupPros = () => {
                             className={`form-control ${
                               errors.insuranceNumber ? "error" : ""
                             }`}
-                            placeholder="Insurance Number "
+                            placeholder="Contact Number "
                             onKeyPress={(e) => {
                               // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
                               const isValidInput = /^[0-9\b]+$/.test(e.key);

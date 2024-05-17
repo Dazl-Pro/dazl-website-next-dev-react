@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 
-import "./style.css";
+import "./style.css";  
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -566,11 +566,11 @@ const ViewPhdAlt = () => {
                       className="mb-3 col-12 d-flex border border-dark flex-grow-1 px-3 py-2"
                     >
                       <div className="col-5">
-                        <div>Name</div>
-                        <div>Address</div>
-                        <div>Email</div>
-                        <div>Number</div>
-                        <div>View Profie</div>
+                        <div>{opportunity?.professional?.first_name} {opportunity?.professional?.last_name}</div>
+                        <div>{opportunity?.professional?.company_street_address}, {opportunity?.professional?.company_city}, {opportunity?.professional?.state}, {opportunity?.professional?.zip_code}</div>
+                        <div>{opportunity?.professional?.email}</div>
+                        <div>{opportunity?.professional?.phone_number}</div>
+                        <div><a href={`/profile/${opportunity?.professional_id}`}>View Profile</a></div>
                       </div>
                       <div className="col-6">
                         <div>Re: Address</div>
