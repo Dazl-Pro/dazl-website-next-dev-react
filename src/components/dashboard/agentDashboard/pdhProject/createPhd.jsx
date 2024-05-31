@@ -6,15 +6,10 @@ import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import {
-  createphdStepone,
-  uploadImage,
-} from "../../../../store/dashboard/dashboardSlice";
+import { createphdStepone } from "../../../../store/dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
 import { Typography, TextField } from "@material-ui/core";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import DeleteIcon from "@mui/icons-material/Delete";
-
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
@@ -28,10 +23,6 @@ const defaultValues = {
   email: "",
   location: "",
 };
-
-function valuetext(value) {
-  return `${value}°C`;
-}
 
 const CreatePhd = () => {
   const [steponeCompleted, setSteponeCompleted] = React.useState(false);
@@ -47,35 +38,18 @@ const CreatePhd = () => {
     location: yup.string().required("Location is required").trim(),
   });
 
-  const selector = useSelector((state) => state.dashboardSlice);
-
-  const stepOne = selector.data.phdStepOne;
-
   const navigate = useNavigate();
   const {
     control,
-    reset,
-    register,
     handleSubmit,
     setValue,
-    setError,
-    clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues,
     resolver: yupResolver(schema),
   });
 
-  const {
-    fields: photoFields,
-    append: appendPhoto,
-    remove: removePhoto,
-  } = useFieldArray({
-    control,
-    name: "photos",
-  });
-
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append } = useFieldArray({
     control,
     name: "checkbox_photos",
   });
@@ -119,13 +93,7 @@ const CreatePhd = () => {
       });
   };
 
-  const [fileValue, setFileValue] = useState(null);
-  const [errorBorder2, setErrorborder2] = useState(false);
-  const [outerImage, setOuterimage] = React.useState([]);
-  const [value, setValuee] = React.useState([500, 1000]);
-  const [total, setTotal] = React.useState(750);
   const [loading, setLoading] = React.useState(false);
-  const [address, setAddress] = React.useState("");
   const [select, setSelect] = React.useState(false);
 
   const handleSelect = async (selectedAddress) => {
@@ -145,74 +113,23 @@ const CreatePhd = () => {
   };
 
   const handleChangeLocation = (newAddress) => {
-    setAddress(newAddress);
     setSelect(false);
   };
 
-  const handleImage = (index, e) => {
-    const file = e.target.files[0];
-    setFileValue(file);
-    setErrorborder2(false);
-    const isImage = file && file.type.startsWith("image/");
-    clearErrors(`photos[${index}].file`);
-
-    if (!isImage) {
-      setError(`photos[${index}].file`, {
-        type: "manual",
-        message: "Invalid file type. Please select a valid image.",
-      });
-    } else {
-      const formData = new FormData();
-      formData.append("image", file);
-      dispatch(uploadImage(formData))
-        .unwrap()
-        .then((res) => {
-          const responseImage = res.image;
-
-          const featuresIdDataIndex = outerImage.findIndex(
-            (item) => item === responseImage
-          );
-          if (featuresIdDataIndex !== -1) {
-            setOuterimage((prevData) => {
-              const newArray = [...prevData];
-              const existingObject = { ...newArray[featuresIdDataIndex] };
-              existingObject.images = [...existingObject.images, responseImage];
-              newArray[featuresIdDataIndex] = existingObject;
-              return newArray;
-            });
-          } else {
-            setOuterimage((prevData) => [...prevData, responseImage]);
-          }
-        });
+  const handleChange = (event, newValue) => {
+    if (!isNaN(newValue)) {
+      // Check if newValue is a valid number
+      setSliderValue(newValue);
     }
   };
 
-  const handleChange = (event, newValue) => {
-    setValuee(newValue);
-    // Calculate the total of the newValue array
-    const newMidValue = (newValue[0] + newValue[1]) / 2;
-    setTotal(newMidValue);
-
-    localStorage.setItem("midValue", newMidValue);
-    localStorage.setItem("maxValue", newValue[1]);
-    localStorage.setItem("lowestValue", newValue[0]);
-  };
   const letStart = () => {
     navigate("/agent/createPhd/rooms");
   };
 
-  const [maxValue, setMaxValue] = useState(0);
-  const formattedTotal = () => {
-    const absTotal = Math.abs(total); // Handle negative values if needed
-    if (absTotal >= 1000) {
-      setMaxValue((absTotal / 1000).toFixed(2));
-      return (absTotal / 1000).toFixed(2) + "M";
-    } else {
-      return total + "K";
-    }
-  };
-
-  console.log("maxValue", maxValue);
+  const [lowValue, setLowValue] = useState(750);
+  const [maxValue, setMaxValue] = useState(7500);
+  const [sliderValue, setSliderValue] = useState(null);
 
   return (
     <div className="py-0">
@@ -394,258 +311,67 @@ const CreatePhd = () => {
                 ) : (
                   <>
                     <Box sx={{ width: 300 }} className="w-100">
-                      {/* <Typography gutterBottom>{total}K</Typography> */}
-                      {/* <Typography gutterBottom>{formattedTotal()}</Typography>
-                      <Slider
-                        getAriaLabel={() => "Temperature range"}
-                        value={value}
-                        onChange={handleChange}
-                        valueLabelDisplay="on"
-                        getAriaValueText={valuetext}
-                        min={1}
-                        max={2000}
-                        className="slider-rangee"
-                      /> */}
-
                       <div className="position-relative cs-price-slider-main">
                         <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges">
                           <Typography gutterBottom className="start-n40px">
-                            {total}
+                            {lowValue}
                           </Typography>
                           <Typography
                             gutterBottom
                             className="end-n40px text-black"
                           >
-                            {formattedTotal()}
+                            {maxValue}
                           </Typography>
                         </div>
                         <div className="slider-container position-relative">
-          <Slider
-            defaultValue={20}
-            aria-label="Default"
-            valueLabelDisplay="on"
-            min={total}
-            max={750000}
-            className="cs-price-slider"
-            onChange={handleChange}
-          />
-          <Typography variant="body2" className="slider-label start-label">
-            Low
-          </Typography>
-          <Typography variant="body2" className="slider-label end-label">
-            High
-          </Typography>
-        </div>
-      </div>
+                          <Slider
+                            value={sliderValue}
+                            aria-label="Default"
+                            valueLabelDisplay="on"
+                            min={lowValue}
+                            max={maxValue}
+                            className="cs-price-slider"
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex justify-content-between">
+                        <div>
+                          <Typography variant="body">
+                            Set Low Value:{" "}
+                          </Typography>
+                          <input
+                            type="number"
+                            value={lowValue}
+                            onChange={(e) => {
+                              const newValue = parseFloat(e.target.value); // Parse input value as a float
+                              if (!isNaN(newValue)) {
+                                // Check if the parsed value is a valid number
+                                setLowValue(newValue); // Set the new low value
+                              }
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <Typography variant="body">
+                            Set high Value:{" "}
+                          </Typography>
+                          <input
+                            type="number"
+                            value={maxValue}
+                            onChange={(e) => {
+                              setMaxValue(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </Box>
 
                     <div className="">
                       <div className="row justify-content-between py-3 text-start">
                         <div className="container">
                           <div className="row">
-                            {/* <div className="bg-light p-3 rounded-2 col-8">
-                              <div className="row d-flex justify-content-between">
-                                <div className={`form-row col-md-4 mb-3`}>
-                                  <input
-                                    className={` width-input form-control`}
-                                    placeholder="Area*"
-                                  />
-                                </div>
-                                <div className={`form-row col-md-4 mb-3`}>
-                                  <input
-                                    className={` width-input form-control`}
-                                    placeholder="Market Ready*"
-                                  />
-                                </div>
-                              </div>
-                              <TextField
-                                // label={` ${_.name}`}
-                                className="text-areamt w-100 form-control"
-                                multiline
-                                rows={4}
-                                variant="outlined"
-                                placeholder="Notes*"
-                              />
-                              <div className="row form-row mt-3">
-                                {photoFields.map((item, index) => (
-                                  <div className="col-md-6" key={item.id}>
-                                    <div className="d-flex align-items-start gap-2">
-                                      <input
-                                        type="file"
-                                        {...register(`photos[${index}].file`)}
-                                        className={`form-control mb-3 ${
-                                          (errors.photos &&
-                                            errors?.photos[index]?.file) ||
-                                          errorBorder2
-                                            ? "error"
-                                            : ""
-                                        }`}
-                                        onChange={(e) => handleImage(index, e)}
-                                      />
-                                      {photoFields.length > 1 && (
-                                        <button
-                                          type="button"
-                                          className="btn btn-light bg-light-red border-danger space"
-                                          onClick={() => removePhoto(index)}
-                                        >
-                                          <DeleteIcon />
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                              <div className="d-flex justify-content-start align-items-center mt-2">
-                                <button
-                                  type="button"
-                                  className="btn btn-danger"
-                                  onClick={() => appendPhoto({ file: null })}
-                                >
-                                  Upload more
-                                </button>
-                              </div>
-                            </div> */}
-                            <div className="d-grid gap-3 col">
-                              {/* <div className="">
-                                <div className="col-inner h-100 bg-image-box position-relative rounded-4">
-                                  <div className="p-4 h-100 position-relative z-1">
-                                    <h5 className="text-uppercase mb-3">
-                                      Public Records
-                                    </h5>
-                                    <div>
-                                      <div className="mb-2 d-flex justify-content-between align-items-center">
-                                        <span> Lot Size:</span>
-                                        <div>
-                                          <input
-                                            type="number"
-                                            value={lotSize}
-                                            onChange={(e) =>
-                                              setLotSize(e.target.value)
-                                            }
-                                            className="ms-2"
-                                            style={{ maxWidth: "80px" }}
-                                          />{" "}
-                                          sqft
-                                        </div>
-                                      </div>
-                                      <div className="mb-2 d-flex justify-content-between align-items-center">
-                                        {" "}
-                                        <span>Property Type:</span>
-                                        <input
-                                          type="text"
-                                          value={propertyType}
-                                          onChange={(e) =>
-                                            setPropertyType(e.target.value)
-                                          }
-                                          className="ms-2"
-                                        />
-                                      </div>
-                                      <div className="mb-2 d-flex justify-content-between align-items-center">
-                                        <span>Date Updated:</span>
-
-                                        <input
-                                          type="date"
-                                          value={dateUpdated}
-                                          onChange={(e) =>
-                                            setDateUpdated(e.target.value)
-                                          }
-                                          className="ms-2"
-                                          style={{ maxWidth: "120px" }}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div> */}
-                              {/* <div className="">
-                                <div className="col-inner h-100 bg-image-box2 position-relative rounded-4">
-                                  <div className="p-4 h-100 position-relative z-1">
-                                    <h5 className="text-uppercase mb-3">
-                                      HOUSE DETAILS
-                                    </h5>
-                                    <div className="d-flex flex-wrap">
-                                      <p className="mb-2 col-md-6  d-flex justify-content-between align-items-center">
-                                        <span>Bathrooms:</span>
-                                        <input
-                                          type="number"
-                                          value={bathrooms}
-                                          onChange={(e) =>
-                                            setBathrooms(e.target.value)
-                                          }
-                                          style={{ maxWidth: "60px" }}
-                                        />
-                                      </p>
-                                      <p className="mb-2 col-md-6 ps-md-4 d-flex justify-content-between align-items-center">
-                                        <span>Rooms:</span>
-                                        <input
-                                          type="number"
-                                          value={rooms}
-                                          onChange={(e) =>
-                                            setRooms(e.target.value)
-                                          }
-                                          style={{ maxWidth: "60px" }}
-                                        />
-                                      </p>
-                                      <p className="mb-2 col-md-6 d-flex justify-content-between align-items-center">
-                                        <span>Stories:</span>
-                                        <input
-                                          type="number"
-                                          value={stories}
-                                          onChange={(e) =>
-                                            setStories(e.target.value)
-                                          }
-                                          style={{ maxWidth: "60px" }}
-                                        />
-                                      </p>
-                                      <p className="mb-2 col-md-6 ps-md-4 d-flex justify-content-between align-items-center">
-                                        <span>Year Built:</span>
-                                        <input
-                                          type="text"
-                                          value={yearBuilt}
-                                          onChange={(e) =>
-                                            setYearBuilt(e.target.value)
-                                          }
-                                          style={{ maxWidth: "120px" }}
-                                        />
-                                      </p>
-                                      <p className="mb-2 col-md-6  d-flex justify-content-between align-items-center">
-                                        <span>Bed:</span>
-                                        <input
-                                          type="number"
-                                          value={bedrooms}
-                                          onChange={(e) =>
-                                            setBedrooms(e.target.value)
-                                          }
-                                          style={{ maxWidth: "60px" }}
-                                        />{" "}
-                                      </p>
-                                      <p className="mb-2 col-md-6 ps-md-4 d-flex justify-content-between align-items-center">
-                                        <span>House Size:</span>
-                                        <input
-                                          type="number"
-                                          value={houseSize}
-                                          onChange={(e) =>
-                                            setHouseSize(e.target.value)
-                                          }
-                                          style={{ maxWidth: "60px" }}
-                                        />{" "}
-                                      </p>
-                                      <p className="mt-2 col-md-6   d-flex justify-content-between align-items-center">
-                                        <span>Style:</span>
-                                        <input
-                                          type="text"
-                                          value={style}
-                                          onChange={(e) =>
-                                            setStyle(e.target.value)
-                                          }
-                                          style={{ maxWidth: "120px" }}
-                                        />
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div> */}
-                            </div>
+                            <div className="d-grid gap-3 col"></div>
                           </div>
                         </div>
                       </div>

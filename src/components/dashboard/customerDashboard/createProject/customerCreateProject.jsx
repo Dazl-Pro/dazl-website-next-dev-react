@@ -27,9 +27,7 @@ const CustomerCreateProject = () => {
               </button>
             )}
           </div>
-          <h2 className="text-uppercase text-start pb-3 h3">
-            Project opportunities
-          </h2>
+          <h2 className="text-uppercase text-start pb-3 h3">Start a project</h2>
         </div>
         <div className="">
           <div className="customer-create-project">

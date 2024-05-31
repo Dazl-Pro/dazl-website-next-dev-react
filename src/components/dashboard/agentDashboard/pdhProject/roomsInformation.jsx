@@ -598,11 +598,11 @@ const RoomsInformation = (props) => {
                       inputProps={{ "aria-label": "controlled" }}
                     />
                     {valueItem?.name}
-                    {/*{valueItem.price && (
+                    {valueItem.price && (
                       <div className="fst-italic text-danger ms-2 text-decoration-underline">
                         ${valueItem.price}
                       </div>
-                   )}*/}
+                    )}
                   </div>
                 );
               })}
@@ -630,10 +630,9 @@ const RoomsInformation = (props) => {
                   }
                   label="DAZLING"
                 />
-                {/*
                 <div className="fst-italic text-danger text-decoration-underline">
                   80% room value
-                </div>*/}
+                </div>
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
@@ -644,6 +643,9 @@ const RoomsInformation = (props) => {
                   }
                   label="MARKET READY"
                 />
+                <div className="fst-italic text-danger text-decoration-underline">
+                  50% room value
+                </div>
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
@@ -654,6 +656,9 @@ const RoomsInformation = (props) => {
                   }
                   label="NEEDS DAZL"
                 />
+                <div className="fst-italic text-danger text-decoration-underline">
+                  30% room value
+                </div>
               </div>
             </div>
           </RadioGroup>
@@ -756,15 +761,17 @@ const RoomsInformation = (props) => {
           </div>
         </div>
 
-        <div className="btnsubmit my-3 text-center">
-          <button
-            type="submit"
-            className="btn btn-danger"
-            onClick={(e) => save(e, "save")}
-            // disabled={input.phd_description && input.options ? false : true}
-          >
-            Add another room
-          </button>
+        <div className="btnsubmit my-3 d-flex justify-content-between">
+          <div>
+            <button
+              type="submit"
+              className="btn btn-danger m-2"
+              onClick={(e) => save(e, "save")}
+              // disabled={input.phd_description && input.options ? false : true}
+            >
+              Add another room
+            </button>
+          </div>
           <button
             className="room btn btn-success m-2"
             onClick={(e) => save(e, "submit")}
