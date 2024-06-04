@@ -70,12 +70,14 @@ const ProjectOpportunity = () => {
                 <span className="fw-semibold">Email Address:</span>{" "}
                 <span className="w-50">{data?.customer?.email}</span>
               </p>
-              <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
-                <span className="fw-semibold">Property Address: </span>
-                <span className="w-50">{data?.customer?.house?.address}</span>
-              </p>
+              {data?.customer?.house?.address && (
+                <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
+                  <span className="fw-semibold">Property Address: </span>
+                  <span className="w-50">{data?.customer?.house?.address}</span>
+                </p>
+              )}
               <div className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
-                <h3>Dazl Value:</h3>
+                <h3>Created At:</h3>
                 <h3 className="w-50">
                   {formatDate(data?.customer?.updated_at)}
                 </h3>
