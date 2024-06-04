@@ -59,7 +59,7 @@ const CustomerDashboard = () => {
               >
                 Log Out
               </span> */}
-              {/* <Link to="/home/customer/create-project"><button style={{color:"white"}} className="cus-btn btn btn-primary mw-200px w-100 mx-1 px-2"><PersonIcon /> Start a Project</button></Link> 
+              {/* <Link to="/home/customer/create-project"><button style={{color:"white"}} className="cus-btn btn btn-primary mw-200px w-100 mx-1 px-2"><PersonIcon /> Project Creation</button></Link> 
                 <Link to="/home/customer/my-project"><button style={{color:"white"}} className="cus-btn btn btn-primary mw-200px w-100 mx-1"><PersonIcon /> My Projects</button></Link> 
                 <Link to="/home/customer/my-info"><button style={{color:"white"}} className="cus-btn btn btn-primary mw-200px w-100 mx-1"><PersonIcon />My Info</button></Link>  */}
             </div>

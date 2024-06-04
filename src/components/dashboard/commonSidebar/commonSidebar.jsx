@@ -79,7 +79,7 @@ const CommonSidebar = () => {
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <PostAddIcon />
               </span>{" "}
-              <span className="text-linkk">Start a project</span>
+              <span className="text-linkk">Project Creation</span>
             </Link>
             <Link
               className={`btn text-start sidebar-links ${
@@ -146,7 +146,7 @@ const CommonSidebar = () => {
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <CreateNewFolderIcon />
               </span>{" "}
-              <span className="text-linkk">Start a Project</span>
+              <span className="text-linkk">Project Creation</span>
             </Link>
             <Link
               className={`btn text-start sidebar-links ${

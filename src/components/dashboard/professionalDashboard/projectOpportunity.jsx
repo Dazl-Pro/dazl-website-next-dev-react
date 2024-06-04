@@ -38,18 +38,49 @@ const ProjectOpportunity = () => {
 
   console.log(data);
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+
+    // Options for formatting the date
+    const options = { year: "numeric", month: "long", day: "numeric" };
+
+    // Format the date
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return (
     <div className="py-0">
       <div className="">
-        <h2 className="text-uppercase text-start mb-4 pb-4 border-bottom h3">
-          Project opportunities
+        <h2 className="text-uppercase text-start pb-2 border-bottom h3">
+          Project opportunity
         </h2>
-        <div className=" text-center fs-2 fw-bold text-red">
-          Project Opportunities
-        </div>
       </div>
       <div className="pt-4">
         <div className="row">
+          <div className="col-inner h-100 bg-image-box2  position-relative rounded-4">
+            <div className="p-4 h-100 position-relative z-1">
+              <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
+                <span className="fw-semibold">Homeowners Name: </span>
+                <span className="w-50">
+                  {data?.customer?.first_name + " " + data?.customer?.last_name}
+                </span>
+              </p>
+              <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
+                <span className="fw-semibold">Email Address:</span>{" "}
+                <span className="w-50">{data?.customer?.email}</span>
+              </p>
+              <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
+                <span className="fw-semibold">Property Address: </span>
+                <span className="w-50">{data?.customer?.house?.address}</span>
+              </p>
+              <div className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
+                <h3>Dazl Value:</h3>
+                <h3 className="w-50">
+                  {formatDate(data?.customer?.updated_at)}
+                </h3>
+              </div>
+            </div>
+          </div>
           <div className="pt-3 flex w-full">
             {data?.roominfo.map((room, index) => (
               <div key={index} className="mb-4 col-md-6">
@@ -107,16 +138,12 @@ const ProjectOpportunity = () => {
                           margin: "10px",
                         }}
                       >
-                        <h3 className="text-center d-flex mb-3 mt-1">
-                          Buyer Road Blocks:
-                        </h3>
-
                         {room?.feature?.map((eleInner, eleindex) => {
                           return (
                             <div key={eleindex}>
-                              <h5 className=" mb-2 ms-2">
+                              <h3 className=" mb-2 ms-2">
                                 {eleInner.feature_name}:
-                              </h5>
+                              </h3>
                               <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
                                 <div>{eleInner?.inspectionNotes}</div>
                               </div>

@@ -63,7 +63,7 @@ const AgentDashboard = () => {
                 <div className="btn btn-primary w-100" onClick={()=>(dispatch(getAgentProfiledata(userId)),navigate("/agent/agentprofile"))} style={{cursor:"pointer"}}>Agent Profile</div>
               </div>
               <div className="col-md-4 mb-4 mb-md-0">
-                <div className="btn btn-primary w-100" onClick={openProject} >Start a project</div>
+                <div className="btn btn-primary w-100" onClick={openProject} >Project Creation</div>
               </div>
               <div className="col-md-4 mb-4 mb-md-0">
                 <div className="btn btn-primary w-100" onClick={()=>navigate("/agent/saveproject")}>Saved  phd</div>
