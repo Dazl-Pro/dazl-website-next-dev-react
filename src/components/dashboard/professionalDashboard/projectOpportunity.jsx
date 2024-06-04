@@ -7,6 +7,7 @@ import {
   viewServicePhd,
   sendMailHomeOwner,
 } from "../../../store/dashboard/dashboardSlice";
+import "./style.css";
 
 const ProjectOpportunity = () => {
   const dispatch = useDispatch();
