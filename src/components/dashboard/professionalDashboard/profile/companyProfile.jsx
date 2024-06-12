@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import "./companyProfile.css";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
@@ -9,9 +9,6 @@ import {
   UpdateCompanyProfile,
   getCompanyProfile,
 } from "../../../../store/dashboard/dashboardSlice";
-import {
-  uploadImageAuth,
-} from "../../../../store/auth/authSlice";
 
 const defaultValues = {
   yearofbusiness: "",
@@ -20,10 +17,7 @@ const defaultValues = {
   insuranceNumber: "",
   email: "",
   companyName: "",
-  images1: "",
-  images2: "",
-  images3: "",
-  images4: "",
+  photos: Array.from({ length: 4 }, (_, index) => ({ image: null })),
 };
 
 const schema = yup.object().shape({
@@ -49,10 +43,12 @@ const CompanyProfile = () => {
   const Selector = useSelector((state) => state.dashboardSlice);
   const companydata = Selector.data.companydata;
   const [disable, setDisable] = React.useState(false);
+ const [images, setImages] = useState([null, null, null, null]);
 
   const {
     control,
     reset,
+    register,
     setValue,
     handleSubmit,
     formState: { errors },
@@ -61,7 +57,24 @@ const CompanyProfile = () => {
     resolver: yupResolver(schema),
   });
 
-  const uploadImage = (e, index) => {
+  const onSubmit = (data) => {
+    if (disable === true) {
+      dispatch(UpdateCompanyProfile(data));
+      reset();
+      setDisable(false);
+    } else {
+      setDisable(true);
+    }
+  };
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "photos",
+  });
+
+  
+  console.log(fields);
+  
+  const uploadMultipleImages = (e, index) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");
     clearErrors(`photos[${index}].file`);
@@ -76,34 +89,17 @@ const CompanyProfile = () => {
     dispatch(uploadImageAuth(formData))
       .unwrap()
       .then((res) => {
-        setImages((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[index] = res.image;
-          return newImages;
-        });
-        // Call uploadImage here with appropriate parameters
-        uploadImage(e, `images${index + 1}`);
+        setImages(
+          res?.image?.startsWith("https://")
+            ? res?.image
+            : `data:image/jpeg;base64,${res?.image}`
+        );
       });
-  };
-
-
-  const onSubmit = (data) => {
-    if (disable === true) {
-      dispatch(UpdateCompanyProfile(data));
-      reset();
-      setDisable(false);
-    } else {
-      setDisable(true);
-    }
   };
   React.useEffect(() => {
     setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
-    setValue("images1", companydata?.images1);
-    setValue("images2", companydata?.images2);
-    setValue("images3", companydata?.images3);
-    setValue("images4", companydata?.images4);
     setValue(
       "insuranceContactNumber",
       companydata?.insurance_contact_number ?? ""
@@ -144,52 +140,185 @@ const CompanyProfile = () => {
                 </div>
               </p>
             </div>
-            <div className="row">
-  {disable ? (
-    <div className="row">
-      {[1, 2, 3, 4].map((index) => (
-        <div className="col-md-3 mb-3 text-center" key={index}>
-          <Controller
-            name={`images${index}`}
-            control={control}
-            render={({ field }) => (
-              companydata[`images${index}`] ? (
-                <img src={companydata[`images${index}`]} alt="" width="150px" />
+            <div className="row mb-3 mt-3">
+              
+          {[0, 1, 2, 3].map((index) => (
+            <div key={index} className="col-md-3 mb-3 text-center">
+              {companydata[`images${index + 1}`] === null ? (
+                <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
+                  Image Not Uploaded
+                  <input
+                    type="file"
+                    className={`form-control ${
+                      errors.photos && errors?.photos[index]?.file
+                        ? "error"
+                        : ""
+                    }`}
+                    {...register(`photos.${index}.file`)}
+                    accept="image/*"
+                    onChange={(e) => {
+                      uploadMultipleImages(e, index);
+                    }}
+                    disabled={disable}
+                  />
+                </div>
               ) : (
-                <input
-                  {...field}
-                  type="file"
-                  className={`form-control ${errors.photos && errors.photos.file ? "error" : ""}`}
-                  onChange={(e) => uploadImage(e, index)}
-                  accept="image/*"
-                  disabled={!disable}
-                />
-              )
-            )}
-          />
+                <div>
+                  <img src={companydata[`images${index + 1}`]} alt="" width="150px" />
+                  <input
+                    type="file"
+                    className={`form-control ${
+                      errors.photos && errors?.photos[index]?.file
+                        ? "error"
+                        : ""
+                    }`}
+                    {...register(`photos.${index}.file`)}
+                    accept="image/*"
+                    onChange={(e) => {
+                      uploadMultipleImages(e, index);
+                    }}
+                    disabled={disable}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  ) : (
-    <>
-      {[1, 2, 3, 4].map((index) => (
-        companydata[`images${index}`] && (
-          <div className="col-md-3 mb-3 text-center" key={index}>
-            <img src={companydata[`images${index}`]} alt="" width="150px" />
-          </div>
-        )
-      ))}
-    </>
-  )}
-</div>
+{/* 
+            <div className="row mb-3 mt-3">
+              {companydata?.images1 === null ? (
+                <p className="col-md-3 mb-3">
+                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
+                    Image Not Uploaded
+                  </div>
+                </p>
+              ) : (
+                <>
+                  {fields.map((field, index) => (
+                    <div key={index} className="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                      <label className="bg-light p-3 rounded-4 w-100">
+                        Photo {index + 1}
+                        <input
+                          type="file"
+                          className={`form-control ${
+                            errors.photos && errors?.photos[index]?.file
+                              ? "error"
+                              : ""
+                          }`}
+                          {...register(`photos.${index}.file`)}
+                          accept="image/*"
+                          onChange={(e) => {
+                            uploadMiltipleImages(e, index);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </>
+              )}
+              
 
+              {companydata?.images2 === null ? (
+                <p className="col-md-3 mb-3">
+                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
+                    Image Not Uploaded
+                  </div>
+                </p>
+              ) : (
+                <>
+                  {fields.map((field, index) => (
+                    <div key={index} className="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                      <label className="bg-light p-3 rounded-4 w-100">
+                        Photo {index + 1}
+                        <input
+                          type="file"
+                          className={`form-control ${
+                            errors.photos && errors?.photos[index]?.file
+                              ? "error"
+                              : ""
+                          }`}
+                          {...register(`photos.${index}.file`)}
+                          accept="image/*"
+                          onChange={(e) => {
+                            uploadMiltipleImages(e, index);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </>
+              )}
 
+              {companydata?.images3 === null ? (
+                <p className="col-md-3 mb-3">
+                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
+                    Image Not Uploaded
+                  </div>
+                </p>
+              ) : (
+                <>
+                  {fields.map((field, index) => (
+                    <div key={index} className="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                      <label className="bg-light p-3 rounded-4 w-100">
+                        Photo {index + 1}
+                        <input
+                          type="file"
+                          className={`form-control ${
+                            errors.photos && errors?.photos[index]?.file
+                              ? "error"
+                              : ""
+                          }`}
+                          {...register(`photos.${index}.file`)}
+                          accept="image/*"
+                          onChange={(e) => {
+                            uploadMiltipleImages(e, index);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {companydata?.images4 === null ? (
+                <p className="col-md-3 mb-3">
+                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
+                    Image Not Uploaded
+                  </div>
+                </p>
+              ) : (
+                <>
+                {fields.map((field, index) => (
+                  <div key={index} className="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                    <label className="bg-light p-3 rounded-4 w-100">
+                      Photo {index + 1}
+                      <input
+                        type="file"
+                        className={`form-control ${
+                          errors.photos && errors?.photos[index]?.file
+                            ? "error"
+                            : ""
+                        }`}
+                        {...register(`photos.${index}.file`)}
+                        accept="image/*"
+                        onChange={(e) => {
+                          uploadMiltipleImages(e, index);
+                        }}
+                      />
+                    </label>
+                  </div>
+                ))}
+              </> 
+              )}
+            </div> */}
             <div className="row">
               <div className={`form-row mb-3 col-md-6`}>
                 <Controller
                   name="yearofbusiness"
                   control={control}
                   render={({ field }) => (
+                    <label className="bg-light p-3 rounded-4 w-100">
+                      Years In Business
                     <input
                       {...field}
                       disabled={disable ? false : true}
@@ -198,6 +327,7 @@ const CompanyProfile = () => {
                       }`}
                       placeholder="Years In Business"
                     />
+                    </label>
                   )}
                 />
               </div>
@@ -205,7 +335,10 @@ const CompanyProfile = () => {
                 <Controller
                   name="phoneNumber"
                   control={control}
+                  
                   render={({ field }) => (
+                    <label className="bg-light p-3 rounded-4 w-100">
+                     Phone Number
                     <input
                       onKeyPress={(e) => {
                         // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
@@ -221,6 +354,7 @@ const CompanyProfile = () => {
                       }`}
                       placeholder="Phone Number"
                     />
+                    </label>
                   )}
                 />
               </div>
@@ -229,6 +363,8 @@ const CompanyProfile = () => {
                   name="email"
                   control={control}
                   render={({ field }) => (
+                    <label className="bg-light p-3 rounded-4 w-100">
+                      Email Address
                     <input
                       {...field}
                       disabled={disable ? false : true}
@@ -237,6 +373,7 @@ const CompanyProfile = () => {
                       }`}
                       placeholder="Email Address"
                     />
+                    </label>
                   )}
                 />
               </div>
@@ -245,6 +382,8 @@ const CompanyProfile = () => {
                   name="insuranceCertificate"
                   control={control}
                   render={({ field }) => (
+                    <label className="bg-light p-3 rounded-4 w-100">
+                     Company Name 
                     <input
                       {...field}
                       disabled={disable ? false : true}
@@ -253,6 +392,7 @@ const CompanyProfile = () => {
                       }`}
                       placeholder="Insurance Certificate"
                     />
+                       </label>
                   )}
                 />
               </div>
@@ -261,6 +401,8 @@ const CompanyProfile = () => {
                   name="insuranceContactNumber"
                   control={control}
                   render={({ field }) => (
+                    <label className="bg-light p-3 rounded-4 w-100">
+                    Insurance Contact
                     <input
                       {...field}
                       disabled={disable ? false : true}
@@ -269,6 +411,7 @@ const CompanyProfile = () => {
                       }`}
                       placeholder="Insurance Contact"
                     />
+                    </label>
                   )}
                 />
               </div>
@@ -277,6 +420,8 @@ const CompanyProfile = () => {
                   name="insuranceNumber"
                   control={control}
                   render={({ field }) => (
+                    <label className="bg-light p-3 rounded-4 w-100">
+                    Insurance Number
                     <input
                       {...field}
                       disabled={disable ? false : true}
@@ -285,14 +430,14 @@ const CompanyProfile = () => {
                       }`}
                       placeholder="Agent Phone Number "
                     />
+                    </label>
                   )}
                 />
               </div>
             </div>
+
             <div className="d-flex justify-content-center align-items-center">
-              <button type="submit" className="btn btn-primary px-5">
-                {disable ? "Update" : "Edit"}
-              </button>
+              <button type="submit" className="btn btn-primary px-5">{disable ? "Edit" : "Update"} </button>
             </div>
           </form>
         </div>
@@ -302,3 +447,4 @@ const CompanyProfile = () => {
 };
 
 export default CompanyProfile;
+
