@@ -162,11 +162,11 @@ export const getCompanyProfile = createAsyncThunk(
 );
 export const UpdateCompanyProfile = createAsyncThunk(
   "dashboard/UpdateCompanyProfile",
-  async (values, { dispatch }) => {
+  async ({ values, images }, { dispatch }) => {
     const userId = localStorage.getItem("userId");
     try {
       const response = await http.patch(
-        `company-from-professional/update?phone=${values.phoneNumber}&years_in_business=${values.yearofbusiness}&email=${values.email}&insurance_certificate=${values.insuranceCertificate}&insurance_contact_number=${values.insuranceContactNumber}&insurance_number=${values.insuranceNumber}`
+        `company-from-professional/update?phone=${values.phoneNumber}&years_in_business=${values.yearofbusiness}&email=${values.email}&insurance_certificate=${values.insuranceCertificate}&insurance_contact_number=${values.insuranceContactNumber}&insurance_number=${values.insuranceNumber}&images1=${images[0]}&images2=${images[1]}&images3=${images[2]}&images4=${images[3]}`
       );
       if (response.status === 200) {
         return (
