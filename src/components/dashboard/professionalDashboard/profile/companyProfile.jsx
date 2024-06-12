@@ -155,8 +155,13 @@ const CompanyProfile = () => {
             </div>
             <div className="row mb-3 mt-3">
               {images?.map((photo, index) => (
-                <div key={index} className="col-md-3 mb-3 text-center">
-                  <div className="col-inner rounded-3 bg-light d-flex flex-column align-items-center justify-content-center h-100">
+                <div key={index} className="col-md-3 mb-3 text-center  ">
+                  <div
+                    className="col-inner rounded-3 bg-light d-flex flex-column align-items-center justify-content-center h-100"
+                    style={{
+                      maxHeight: "100%",
+                    }}
+                  >
                     {photo !== "undefined" ? (
                       <img
                         src={photo}
@@ -165,7 +170,6 @@ const CompanyProfile = () => {
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "cover",
                         }}
                       />
                     ) : (
@@ -173,7 +177,7 @@ const CompanyProfile = () => {
                     )}
                     <input
                       type="file"
-                      className={`form-control ${
+                      className={`form-control form-image ${
                         errors[`image${index + 1}`] &&
                         errors[`image${index + 1}`].value
                           ? "error"
