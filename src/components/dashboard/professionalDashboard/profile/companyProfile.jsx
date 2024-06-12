@@ -9,6 +9,9 @@ import {
   UpdateCompanyProfile,
   getCompanyProfile,
 } from "../../../../store/dashboard/dashboardSlice";
+import {
+  uploadImageAuth,
+} from "../../../../store/auth/authSlice";
 
 const defaultValues = {
   yearofbusiness: "",
@@ -17,6 +20,10 @@ const defaultValues = {
   insuranceNumber: "",
   email: "",
   companyName: "",
+  images1: "",
+  images2: "",
+  images3: "",
+  images4: "",
 };
 
 const schema = yup.object().shape({
@@ -53,6 +60,33 @@ const CompanyProfile = () => {
     defaultValues,
     resolver: yupResolver(schema),
   });
+
+  const uploadImage = (e, index) => {
+    const file = e.target.files[0];
+    const isImage = file && file.type.startsWith("image/");
+    clearErrors(`photos[${index}].file`);
+    if (!isImage) {
+      setError(`photos[${index}].file`, {
+        type: "manual",
+        message: "Invalid file type. Please select a valid image.",
+      });
+    }
+    const formData = new FormData();
+    formData.append("image", file);
+    dispatch(uploadImageAuth(formData))
+      .unwrap()
+      .then((res) => {
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[index] = res.image;
+          return newImages;
+        });
+        // Call uploadImage here with appropriate parameters
+        uploadImage(e, `images${index + 1}`);
+      });
+  };
+
+
   const onSubmit = (data) => {
     if (disable === true) {
       dispatch(UpdateCompanyProfile(data));
@@ -66,6 +100,10 @@ const CompanyProfile = () => {
     setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
+    setValue("images1", companydata?.images1);
+    setValue("images2", companydata?.images2);
+    setValue("images3", companydata?.images3);
+    setValue("images4", companydata?.images4);
     setValue(
       "insuranceContactNumber",
       companydata?.insurance_contact_number ?? ""
@@ -106,52 +144,46 @@ const CompanyProfile = () => {
                 </div>
               </p>
             </div>
-            <div className="row mb-3 mt-3">
-              {companydata?.images1 === null ? (
-                <p className="col-md-3 mb-3">
-                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
-                    Image Not Uploaded
-                  </div>
-                </p>
+            <div className="row">
+  {disable ? (
+    <div className="row">
+      {[1, 2, 3, 4].map((index) => (
+        <div className="col-md-3 mb-3 text-center" key={index}>
+          <Controller
+            name={`images${index}`}
+            control={control}
+            render={({ field }) => (
+              companydata[`images${index}`] ? (
+                <img src={companydata[`images${index}`]} alt="" width="150px" />
               ) : (
-                <div className="col-md-3 mb-3 text-center">
-                  <img src={companydata?.images1} alt="" width={"150px"} />
-                </div>
-              )}
-              {companydata?.images2 === null ? (
-                <p className="col-md-3 mb-3">
-                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
-                    Image Not Uploaded
-                  </div>
-                </p>
-              ) : (
-                <div className="col-md-3 mb-3 text-center">
-                  <img src={companydata?.images2} alt="" width={"150px"} />
-                </div>
-              )}
-              {companydata?.images3 === null ? (
-                <p className="col-md-3 mb-3">
-                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
-                    Image Not Uploaded
-                  </div>
-                </p>
-              ) : (
-                <div className="col-md-3 mb-3 text-center">
-                  <img src={companydata?.images3} alt="" width={"150px"} />
-                </div>
-              )}
-              {companydata?.images4 === null ? (
-                <p className="col-md-3 mb-3">
-                  <div className="col-inner rounded-3 bg-light d-flex align-items-center justify-content-center h-100">
-                    Image Not Uploaded
-                  </div>
-                </p>
-              ) : (
-                <div className="col-md-3 mb-3 text-center">
-                  <img src={companydata?.images4} alt="" width={"150px"} />
-                </div>
-              )}
-            </div>
+                <input
+                  {...field}
+                  type="file"
+                  className={`form-control ${errors.photos && errors.photos.file ? "error" : ""}`}
+                  onChange={(e) => uploadImage(e, index)}
+                  accept="image/*"
+                  disabled={!disable}
+                />
+              )
+            )}
+          />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <>
+      {[1, 2, 3, 4].map((index) => (
+        companydata[`images${index}`] && (
+          <div className="col-md-3 mb-3 text-center" key={index}>
+            <img src={companydata[`images${index}`]} alt="" width="150px" />
+          </div>
+        )
+      ))}
+    </>
+  )}
+</div>
+
+
             <div className="row">
               <div className={`form-row mb-3 col-md-6`}>
                 <Controller
