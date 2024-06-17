@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import "./contact.css";
-import { Toastify } from "../../services/toastify/toastContainer";
 import { useDispatch } from "react-redux";
 import { contactUsAuth, uploadImageAuth } from "../../store/auth/authSlice";
 import {
@@ -19,10 +18,7 @@ const photosSchema = yup.array().of(
         "isImageFile",
         "Invalid file type. Only image files (png, jpg) are allowed.",
         (value) => {
-          // Allow undefined or null values (not required)
-          if (!value) {
-            return true;
-          }
+          if (!value) return true; // Allow undefined or null values (not required)
 
           const supportedFormats = [
             "image/jpeg",
@@ -37,12 +33,6 @@ const photosSchema = yup.array().of(
   })
 );
 
-const photosSchema123 = yup.array().of(
-  yup.object().shape({
-    file: yup.mixed().notRequired(),
-    description: yup.string(),
-  })
-);
 const schema = yup.object().shape({
   memberName: yup.string().required("memberName is required"),
   propertyAddress: yup.string().required("propertyAddress is required"),
@@ -50,7 +40,7 @@ const schema = yup.object().shape({
   contactName: yup.string().required("contactName is required"),
   describeIssue: yup.string().required("describeIssue is required"),
   stepsToResolve: yup.string().required("stepsToResolve is required"),
-  howIssueResolved: yup.string().required("describeIssue is required"),
+  howIssueResolved: yup.string().required("howIssueResolved is required"),
   photos: photosSchema,
 });
 
@@ -65,6 +55,7 @@ const ContactUs = () => {
     howIssueResolved: "",
     photos: [{ description: "", file: null }],
   };
+
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const {
@@ -86,6 +77,9 @@ const ContactUs = () => {
     name: "photos",
   });
 
+  const [textValues, setTextValues] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+
   const onSubmit = (data) => {
     const item = {
       member_name: data.memberName,
@@ -105,9 +99,10 @@ const ContactUs = () => {
       dispatch(contactUsAuth(item));
     }
     reset();
+    setTextValues([]);
+    setSelectedImages([]);
   };
-  const [textValues, setTextValues] = React.useState([]);
-  const [selectedImages, setSelectedImages] = React.useState([]);
+
   const handleChange = (index, value) => {
     const updatedTextValues = [...textValues];
     updatedTextValues[index] = value;
@@ -127,30 +122,25 @@ const ContactUs = () => {
     } else {
       const formData = new FormData();
       formData.append("image", file);
-      if (token) {
-        dispatch(uploadImageAuth(formData))
-          .unwrap()
-          .then((res) => {
-            const responseImage = res.image;
-            setSelectedImages((prevData) => {
-              const newArray = [...prevData];
-              newArray[index] = responseImage;
-              return newArray;
-            });
+      dispatch(uploadImageAuth(formData))
+        .unwrap()
+        .then((res) => {
+          const responseImage = res.image;
+          setSelectedImages((prevData) => {
+            const newArray = [...prevData];
+            newArray[index] = responseImage;
+            return newArray;
           });
-      } else {
-        dispatch(uploadImageAuth(formData))
-          .unwrap()
-          .then((res) => {
-            const responseImage = res.image;
-            setSelectedImages((prevData) => {
-              const newArray = [...prevData];
-              newArray[index] = responseImage;
-              return newArray;
-            });
-          });
-      }
+        });
     }
+  };
+
+  const isLastFieldComplete = () => {
+    if (fields.length === 0) return true;
+    const lastIndex = fields.length - 1;
+    const lastImageField = selectedImages[lastIndex];
+    const lastTextValue = textValues[lastIndex] || "";
+    return lastImageField && lastTextValue.trim() !== "";
   };
 
   return (
@@ -163,9 +153,9 @@ const ContactUs = () => {
                 <h1 className="contact-us-text h2 text-uppercase mb-3">
                   Contact Us
                 </h1>
-                <lable className="fs-3">
+                <label className="fs-3">
                   Record of workmanship or service issue:
-                </lable>
+                </label>
                 <div className="form-row mt-1">
                   <Controller
                     name="memberName"
@@ -352,7 +342,12 @@ const ContactUs = () => {
                     <button
                       type="button"
                       className="btn btn-success"
-                      onClick={() => append({ description: "", file: null })}
+                      onClick={() => {
+                        if (isLastFieldComplete()) {
+                          append({ description: "", file: null });
+                        }
+                      }}
+                      disabled={!isLastFieldComplete()}
                     >
                       Upload more
                     </button>

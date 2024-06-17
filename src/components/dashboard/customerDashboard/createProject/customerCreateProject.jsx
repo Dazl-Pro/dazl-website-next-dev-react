@@ -6,6 +6,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const CustomerCreateProject = () => {
   const [show, setShow] = React.useState(false);
   const [selectValue, setSelectvalue] = React.useState("");
+  const [name, setName] = React.useState("");
 
   return (
     <div className="py-0 create-project-container-height">
@@ -31,10 +32,18 @@ const CustomerCreateProject = () => {
             Project Creation
           </h2>
         </div>
+        <label htmlFor="projectName">Project Name:</label>
+        <input
+          type="text"
+          placeholder="Enter project name"
+          required
+          onChange={(e) => setName(e.target.value)}
+        />
         <div className="">
           <div className="customer-create-project">
             <Commonproject
               show={show}
+              name={name}
               setShow={setShow}
               selectValue={selectValue}
               setSelectvalue={setSelectvalue}

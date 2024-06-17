@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "@mui/material/Pagination";
 import SaveIcon from "@mui/icons-material/Save";
-
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import Stack from "@mui/material/Stack";
 import "./project.css";
 import { useLocation } from "react-router-dom";
 import {
+  viewPhd,
+  getCompletePhd,
+  openConfirmPopup,
   deleteAgentFeatures,
   deleteProjectFeatures,
   getAgentProject,
@@ -81,7 +85,7 @@ const MyProject = () => {
     const data = {
       feature_id: item?.feature_id,
       images: item?.images,
-      inspectionNotes: item?.inspectionNotes,
+      inspectionNotes: formData.title,
     };
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
@@ -91,7 +95,11 @@ const MyProject = () => {
           pageNo: pageNumber,
           numberofdata: 5,
         })
-      );
+      )
+        .unwrap()
+        .then(() =>
+          dispatch(getCustomerProject({ pageNo: 1, numberofdata: 5 }))
+        );
       setEditItem(null);
     } else {
       dispatch(
@@ -106,11 +114,12 @@ const MyProject = () => {
     }
   };
 
-  const deleteProject = (id) => {
+  const deleteProject = (projectId, housingSegmentId) => {
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
         deleteProjectFeatures({
-          project_id: id,
+          projectId,
+          housingSegmentId,
           pageNo: pageNumber,
           numberofdata: 5,
         })
@@ -118,7 +127,8 @@ const MyProject = () => {
     } else {
       dispatch(
         deleteAgentFeatures({
-          project_id: id,
+          projectId,
+          housingSegmentId,
           pageNo: pageNumber,
           numberofdata: 5,
         })
@@ -174,7 +184,7 @@ const MyProject = () => {
                               <div key={indexroomInfo}>
                                 <h4 className="text-start my-projects-head d-flex">
                                   <div className="text-dark me-1">
-                                    Project Name:{" "}
+                                    Projects Name:{" "}
                                   </div>{" "}
                                   {roominfoItems?.room_name}
                                 </h4>
@@ -243,14 +253,26 @@ const MyProject = () => {
                                           )}
                                         </div>
                                         <div className="ed-del-icons-div me-0">
-                                          <button
+                                          {/* <button
                                             className="btn btn-danger"
                                             onClick={() =>
-                                              deleteProject(items?.project_id)
+                                              deleteProject(
+                                                items.project_id,
+                                                items.housing_segment_id
+                                              )
                                             }
                                           >
                                             <DeleteForeverIcon />
-                                            <span class="del">DELETE</span>
+                                            <span className="del">DELETE</span>
+                                          </button> */}
+                                          <button
+                                            className="btn btn-outline-danger mx-1 btn-sm"
+                                            onClick={() =>
+                                              dispatch(openConfirmPopup(true))
+                                            }
+                                          >
+                                            <DeleteForeverIcon />
+                                            <span className="del">DELETE</span>
                                           </button>
                                         </div>
                                       </div>
@@ -497,3 +519,54 @@ const MyProject = () => {
 };
 
 export default MyProject;
+
+// import Button from 'react-bootstrap/Button';
+// import Modal from 'react-bootstrap/Modal';
+
+function ConfirmModal() {
+  const dispatch = useDispatch();
+  const selector = useSelector((state) => state.dashboardSlice);
+
+  return (
+    <div
+      className="modal show"
+      style={{ display: "block", position: "initial" }}
+    >
+      <Modal.Dialog>
+        {/* <Modal.Header closeButton>
+          <Modal.Title>Modal title</Modal.Title>
+        </Modal.Header> */}
+
+        <Modal.Body>
+          <div className="d-flex justify-content-center fs-1 fw-bold">
+            Delete Project
+          </div>
+          <div className="text-center  fs-5">
+            Are you sure you want to delete this project ?{" "}
+          </div>
+        </Modal.Body>
+        <Modal.Footer className="justify-content-center border-0">
+          <Button
+            variant="primary"
+            onClick={() =>
+              deleteProject(items.project_id, items.housing_segment_id)
+            }
+            className="px-4"
+          >
+            Yes
+          </Button>
+
+          <Button
+            variant="primary"
+            // onClick={() => dispatch(openConfirmPopup(false))}
+            className="px-4"
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    </div>
+  );
+}
+
+// export default StaticExample;

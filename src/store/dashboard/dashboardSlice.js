@@ -305,10 +305,10 @@ export const addRoomFeatures = createAsyncThunk(
   "dashboard/addRoomFeatures",
   async (data, { dispatch }) => {
     try {
-      const response = await http.post(
-        `/${data.payload}`,
-        data.selectedImages ?? data.data
-      );
+      const response = await http.post(`/${data.payload}`, {
+        data: data.selectedImages ?? data.data,
+        name: data.name,
+      });
       if (response.status === 200) {
         if (data.payload === "realtorprojects") {
           dispatch(getAgentProject({ pageNo: 1, numberofdata: 5 }));
@@ -418,7 +418,10 @@ export const updateReportFeatures = createAsyncThunk(
   "dashboard/updateReportFeatures",
   async ({ data, project_id, pageNo, numberofdata }, { dispatch }) => {
     try {
-      const response = await http.patch(`/update-report/${project_id}`, data);
+      const response = await http.patch(
+        `/update-phpreport/${project_id}`,
+        data
+      );
       if (response.status === 200) {
         dispatch(
           getCustomerProject({ pageNo: pageNo, numberofdata: numberofdata })
@@ -456,20 +459,21 @@ export const updateAgentFeatures = createAsyncThunk(
 
 export const deleteProjectFeatures = createAsyncThunk(
   "dashboard/deleteProjectFeatures",
-  async ({ project_id, pageNo, numberofdata }, { dispatch }) => {
+  async (
+    { projectId, housingSegmentId, pageNo, numberofdata },
+    { dispatch }
+  ) => {
     try {
-      const response = await http.delete(`/delete-report/${project_id}`);
+      const response = await http.delete(
+        `/delete-report/${projectId}/${housingSegmentId}`
+      );
       if (response.status === 200) {
-        dispatch(
-          getCustomerProject({ pageNo: pageNo, numberofdata: numberofdata })
-        );
+        dispatch(getCustomerProject({ pageNo, numberofdata }));
         return response.data;
       }
     } catch (error) {
-      return (
-        error.response.data,
-        Toastify({ data: "error", msg: error.response.data.message })
-      );
+      Toastify({ data: "error", msg: error.response.data.message });
+      return error.response.data;
     }
   }
 );

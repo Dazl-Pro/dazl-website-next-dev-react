@@ -10,6 +10,7 @@ import {
   getCompanyProfile,
 } from "../../../../store/dashboard/dashboardSlice";
 import { uploadImageAuth } from "../../../../store/auth/authSlice";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const defaultValues = {
   yearofbusiness: "",
@@ -52,7 +53,7 @@ const CompanyProfile = () => {
   const companydata = Selector.data.companydata;
 
   const [disable, setDisable] = React.useState(false);
-  const [images, setImages] = useState(null);
+  const [images, setImages] = useState([]);
   console.log("images", images);
 
   useEffect(() => {
@@ -87,6 +88,13 @@ const CompanyProfile = () => {
     }
   };
 
+  const handleDelete = (index) => {
+    if (images) {
+      const updatedImages = images.filter((item, idx) => idx !== index);
+      setImages(updatedImages.length > 0 ? updatedImages : null);
+    }
+  };
+
   const uploadImage = (e, index) => {
     setDisable(true);
     const file = e.target.files[0];
@@ -109,6 +117,7 @@ const CompanyProfile = () => {
         });
       });
   };
+
   React.useEffect(() => {
     setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
@@ -157,9 +166,10 @@ const CompanyProfile = () => {
               {images?.map((photo, index) => (
                 <div key={index} className="col-md-3 mb-3 text-center  ">
                   <div
-                    className="col-inner rounded-3 bg-light d-flex flex-column align-items-center justify-content-center h-100"
+                    className="col-inner rounded-3 bg-light d-flex flex-column align-items-center justify-content-center h-100 "
                     style={{
                       maxHeight: "100%",
+                      position: "relative",
                     }}
                   >
                     {photo !== "undefined" ? (
@@ -175,6 +185,18 @@ const CompanyProfile = () => {
                     ) : (
                       " Image Not Uploaded"
                     )}
+                    <button
+                      type="button"
+                      class="btn btn-light bg-light-red border-danger p-1 space delete-button"
+                      onClick={() => handleDelete(index)}
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                      }}
+                    >
+                      <DeleteIcon />
+                    </button>
                     <input
                       type="file"
                       className={`form-control form-image ${

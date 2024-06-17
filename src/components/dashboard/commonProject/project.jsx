@@ -46,7 +46,13 @@ const schema = yup.object().shape({
   photos: photosSchema,
 });
 
-const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
+const Commonproject = ({
+  show,
+  setShow,
+  selectValue,
+  setSelectvalue,
+  name,
+}) => {
   const selector = useSelector((state) => state.dashboardSlice);
   const phdRooms = selector.data.phdRoomsData;
   const addAnotherRoomState = selector.data.addAnotherRoom;
@@ -124,6 +130,14 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
   console.log("checkboxValues", checkboxValues);
   console.log("phdRooms", phdRooms);
 
+  // const isLastFieldComplete = () => {
+  //   if (fields.length === 0) return true;
+  //   const lastIndex = fields.length - 1;
+  //   const lastImageField = selectedImages[lastIndex];
+  //   const lastTextValue = textValues[lastIndex] || "";
+  //   return lastImageField && lastTextValue.trim() !== "";
+  // };
+
   const handleGetCheckboxValues = () => {
     let payload;
     if (location.pathname === "/agent/createProject") {
@@ -166,7 +180,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
               .unwrap()
               .then((response) => {
                 const data = [...selectImagesFinal, response];
-                dispatch(addRoomFeatures({ data, payload }))
+                dispatch(addRoomFeatures({ data, payload, name }))
                   .unwrap()
                   .then((res) => {
                     completedPromises++;
@@ -201,7 +215,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
             .unwrap()
             .then((response) => {
               const data = [...selectImagesFinal, response];
-              dispatch(addRoomFeatures({ data, payload }))
+              dispatch(addRoomFeatures({ data, payload, name }))
                 .unwrap()
                 .then((res) => {
                   completedPromises++;
@@ -232,7 +246,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
             .unwrap()
             .then((response) => {
               const data = [...selectImagesFinal, response];
-              dispatch(addRoomFeatures({ data, payload }))
+              dispatch(addRoomFeatures({ data, payload, name }))
                 .unwrap()
                 .then((res) => {
                   completedPromises++;
@@ -261,7 +275,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
     } else {
       if (selectedImages.length === 0) {
         if (selectedCheckboxes.length > 0) {
-          dispatch(addRoomFeatures({ data: selectedCheckboxes, payload }))
+          dispatch(addRoomFeatures({ data: selectedCheckboxes, payload, name }))
             .unwrap()
             .then((res) => {
               Toastify({ data: "success", msg: res.message });
@@ -282,7 +296,9 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
               localStorage.removeItem("projectItem");
             });
         } else {
-          dispatch(addRoomFeatures({ data: [{ roomId: roomId }], payload }))
+          dispatch(
+            addRoomFeatures({ data: [{ roomId: roomId }], payload, name })
+          )
             .unwrap()
             .then((res) => {
               Toastify({ data: "success", msg: res.message });
@@ -304,7 +320,7 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
             });
         }
       } else {
-        dispatch(addRoomFeatures({ selectedImages, payload }))
+        dispatch(addRoomFeatures({ selectedImages, payload, name }))
           .unwrap()
           .then((res) => {
             Toastify({ data: "success", msg: res.message });
@@ -557,13 +573,18 @@ const Commonproject = ({ show, setShow, selectValue, setSelectvalue }) => {
                           );
                         })}
                       </div>
+                      {/* {fields.filter((field) => field.indexId === index)
+                        .length < 5 && ( */}
                       <button
                         type="button"
                         className="btn btn-primary  my-3"
-                        onClick={() => append({ indexId: index, file: null })}
+                        onClick={() => {
+                          appendPhoto({ description: "", file: null });
+                        }}
                       >
-                        upload image
+                        Upload Image
                       </button>
+                      {/* )} */}
                     </div>
                   </>
                 )}

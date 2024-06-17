@@ -38,7 +38,7 @@ const schema = yup.object().shape({
     .email("Please enter valid email address")
     .required("Email is required")
     .trim(),
-    password: yup
+  password: yup
     .string()
     .required("Password is required")
     .matches(
@@ -55,12 +55,16 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password")], "Passwords do not match")
     .trim(),
   companyName: yup.string().required("companyName is required").trim(),
-  location: yup.string().required("Location is required").trim(),
-  number: yup
-    .string()
-    .matches(/^[0-9]+$/, "Please enter a valid number")
-    .required("Number is required")
-    .trim(),
+  // location: yup.string().required("Location is required").trim(),
+  // number: yup
+  //   .string()
+  //   .matches(/^[0-9]+$/, "Please enter a valid number")
+  //   .required("Number is required")
+  //   .trim(),
+  streetAddress: yup.string().trim(),
+  city: yup.string().required("Location is required").trim(),
+  state: yup.string().required("state is required").trim(),
+  zip: yup.string().required("Zip Code is required").trim(),
   agreeToTerms: yup
     .bool()
     .oneOf([true], "Please accept the terms and conditions"),
@@ -307,112 +311,79 @@ const SignupAgent = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6 `}>
-                  <div>
-                    {/* <PlacesAutocomplete
-                      value={address}
-                      onChange={handleChange}
-                      onSelect={handleSelect}
-                    >
-                      {({
-                        getInputProps,
-                        suggestions,
-                        getSuggestionItemProps,
-                        loading,
-                      }) => (
-                        <div>
-                          <input
-                            {...getInputProps({
-                              placeholder: "Enter your address",
-                              className: "location-search-input",
-                            })}
-                          />
-                          <div className="autocomplete-dropdown-container">
-                            {loading && <div>Loading...</div>}
-                            {suggestions.map((suggestion) => {
-                              const style = {
-                                backgroundColor: suggestion.active
-                                  ? "#41b6e6"
-                                  : "#fff",
-                              };
-                              return (
-                                <div
-                                  {...getSuggestionItemProps(suggestion, {
-                                    style,
-                                  })}
-                                >
-                                  {suggestion.description}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </PlacesAutocomplete> */}
-
-                    <Controller
-                      name="location"
-                      control={control}
-                      defaultValue=""
-                      rules={{ required: "Location is required" }}
-                      render={({ field }) => (
-                        <PlacesAutocomplete
-                          value={field.value}
-                          onChange={(newValue) => {
-                            setValue("location", newValue);
-                            handleChange(newValue);
+                  <Controller
+                    name="streetAddress"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className={` width-input form-control ${
+                          errors.streetAddress ? "error" : ""
+                        }`}
+                        placeholder="Company street address"
+                      />
+                    )}
+                  />
+                </div>
+                <div className={`form-row mb-3 col-md-4 `}>
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className={` width-input form-control ${
+                          errors.city ? "error" : ""
+                        }`}
+                        placeholder="Company City*"
+                      />
+                    )}
+                  />
+                </div>
+                <div className={`form-row mb-3 col-md-4 `}>
+                  <Controller
+                    name="state"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className={` width-input form-control ${
+                          errors.state ? "error" : ""
+                        }`}
+                        placeholder="State*"
+                      />
+                    )}
+                  />
+                </div>
+                <div className={`form-row mb-3 col-md-4 `}>
+                  <Controller
+                    name="zip"
+                    control={control}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          type="text"
+                          pattern="[0-9]*"
+                          inputMode="numeric"
+                          {...field}
+                          className={` width-input form-control ${
+                            errors.zip ? "error" : ""
+                          }`}
+                          placeholder="Zip Code*"
+                          maxLength={6}
+                          onKeyPress={(e) => {
+                            const isValidKey = /^[0-9]$/i.test(e.key);
+                            if (!isValidKey) {
+                              e.preventDefault();
+                            }
                           }}
-                          onSelect={handleSelect}
-                        >
-                          {({
-                            getInputProps,
-                            suggestions,
-                            getSuggestionItemProps,
-                          }) => (
-                            <div>
-                              <input
-                                {...getInputProps({
-                                  placeholder: "Enter your address*",
-                                  className: "location-search-input",
-                                })}
-                                className={`form-control width-input ${
-                                  errors.location ? "error" : ""
-                                }`}
-                              />
-                              <div
-                                className={
-                                  field.value.length > 0 && !loading && !select
-                                    ? "autocomplete-dropdown-container"
-                                    : ""
-                                }
-                              >
-                                {/* {loading && <div>Loading...</div>} */}
-                                {suggestions.map((suggestion, index) => {
-                                  const style = {
-                                    backgroundColor: suggestion.active
-                                      ? "#dc3545"
-                                      : "#fff",
-                                    color: suggestion.active
-                                      ? "white"
-                                      : "black",
-                                  };
-                                  return (
-                                    <div
-                                      {...getSuggestionItemProps(suggestion, {
-                                        style,
-                                      })}
-                                      key={index}
-                                    >
-                                      {suggestion.description}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </PlacesAutocomplete>
-                      )}
-                    />
-                  </div>
+                        />
+                        {/* {errors.zip && (
+                        <p className="text-danger mt-2">{errors.zip.message}</p>
+                      )} */}
+                      </>
+                    )}
+                  />
                 </div>
               </div>
               <div className="form-row my-3 d-flex justify-content-between">

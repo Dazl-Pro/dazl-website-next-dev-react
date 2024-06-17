@@ -262,7 +262,8 @@ body .cs-price-slider {
   padding: 0 5px;
   line-height: 31px;
 }
-.cs-price-slider:before, .cs-price-slider:after {
+.cs-price-slider:before,
+.cs-price-slider:after {
   content: "";
   position: absolute;
   top: 0px;
@@ -277,7 +278,7 @@ body .cs-price-slider:after {
   left: auto;
   border-radius: 0px 10px 10px 0px;
   background: #c6303e;
-  opacity: .3;
+  opacity: 0.3;
   top: 0;
   height: 100%;
 }
@@ -289,10 +290,14 @@ body .cs-price-slider:after {
 }
 .start-n40px {
   left: -40px;
-} 
+}
 .end-n40px {
   right: -40px;
 }
+.customer-create-project .MuiInputBase-root.MuiOutlinedInput-root {
+  padding: 2px !important;
+}
+
 @media print {
   .d-print-none {
     display: none;
@@ -318,33 +323,34 @@ body .cs-price-slider:after {
   }
 }
 @media (max-width: 767.98px) {
-.cs-price-ranges > p {
-  font-size: 13px;
-  padding-inline: 5px;
-}
-.cs-price-slider span.MuiSlider-thumb {
-  width: 60px;
-}
-body .cs-price-slider:after {
-  right: -30px;
-}
-body .cs-price-slider:before {
-  left: -30px;
-}
-.cs-price-ranges .start-n40px {
-  left: -30px;
-} 
-.cs-price-ranges .end-n40px {
-  right: -30px;
-}
-.cs-price-slider:before, .cs-price-slider:after {
-  width: 30px;
-}
-.cs-price-slider-main {
-  width: calc(100% - 60px);
-  margin-left: 30px;
-  margin-right: 30px;
-}
+  .cs-price-ranges > p {
+    font-size: 13px;
+    padding-inline: 5px;
+  }
+  .cs-price-slider span.MuiSlider-thumb {
+    width: 60px;
+  }
+  body .cs-price-slider:after {
+    right: -30px;
+  }
+  body .cs-price-slider:before {
+    left: -30px;
+  }
+  .cs-price-ranges .start-n40px {
+    left: -30px;
+  }
+  .cs-price-ranges .end-n40px {
+    right: -30px;
+  }
+  .cs-price-slider:before,
+  .cs-price-slider:after {
+    width: 30px;
+  }
+  .cs-price-slider-main {
+    width: calc(100% - 60px);
+    margin-left: 30px;
+    margin-right: 30px;
+  }
 }
 .errorSub.MuiRadio-root .MuiSvgIcon-root {
   fill: red !important;

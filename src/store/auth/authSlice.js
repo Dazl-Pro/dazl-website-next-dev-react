@@ -7,7 +7,10 @@ export const agentSignUp = createAsyncThunk(
   async (data, { dispatch }) => {
     try {
       const response = await http.post("/realtor/register", {
-        address: data.location,
+        address: data.streetAddress,
+        city: data.city,
+        state: data.state,
+        zip: data.zip,
         check_box: JSON.parse(data.agreeToTerms),
         confirm_password: data.confirmPassword,
         email: data.email,

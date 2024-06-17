@@ -97,7 +97,7 @@ const RoomsInformation = (props) => {
   const [errorBorder1, setErrorborder1] = useState(false);
   const [errorBorder2, setErrorborder2] = useState(false);
   const [errorBorder3, setErrorborder3] = useState(false);
-  const [fileValue, setFileValue] = useState(null);
+  const [fileValue, setFileValue] = useState([]);
   const dataBox = [{ checkbox: null, description: "", images: [] }];
   const [phdCheckbox, setPhdCheckbox] = useState([]);
 
@@ -447,6 +447,19 @@ const RoomsInformation = (props) => {
     }));
     // Add your logic or actions based on the selected value here
   };
+  // const MAX_PHOTOS = 5;
+
+  // const isLastFieldComplete = () => {
+  //   return fields.length < MAX_PHOTOS;
+  // // };
+  // fileValue
+  const isLastFieldComplete = () => {
+    if (fields.length === 0) return true;
+    const lastIndex = fields.length - 1;
+    const lastImageField = fileValue[lastIndex];
+    // const lastTextValue = textValues[lastIndex] || "";
+    return lastImageField;
+  };
 
   return (
     <div>
@@ -529,13 +542,23 @@ const RoomsInformation = (props) => {
             </div>
           </div>
           <div className="d-flex justify-content-start align-items-center mt-3">
+            {/* onClick={handleAppendPhoto} */}
             <button
               type="button"
-              className="btn btn-danger"
-              onClick={() => appendPhoto({ file: null })}
+              className="btn btn-success"
+              onClick={() => {
+                if (isLastFieldComplete()) {
+                  appendPhoto({ description: "", file: null });
+                }
+              }}
             >
               Upload more
             </button>
+            {/* onClick={() => {
+                if (isLastFieldComplete()) {
+                  appendPhoto({ description: "", file: null });
+                }
+              }} */}
           </div>
         </div>
         {roomtype?.length > 0 ? (

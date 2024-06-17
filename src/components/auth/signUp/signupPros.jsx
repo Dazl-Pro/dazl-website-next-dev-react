@@ -80,7 +80,7 @@ const schema = yup.object().shape({
     .email("Please enter valid email address")
     .required("Email is required")
     .trim(),
-    password: yup
+  password: yup
     .string()
     .required("Password is required")
     .matches(
@@ -117,10 +117,14 @@ const schema = yup.object().shape({
     .trim(),
   websiteLink: yup.string().url("Invalid website link").trim(),
   facebookLink: yup.string().url("Invalid Facebook link").trim(),
-  twitterLink: yup.string().url("Invalid Twitter link").trim(),
+  Xlink: yup.string().url("Invalid X link").trim(),
   insuranceCompany: yup.string().trim(),
-  contactPerson: yup.string().trim(),
-  insuranceNumber: yup.string().trim(),
+  contactPerson: yup
+    .string()
+    .trim()
+    .matches(/^[a-zA-Z0-9]+$/, "Please enter a valid alphanumeric value"),
+
+  insuranceNumber: yup.string(),
   agreeToTerms: yup
     .bool()
     .oneOf([true], "Please accept the terms and conditions"),
@@ -142,7 +146,7 @@ const defaultValues = {
   yearofbusiness: "",
   websiteLink: "",
   facebookLink: "",
-  twitterLink: "",
+  Xlink: "",
   insuranceCompany: "",
   contactPerson: "",
   insuranceNumber: "",
@@ -220,7 +224,7 @@ const SignupPros = () => {
       .then((data) => {
         if (data === undefined) {
         } else {
-          console.log(data)
+          console.log(data);
           localStorage.setItem("token", data.data.token);
           localStorage.setItem("userType", "professional");
           Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
@@ -638,10 +642,10 @@ const SignupPros = () => {
                     />
                   </div>
 
-                  {/* Twitter link field */}
+                  {/* X link field */}
                   <div className={`form-row mb-3`}>
                     <Controller
-                      name="twitterLink"
+                      name="XLink"
                       control={control}
                       render={({ field }) => (
                         <>
@@ -649,13 +653,13 @@ const SignupPros = () => {
                             type="text"
                             {...field}
                             className={`form-control ${
-                              errors.twitterLink ? "error" : ""
+                              errors.Xlink ? "error" : ""
                             }`}
-                            placeholder="Twitter Link"
+                            placeholder="X Link"
                           />
-                          {errors.twitterLink && (
+                          {errors.Xlink && (
                             <p className="text-danger">
-                              {errors.twitterLink.message}
+                              {errors.Xlink.message}
                             </p>
                           )}
                         </>
@@ -698,7 +702,7 @@ const SignupPros = () => {
                             }`}
                             placeholder="Contact Person or Agent"
                             onKeyPress={(e) => {
-                              const isValidInput = /^[0-9\b]+$/.test(e.key);
+                              const isValidInput = /^[a-zA-Z0-9]*$/.test(e.key);
                               if (!isValidInput) {
                                 e.preventDefault();
                               }

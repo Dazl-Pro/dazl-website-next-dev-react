@@ -3,6 +3,9 @@ import "./agentCreateProject.css";
 import Commonproject from "../../commonProject/project";
 
 const AgentCreateProject = () => {
+  const [selectValue, setSelectvalue] = React.useState("");
+  const [show, setShow] = React.useState(false);
+
   return (
     <div className="py-0 create-project-container-height">
       <div className="">
@@ -11,7 +14,7 @@ const AgentCreateProject = () => {
         </h2>
         <div className="">
           <div className="customer-create-project">
-            <Commonproject />
+            <Commonproject setSelectvalue={setSelectvalue} setShow={setShow} />
           </div>
         </div>
       </div>

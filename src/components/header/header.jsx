@@ -549,7 +549,7 @@ const Header = () => {
                               <RouteGuard Components={ProjectOpportunities} />
                             }
                           />
-                           <Route
+                          <Route
                             exact
                             path="/company/projectOpportunities/:id"
                             element={

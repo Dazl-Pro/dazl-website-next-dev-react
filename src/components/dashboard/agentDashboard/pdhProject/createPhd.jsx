@@ -28,8 +28,16 @@ const CreatePhd = () => {
   const [steponeCompleted, setSteponeCompleted] = React.useState(false);
   const dispatch = useDispatch();
   const schema = yup.object().shape({
-    firstName: yup.string().required("First Name is required").trim(),
-    lastName: yup.string().required("Last Name is required").trim(),
+    firstName: yup
+      .string()
+      .required("First Name is required")
+
+      .trim(),
+    lastName: yup
+      .string()
+      .required("Last Name is required")
+
+      .trim(),
     email: yup
       .string()
       .email("Please enter valid email address")
@@ -122,13 +130,21 @@ const CreatePhd = () => {
       setSliderValue(newValue);
     }
   };
+  const handleLowValueChange = (e) => {
+    const newValue = parseFloat(e.target.value); // Parse input value as a float
+    if (!isNaN(newValue) && newValue >= 0) {
+      // Check if the parsed value is a valid number and not negative
+      setLowValue(newValue); // Set the new low value
+    }
+    // You can add an optional else condition to handle negative numbers or invalid input
+  };
 
   const letStart = () => {
     navigate("/agent/createPhd/rooms");
   };
 
-  const [lowValue, setLowValue] = useState(750);
-  const [maxValue, setMaxValue] = useState(7500);
+  const [lowValue, setLowValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(600);
   const [sliderValue, setSliderValue] = useState(null);
 
   return (
@@ -163,9 +179,9 @@ const CreatePhd = () => {
                       </div>
                     </>
                   )}
-                  <lable className="fs-3">
+                  <lable className="fs-5">
                     {steponeCompleted
-                      ? "Add the low and high, based on your knowledge of the area."
+                      ? "Incorporate both a low and high price range reflective of your expertise and understanding of the local real estate market. Your pre-listing home diagnostic should consider various factors such as comparable property prices, recent market trends, and any unique characteristics of the property."
                       : "Seller's Information"}
                   </lable>
                 </h5>
@@ -185,6 +201,14 @@ const CreatePhd = () => {
                                   errors.firstName ? "error" : ""
                                 }`}
                                 placeholder="First Name"
+                                onKeyPress={(e) => {
+                                  const isValidInput = /^[a-zA-Z]+$/.test(
+                                    e.key
+                                  );
+                                  if (!isValidInput) {
+                                    e.preventDefault();
+                                  }
+                                }}
                               />
                             )}
                           />
@@ -200,6 +224,14 @@ const CreatePhd = () => {
                                   errors.lastName ? "error" : ""
                                 }`}
                                 placeholder="Last Name"
+                                onKeyPress={(e) => {
+                                  const isValidInput = /^[a-zA-Z]+$/.test(
+                                    e.key
+                                  );
+                                  if (!isValidInput) {
+                                    e.preventDefault();
+                                  }
+                                }}
                               />
                             )}
                           />
@@ -244,7 +276,7 @@ const CreatePhd = () => {
                                   <div>
                                     <input
                                       {...getInputProps({
-                                        placeholder: "Enter your address",
+                                        placeholder: "Enter Seller's address",
                                         className: "location-search-input",
                                       })}
                                       className={`form-control width-input ${
@@ -305,7 +337,7 @@ const CreatePhd = () => {
                       Your Clients will receive an email from dazlpro.com asking
                       them if they would like to sign up for a free user
                       account. This will allow them to create projects and
-                      receive the PHD report.
+                      receive the phd report.
                     </p>
                   </div>
                 ) : (
@@ -314,13 +346,13 @@ const CreatePhd = () => {
                       <div className="position-relative cs-price-slider-main">
                         <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges">
                           <Typography gutterBottom className="start-n40px">
-                            {lowValue}
+                            $ {lowValue}
                           </Typography>
                           <Typography
                             gutterBottom
                             className="end-n40px text-black"
                           >
-                            {maxValue}
+                            $ {maxValue}
                           </Typography>
                         </div>
                         <div className="slider-container position-relative">
@@ -328,7 +360,7 @@ const CreatePhd = () => {
                             value={sliderValue}
                             aria-label="Default"
                             valueLabelDisplay="on"
-                            min={lowValue}
+                            min={0}
                             max={maxValue}
                             className="cs-price-slider"
                             onChange={handleChange}
@@ -338,14 +370,14 @@ const CreatePhd = () => {
                       <div className="d-flex justify-content-between">
                         <div>
                           <Typography variant="body">
-                            Set Low Value:{" "}
+                            Set Low Value:{"$ "}
                           </Typography>
                           <input
                             type="number"
                             value={lowValue}
                             onChange={(e) => {
                               const newValue = parseFloat(e.target.value); // Parse input value as a float
-                              if (!isNaN(newValue)) {
+                              if (!isNaN(newValue) && newValue >= 0) {
                                 // Check if the parsed value is a valid number
                                 setLowValue(newValue); // Set the new low value
                               }
@@ -354,7 +386,7 @@ const CreatePhd = () => {
                         </div>
                         <div>
                           <Typography variant="body">
-                            Set high Value:{" "}
+                            Set high Value: {"$ "}
                           </Typography>
                           <input
                             type="number"

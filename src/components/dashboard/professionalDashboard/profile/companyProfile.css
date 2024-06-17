@@ -16,5 +16,17 @@ input {
 
 .form-image {
   padding-inline: 10px;
-  border: 3px solid black;
+  border: 1px solid lightgray;
+  max-width: 320px;
+  /* margin-top: 20px; */
+}
+.delete-button {
+  display: none;
+  /* visibility: hidden; */
+}
+
+.col-inner:hover .delete-button {
+  display: block;
+  z-index: 1;
+  /* visibility: visible; */
 }
