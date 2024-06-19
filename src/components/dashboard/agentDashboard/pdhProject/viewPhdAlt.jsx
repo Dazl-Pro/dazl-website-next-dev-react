@@ -62,27 +62,61 @@ const ViewPhdAlt = () => {
 
   const [currentStatus, setCurrentStatus] = useState("Pass");
 
+  const [progressBars, setProgressBars] = useState({});
+
+  useEffect(() => {
+    if (viewPhdData?.[0]?.roominfo) {
+      const initialProgressBars = {};
+
+      // Iterate over each room
+      viewPhdData[0].roominfo.forEach((room) => {
+        // Iterate over each feature in the room
+        room.feature.forEach((feature) => {
+          initialProgressBars[feature.feature_id] = feature.phd_price;
+        });
+      });
+
+      setProgressBars(initialProgressBars);
+    }
+  }, [viewPhdData]);
+
   const mainPrice = viewPhdData?.[0]?.phd_price;
-  const onchangeStatus = (status, room) => {
+  const onchangeStatus = (status, room, feature_id) => {
     dispatch(
       bidStatusUpdate({
         id: viewPhdData[0]?.project_id,
         status: status,
-
         room: room,
+        feature_id: feature_id,
       })
     )
       .unwrap()
       .then(() => {
-        if (status == "Bid") {
-          setProgressBar(Number(mainPrice) + 100000);
-        }
-        if (status == "Pass") {
-          setProgressBar(Number(mainPrice) - 100000);
-        }
-        if (status == "D.I.Y") {
-          setProgressBar(Number(mainPrice));
-        }
+        dispatch(viewPhdAlt({ id: itemId, value: "open" }))
+          .unwrap()
+          .then(() => {
+            const updatedProgressBars = { ...progressBars };
+
+            viewPhdData[0].roominfo.forEach((room) => {
+              room.feature.forEach((feature) => {
+                if (feature.feature_id === eleInner.feature_id) {
+                  if (status === "Bid") {
+                    updatedProgressBars[eleInner.feature_id] =
+                      Number(mainPrice) + 100;
+                  } else if (status === "Pass") {
+                    updatedProgressBars[eleInner.feature_id] =
+                      Number(mainPrice) - 100000;
+                  } else if (status === "D.I.Y") {
+                    updatedProgressBars[eleInner.feature_id] =
+                      Number(mainPrice);
+                  }
+                }
+              });
+            });
+            setProgressBars(updatedProgressBars);
+          });
+
+        setProgressBars(updatedProgressBars);
       });
   };
 
@@ -221,6 +255,8 @@ const ViewPhdAlt = () => {
     if (sendEmailButton)
       sendEmailButton.style.display = visible ? "block" : "none";
   };
+
+  console.log(viewPhdData);
 
   return (
     <div className="center-content p-3">
@@ -405,12 +441,15 @@ const ViewPhdAlt = () => {
                                             >
                                               <input
                                                 type="radio"
-                                                name={`status-${index}`}
+                                                name={`status-${index}-${eleindex}-${status}`}
+                                                checked={
+                                                  eleInner.bid_status === status
+                                                }
                                                 onChange={() => {
                                                   onchangeStatus(
                                                     status,
-
-                                                    ele.room_id
+                                                    ele.room_id,
+                                                    eleInner.feature_id
                                                   );
                                                   setCurrentStatus(status);
                                                 }}
@@ -438,7 +477,11 @@ const ViewPhdAlt = () => {
                                             <BorderLinearProgress
                                               variant="determinate"
                                               value={
-                                                (progressBar / 1800000) * 100
+                                                (progressBars[
+                                                  eleInner.feature_id
+                                                ] /
+                                                  1800) *
+                                                100
                                               }
                                             />
                                           </div>
@@ -455,116 +498,6 @@ const ViewPhdAlt = () => {
                   })}
                 </Masonry>
               </div>
-
-              {/* {items?.roominfo?.[0]?.feature?.[0]?.feature_name && (
-                        <div className="my-3 progress-slidee p-4 bg-light-red rounded-2">
-                          {items?.roominfo?.map((e, index) => {
-                            return (
-                              <div
-                                key={index}
-                                className="border border-dark p-3 mt-3 bg-white"
-                              >
-                                <div className="d-flex align-items-center justify-content-between mb-3">
-                                  <div className="d-flex gap-1 align-items-center">
-                                    Area:
-                                    <div className="fw-bolder">
-                                      {e?.room_name}
-                                    </div>
-                                  </div>
-                                  <div className="text-danger">{e?.status}</div>
-                                </div>
-                                {e?.feature?.map((eleInner, eleindex) => {
-                                  return (
-                                    <div key={eleindex}>
-                                      <div className="fw-bolder mb-1 ms-2">
-                                        {eleInner.feature_name}:
-                                      </div>
-                                      <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
-                                        <div>{eleInner?.imageDesc}</div>
-                                      </div>
-                                      <div className="container ps-0 mb-3">
-                                        <div className="d-flex gap-1">
-                                          {eleInner?.images?.map(
-                                            (image, imageIndex) => (
-                                              <div key={imageIndex}>
-                                                <a
-                                                  href={image}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                >
-                                                  <img
-                                                    alt="img"
-                                                    src={image}
-                                                    className="object-fit-cover border"
-                                                    width={"100px"}
-                                                    height={"100px"}
-                                                  />
-                                                </a>
-                                              </div>
-                                            )
-                                          )}
-                                        </div>
-                                      </div>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          gap: "10px",
-                                          paddingBottom: "10px",
-                                        }}
-                                      >
-                                        {allStatus.map((status) => (
-                                          <label
-                                            key={status}
-                                            className="custom-radio-label"
-                                          >
-                                            <input
-                                              type="radio"
-                                              name={`status-${index}`}
-                                              onChange={() => {
-                                                onchangeStatus(
-                                                  status,
-
-                                                  e.room_id
-                                                );
-                                                setCurrentStatus(status);
-                                              }}
-                                            />
-                                            <span className="ps-2">
-                                              {status}
-                                            </span>
-                                          </label>
-                                        ))}
-                                      </div>
-                                      {currentStatus !== "Pass" && (
-                                        <div className="pb-3">
-                                          <div className="d-flex justify-content-between mt-3 mb-2">
-                                            <p className="mb-0">$200k</p>
-                                            <p className="mb-0">
-                                              $
-                                              {progressBar
-                                                ? (progressBar / 1000).toFixed(
-                                                    1
-                                                  ) + "k"
-                                                : "2M"}
-                                            </p>
-                                            <p className="mb-0">$2M</p>
-                                          </div>
-                                          <BorderLinearProgress
-                                            variant="determinate"
-                                            value={
-                                              (progressBar / 1800000) * 100
-                                            }
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )} */}
 
               <div className="progress-slidee mt-4 bg-white shadow py-3 px-2 rounded-4 d-flex flex-wrap">
                 <div className="mb-3 col-12">

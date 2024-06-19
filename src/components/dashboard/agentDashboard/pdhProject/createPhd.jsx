@@ -132,11 +132,35 @@ const CreatePhd = () => {
   };
   const handleLowValueChange = (e) => {
     const newValue = parseFloat(e.target.value); // Parse input value as a float
-    if (!isNaN(newValue) && newValue >= 0) {
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
       // Check if the parsed value is a valid number and not negative
       setLowValue(newValue); // Set the new low value
     }
     // You can add an optional else condition to handle negative numbers or invalid input
+  };
+
+  // const handleMaxValueChange = (e) => {
+  //   const newValue = parseFloat(e.target.value);
+  //   setMaxValue(newValue);
+  //   // Update slider value if it's outside the new lowValue-maxValue range
+  //   if (sliderValue !== null && sliderValue > newValue) {
+  //     setSliderValue(newValue);
+  //   }
+  // };
+  const handleMaxValueChange = (e) => {
+    const newValue = parseFloat(e.target.value);
+
+    // Check if newValue is a valid number and within the limit
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
+      // Trim leading zeros and update maxValue
+      const trimmedValue = newValue.toString().replace(/^0+/, "");
+      setMaxValue(parseFloat(trimmedValue));
+
+      // Update slider value if it's outside the new lowValue-maxValue range
+      if (sliderValue !== null && sliderValue > parseFloat(trimmedValue)) {
+        setSliderValue(parseFloat(trimmedValue));
+      }
+    }
   };
 
   const letStart = () => {
@@ -334,7 +358,7 @@ const CreatePhd = () => {
                       </div>
                     </form>
                     <p className="mt-4 mb-0 pt-3 border-top">
-                      Your Clients will receive an email from dazlpro.com asking
+                      Your clients will receive an email from dazlpro.com asking
                       them if they would like to sign up for a free user
                       account. This will allow them to create projects and
                       receive the phd report.
@@ -360,7 +384,7 @@ const CreatePhd = () => {
                             value={sliderValue}
                             aria-label="Default"
                             valueLabelDisplay="on"
-                            min={0}
+                            min={lowValue}
                             max={maxValue}
                             className="cs-price-slider"
                             onChange={handleChange}
@@ -375,13 +399,13 @@ const CreatePhd = () => {
                           <input
                             type="number"
                             value={lowValue}
-                            onChange={(e) => {
-                              const newValue = parseFloat(e.target.value); // Parse input value as a float
-                              if (!isNaN(newValue) && newValue >= 0) {
-                                // Check if the parsed value is a valid number
-                                setLowValue(newValue); // Set the new low value
-                              }
-                            }}
+                            // onChange={(e) => {
+                            //   const newValue = parseFloat(e.target.value);
+                            //   if (!isNaN(newValue) && newValue >= 0) {
+                            //     setLowValue(newValue);
+                            //   }
+                            // }}
+                            onChange={handleLowValueChange}
                           />
                         </div>
                         <div>
@@ -391,9 +415,10 @@ const CreatePhd = () => {
                           <input
                             type="number"
                             value={maxValue}
-                            onChange={(e) => {
-                              setMaxValue(e.target.value);
-                            }}
+                            // onChange={(e) => {
+                            //   setMaxValue(e.target.value);
+                            // }}
+                            onChange={handleMaxValueChange}
                           />
                         </div>
                       </div>

@@ -660,10 +660,10 @@ export const updateProjectStatus = createAsyncThunk(
 export const bidStatusUpdate = createAsyncThunk(
   "dashboard/bidStatusUpdate",
   async (value) => {
-    const { id, status, room } = value;
+    const { id, status, room, feature_id } = value;
     try {
       const response = await http.patch(
-        `/statusUpdate/${id}?&room_id=${room}&bid_status=${status}`
+        `/statusUpdate/${id}?&room_id=${room}&bid_status=${status}&feature_id=${feature_id}`
       );
 
       if (response.status === 200) {

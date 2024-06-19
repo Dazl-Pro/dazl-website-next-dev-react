@@ -37,14 +37,7 @@ const AgentDashboard = () => {
           to pivot quickly and to call on all your resources to craft and
           finalize the deal. Property roadblocks, like needed repairs or
           improvements, can impact the number of days on-market as well as the
-          contract value. And it can consume your time and your resources. Dazl
-          aggregates the various data points and the information surrounding
-          potential property roadblocks identified during the walk-though. The
-          result is a diagnostic report that takes into account the completion
-          or correction of known issues and better predicts the contract value.
-          With endorsement by NARI and the HBA, Dazl was created by a life-long
-          kansas City residential builder who understand the pain points and
-          challenges of keeping projects moving and maximizing every dollar.
+          contract value. And it can consume your time and your resources.
           {/* <span
             style={{ cursor: "pointer" }}
             className="text-primary fw-bold"

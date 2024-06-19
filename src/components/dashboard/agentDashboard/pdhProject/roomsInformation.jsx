@@ -521,13 +521,14 @@ const RoomsInformation = (props) => {
   //   return fields.length < MAX_PHOTOS;
   // // };
   // fileValue
-  const isLastFieldComplete = () => {
-    if (fields.length === 0) return true;
-    const lastIndex = fields.length - 1;
-    const lastImageField = fileValue[lastIndex];
-    // const lastTextValue = textValues[lastIndex] || "";
-    return lastImageField;
-  };
+  // const isLastFieldComplete = () => {
+
+  //   if (fields.length === 0) return true;
+  //   const lastIndex = fields.length - 1;
+  //   const lastImageField = fileValue[lastIndex];
+  //   // const lastTextValue = textValues[lastIndex] || "";
+  //   return lastImageField;
+  // };
 
   return (
     <div>
@@ -610,18 +611,19 @@ const RoomsInformation = (props) => {
             </div>
           </div>
           <div className="d-flex justify-content-start align-items-center mt-3">
-            {/* onClick={handleAppendPhoto} */}
-            <button
-              type="button"
-              className="btn btn-success"
-              onClick={() => {
-                if (isLastFieldComplete()) {
+            {photoFields.length < 5 && (
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
                   appendPhoto({ description: "", file: null });
-                }
-              }}
-            >
-              Upload more
-            </button>
+                }}
+              >
+                Upload more
+              </button>
+            )}
+            {/* onClick={handleAppendPhoto} */}
+
             {/* onClick={() => {
                 if (isLastFieldComplete()) {
                   appendPhoto({ description: "", file: null });
@@ -721,9 +723,9 @@ const RoomsInformation = (props) => {
                   }
                   label="DAZLING"
                 />
-                <div className="fst-italic text-danger text-decoration-underline">
+                {/* <div className="fst-italic text-danger text-decoration-underline">
                   80% room value
-                </div>
+                </div> */}
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
@@ -734,9 +736,9 @@ const RoomsInformation = (props) => {
                   }
                   label="MARKET READY"
                 />
-                <div className="fst-italic text-danger text-decoration-underline">
+                {/* <div className="fst-italic text-danger text-decoration-underline">
                   50% room value
-                </div>
+                </div> */}
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
@@ -747,9 +749,9 @@ const RoomsInformation = (props) => {
                   }
                   label="NEEDS DAZL"
                 />
-                <div className="fst-italic text-danger text-decoration-underline">
+                {/* <div className="fst-italic text-danger text-decoration-underline">
                   30% room value
-                </div>
+                </div> */}
               </div>
             </div>
           </RadioGroup>

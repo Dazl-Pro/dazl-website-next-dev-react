@@ -474,6 +474,7 @@ const Commonproject = ({
                 images: [responseImage],
                 inspectionNotes: textValues[index],
                 roomId: localStorage.getItem("roomId"),
+                realtor_id: localStorage.getItem("userId"),
               };
               setSelectedImages((prevData) => [...prevData, newItem]);
             }

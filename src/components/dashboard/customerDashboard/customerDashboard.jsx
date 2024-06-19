@@ -35,23 +35,15 @@ const CustomerDashboard = () => {
               <h3 className="text-uppercase text-danger fw-bold ">
                 Welcome to Homeowner Dashboard
               </h3>
-              Dazl is an online tool designed to connect homeowners with
-              licensed and approved* service professionals for their home
-              improvement or home repair needs. Dazl identifies affiliate
+              Working in concert with sellers' agents, Dazl is an online tool
+              designed to connect homeowners with licensed and approved*
+              Missouri and Kansas service professionals for their home
+              improvement or home repair needs. Based on project-specific
+              details captured during the walk-thru, including photos and
+              reports that itemize specific needs, Dazl identifies affiliate
               service pros that have demonstrated experience in the needed
               service areas and that have a geographic reach that coincides with
-              the property's general location. Homeowners determine which
-              service pros to communicate with, to seek proposals from, to
-              coordinate schedules with, and to engage with, allowing members to
-              better control their selections of services and professionals.
-              Additionally, approved service providers agree to the Dazl service
-              excellence commitment, which provides another layer of project
-              delivery confidence. For members seeking inspiration for their
-              next improvement projects. With endorsement by NARI and the HBA,
-              DAZL was created by a life-long Kansas City residential builder
-              who understands the pain points and challenges homeowners
-              experience in the search for qualified contractors to entrust with
-              one of their greatest investments.
+              the property's general location.
               {/* <span
                 style={{ cursor: "pointer" }}
                 className="text-primary fw-bold"
