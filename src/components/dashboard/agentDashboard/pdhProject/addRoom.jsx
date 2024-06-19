@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import RoomsInformation from "./roomsInformation";
 import CommonRoomform from "../../commonForm/commonRoomForm";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import Nav from "react-bootstrap/Nav";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./style.css";
 
 const AddRoom = () => {
@@ -12,7 +13,24 @@ const AddRoom = () => {
   return (
     <div className="py-0 rooms-container-height d-block min-vh-auto">
       <div className="content-full">
-        <h3 className="mb-4 pb-4 border-bottom">PHD and Project creation </h3>
+        <h3 className="mb-4 pb-4 border-bottom">
+          {show && (
+            <button
+              className="btn btn-primary btn-sm me-1"
+              onClick={() => {
+                setSelectvalue("");
+                setShow(false);
+                localStorage.removeItem("roomselect");
+                localStorage.removeItem("roomId");
+                localStorage.removeItem("value");
+              }}
+            >
+              <ArrowBackIcon />
+            </button>
+          )}
+          PHD and Project creation{" "}
+        </h3>
+
         <div class="w-100 my-0">
           {show && (
             <RoomsInformation
@@ -20,6 +38,7 @@ const AddRoom = () => {
               setSelectvalue={setSelectvalue}
             />
           )}
+
           {!show && (
             <>
               <div className="">

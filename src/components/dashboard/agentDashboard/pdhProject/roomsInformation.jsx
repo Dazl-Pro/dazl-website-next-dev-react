@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/jsx-key */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -15,7 +15,10 @@ import {
   createPhd,
   uploadImage,
 } from "../../../../store/dashboard/dashboardSlice";
+// import "@material-ui/icons/Stop";
 import MicIcon from "@mui/icons-material/Mic";
+
+// import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./style.css";
 import {
@@ -100,6 +103,9 @@ const RoomsInformation = (props) => {
   const [fileValue, setFileValue] = useState([]);
   const dataBox = [{ checkbox: null, description: "", images: [] }];
   const [phdCheckbox, setPhdCheckbox] = useState([]);
+  const [recording, setRecording] = useState(false);
+  const [audioStream, setAudioStream] = useState(null);
+  const mediaRecorderRef = useRef(null);
 
   const dispatch = useDispatch();
   const {
@@ -425,6 +431,68 @@ const RoomsInformation = (props) => {
   const getAudio = async () => {
     Toastify({ data: "error", msg: "Your device may not have this feature" });
   };
+  // const startRecording = async () => {
+  //   try {
+  //     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  //     setAudioStream(stream);
+
+  //     const mediaRecorder = new MediaRecorder(stream);
+  //     mediaRecorderRef.current = mediaRecorder;
+
+  //     mediaRecorder.ondataavailable = handleDataAvailable;
+  //     mediaRecorder.start();
+
+  //     setRecording(true);
+
+  //     Toastify({
+  //       text: "Audio recording started",
+  //       backgroundColor: "#2ecc71",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error accessing microphone:", error);
+  //     Toastify({
+  //       text: "Error: Could not access microphone",
+  //       backgroundColor: "#e74c3c",
+  //     });
+  //   }
+  // };
+  // const stopRecording = () => {
+  //   if (mediaRecorderRef.current && audioStream) {
+  //     mediaRecorderRef.current.stop();
+  //     audioStream.getTracks().forEach((track) => track.stop());
+  //     setRecording(false);
+  //     setAudioStream(null);
+
+  //     Toastify({
+  //       text: "Audio recording stopped",
+  //       backgroundColor: "#3498db",
+  //     });
+  //   }
+  // };
+  // const handleDataAvailable = (event) => {
+  //   const audioBlob = new Blob([event.data], { type: "audio/wav" });
+  //   console.log("Audio Blob:", audioBlob);
+  //   saveAudioBlob(audioBlob);
+  // };
+
+  // const saveAudioBlob = (blob) => {
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement("a");
+  //   a.style.display = "none";
+  //   a.href = url;
+  //   a.download = "recording.wav";
+  //   document.body.appendChild(a);
+  //   a.click();
+  //   window.URL.revokeObjectURL(url);
+  // };
+
+  // const toggleRecording = () => {
+  //   if (recording) {
+  //     stopRecording();
+  //   } else {
+  //     startRecording();
+  //   }
+  // };
 
   const onChange = (e) => {
     const name = e.target.name;
@@ -481,11 +549,11 @@ const RoomsInformation = (props) => {
           <div className="">
             <p className="mb-1">
               1.Note any exceptional features or selling advantages:
-              <MicIcon
+              {/* <MicIcon
                 onClick={getAudio}
                 className=""
                 style={{ cursor: "pointer" }}
-              />
+              />{" "} */}
             </p>
           </div>
           <div className="">

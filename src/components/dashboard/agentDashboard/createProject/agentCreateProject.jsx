@@ -14,7 +14,13 @@ const AgentCreateProject = () => {
         </h2>
         <div className="">
           <div className="customer-create-project">
-            <Commonproject setSelectvalue={setSelectvalue} setShow={setShow} />
+            <Commonproject
+              show={show}
+              name={name}
+              setShow={setShow}
+              selectValue={selectValue}
+              setSelectvalue={setSelectvalue}
+            />
           </div>
         </div>
       </div>

@@ -58,6 +58,8 @@ const ViewPhdAlt = () => {
     viewPhdData?.[0]?.pre_price
   );
 
+  const [pdfGenerating, setPdfGenerating] = useState(false);
+
   const [currentStatus, setCurrentStatus] = useState("Pass");
 
   const mainPrice = viewPhdData?.[0]?.phd_price;
@@ -83,19 +85,6 @@ const ViewPhdAlt = () => {
         }
       });
   };
-
-  const sendEmail = () => {
-    Toastify({
-      data: "success",
-      msg: "Project shared via Email  successfully",
-    });
-  };
-
-  if (!viewPhdData || viewPhdData.length === 0) {
-    // Return a fallback or handle the case when viewPhdData is undefined or empty
-
-    return <div>No data available</div>;
-  }
 
   const convertToPdf = async () => {
     if (!componentRef.current) return;
@@ -138,6 +127,99 @@ const ViewPhdAlt = () => {
       console.error("Error generating PDF:", error);
       componentRef.current.innerHTML = originalContent;
     }
+    Toastify({
+      data: "success",
+      msg: "Project shared via Email  successfully",
+    });
+  };
+
+  const downloadPdf = async () => {
+    // const componentRef = useRef(null);
+
+    if (!componentRef.current) return;
+
+    setPdfGenerating(true);
+
+    // Temporarily store the current JSX
+
+    // Generate the PDF
+    const input = componentRef.current;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: [input.offsetWidth, input.offsetHeight],
+    });
+
+    try {
+      setButtonsVisibility(false);
+      const canvas = await html2canvas(input, { useCORS: true });
+      const imgData = canvas.toDataURL("image/png");
+      pdf.addImage(imgData, "PNG", 0, 0, input.offsetWidth, input.offsetHeight);
+
+      // Save the PDF file
+      pdf.save("document.pdf");
+
+      // Restore original content
+      componentRef.current.innerHTML = originalContent;
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      // Restore original content on error
+      componentRef.current.innerHTML = originalContent;
+    } finally {
+      // Ensure buttons are restored
+      setButtonsVisibility(true);
+      setPdfGenerating(false);
+    }
+  };
+  //   if (!componentRef.current) return;
+
+  //   // Temporarily store the current JSX
+  //   const originalContent = componentRef.current.innerHTML;
+
+  //   // Remove the buttons from the DOM
+  //   const downloadPdfButton = document.getElementById("downloadPdfButton");
+  //   const sendEmailButton = document.getElementById("sendEmailButton");
+  //   downloadPdfButton.remove();
+  //   sendEmailButton.remove();
+
+  //   // Generate the PDF
+  //   const input = componentRef.current;
+  //   const pdf = new jsPDF({
+  //     orientation: "portrait",
+  //     unit: "pt",
+  //     format: [input.offsetWidth, input.offsetHeight],
+  //   });
+
+  //   try {
+  //     const canvas = await html2canvas(input, { useCORS: true });
+  //     const imgData = canvas.toDataURL("image/png");
+  //     pdf.addImage(imgData, "PNG", 0, 0, input.offsetWidth, input.offsetHeight);
+
+  //     // Dispatch the mailPdf action with name, email, and PDF File object
+  //     const pdfBlob = pdf.output("blob");
+
+  //     dispatch(
+  //       mailPdf({
+  //         firstName: viewPhdData[0].customer.first_name,
+  //         lastName: viewPhdData[0].customer.last_name,
+  //         email: viewPhdData[0].customer.email,
+  //         pdfData: pdfBlob,
+  //       })
+  //     );
+  //     componentRef.current.innerHTML = originalContent;
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //     componentRef.current.innerHTML = originalContent;
+  //   }
+  // };
+
+  const setButtonsVisibility = (visible) => {
+    const downloadPdfButton = document.getElementById("downloadPdfButton");
+    const sendEmailButton = document.getElementById("sendEmailButton");
+    if (downloadPdfButton)
+      downloadPdfButton.style.display = visible ? "block" : "none";
+    if (sendEmailButton)
+      sendEmailButton.style.display = visible ? "block" : "none";
   };
 
   return (
@@ -687,15 +769,17 @@ const ViewPhdAlt = () => {
                   id="downloadPdfButton"
                   type="submit"
                   className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
-                  onClick={convertToPdf}
+                  onClick={downloadPdf}
+                  disabled={pdfGenerating}
                 >
-                  Download Pdf {<PictureAsPdfIcon />}
+                  {pdfGenerating ? "Generating PDF..." : "Download Pdf"}{" "}
+                  <PictureAsPdfIcon />
                 </button>
                 <button
                   id="sendEmailButton"
                   type="submit"
                   className="d-flex items-center btn btn-primary mt-4 mb-2 gap-2"
-                  onClick={sendEmail}
+                  onClick={convertToPdf}
                 >
                   Send {<SendIcon />}
                 </button>

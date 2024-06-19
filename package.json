@@ -17,6 +17,8 @@
     "@mui/icons-material": "^5.15.11",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.15",
+    "@picovoice/leopard-react": "^2.0.2",
+    "@picovoice/web-voice-processor": "^4.0.9",
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",

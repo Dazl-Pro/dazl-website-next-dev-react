@@ -575,15 +575,22 @@ const Commonproject = ({
                       </div>
                       {/* {fields.filter((field) => field.indexId === index)
                         .length < 5 && ( */}
-                      <button
-                        type="button"
-                        className="btn btn-primary  my-3"
-                        onClick={() => {
-                          appendPhoto({ description: "", file: null });
-                        }}
-                      >
-                        Upload Image
-                      </button>
+                      {fields.filter((field) => field.indexId === index)
+                        .length < 5 && (
+                        <button
+                          type="button"
+                          className="btn btn-primary my-3"
+                          onClick={() => {
+                            append({ description: "", file: null });
+                          }}
+                          disabled={
+                            fields.filter((field) => field.indexId === index)
+                              .length >= 5 || !textValues[index] // Disable if description is empty
+                          }
+                        >
+                          Upload Image
+                        </button>
+                      )}
                       {/* )} */}
                     </div>
                   </>
