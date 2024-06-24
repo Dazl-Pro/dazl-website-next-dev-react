@@ -53,9 +53,10 @@ const ProjectOpportunities = () => {
         <div>
           <input
             type="text"
-            placeholder="Search here"
+            placeholder="Search By Location"
             onChange={handleChange}
             value={searchInput}
+            className="form-control my-2 border-bottom border-dark"
           />
           {filteredData.length > 0 ? (
             <Table striped bordered hover className="text-start w-100">

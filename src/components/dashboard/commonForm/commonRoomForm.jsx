@@ -71,6 +71,7 @@ const CommonRoomform = (props) => {
         <label className="form-label text-start">Select Field</label>
         <Controller
           name="selectedField"
+          className=""
           control={control}
           defaultValue={selectValue === "" ? selectValue : ""}
           render={({ field }) => (

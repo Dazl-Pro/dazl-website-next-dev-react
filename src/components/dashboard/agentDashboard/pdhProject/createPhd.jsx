@@ -31,11 +31,12 @@ const CreatePhd = () => {
     firstName: yup
       .string()
       .required("First Name is required")
-
+      .min(3, "First Name have atleast 3 character")
       .trim(),
     lastName: yup
       .string()
       .required("Last Name is required")
+      .min(3, "First Name have atleast 3 character")
 
       .trim(),
     email: yup
@@ -43,7 +44,11 @@ const CreatePhd = () => {
       .email("Please enter valid email address")
       .required("Email is required")
       .trim(),
-    location: yup.string().required("Location is required").trim(),
+    location: yup
+      .string()
+      .required("Location is required")
+      .min(3, "First Name have atleast 3 character")
+      .trim(),
   });
 
   const navigate = useNavigate();
@@ -103,6 +108,7 @@ const CreatePhd = () => {
 
   const [loading, setLoading] = React.useState(false);
   const [select, setSelect] = React.useState(false);
+  const [address, setAddress] = React.useState("");
 
   const handleSelect = async (selectedAddress) => {
     try {
@@ -122,6 +128,8 @@ const CreatePhd = () => {
 
   const handleChangeLocation = (newAddress) => {
     setSelect(false);
+    setAddress(newAddress);
+    setValue("location", newAddress);
   };
 
   const handleChange = (event, newValue) => {
@@ -286,10 +294,7 @@ const CreatePhd = () => {
                             render={({ field }) => (
                               <PlacesAutocomplete
                                 value={field.value}
-                                onChange={(newValue) => {
-                                  setValue("location", newValue);
-                                  handleChangeLocation(newValue);
-                                }}
+                                onChange={handleChangeLocation}
                                 onSelect={handleSelect}
                               >
                                 {({

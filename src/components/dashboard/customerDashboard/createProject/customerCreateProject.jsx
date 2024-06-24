@@ -32,14 +32,17 @@ const CustomerCreateProject = () => {
             Project Creation
           </h2>
         </div>
-        <label htmlFor="projectName">Project Name:</label>
-        <input
-          type="text"
-          placeholder="Enter project name"
-          required
-          onChange={(e) => setName(e.target.value)}
-        />
-        <div className="">
+        <div className="col-md-6">
+          <label htmlFor="projectName" className="mt-2">
+            Project Name:
+          </label>
+          <input
+            type="text"
+            placeholder="Enter project name"
+            required
+            onChange={(e) => setName(e.target.value)}
+            className="form-control mt-2"
+          />
           <div className="customer-create-project">
             <Commonproject
               show={show}

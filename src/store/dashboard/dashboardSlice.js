@@ -464,9 +464,7 @@ export const deleteProjectFeatures = createAsyncThunk(
     { dispatch }
   ) => {
     try {
-      const response = await http.delete(
-        `/delete-report/${projectId}/${housingSegmentId}`
-      );
+      const response = await http.delete(`/delete-report/${projectId}`);
       if (response.status === 200) {
         dispatch(getCustomerProject({ pageNo, numberofdata }));
         return response.data;

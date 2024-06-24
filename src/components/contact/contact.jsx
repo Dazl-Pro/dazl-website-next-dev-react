@@ -34,13 +34,35 @@ const photosSchema = yup.array().of(
 );
 
 const schema = yup.object().shape({
-  memberName: yup.string().required("memberName is required"),
-  propertyAddress: yup.string().required("propertyAddress is required"),
-  companyName: yup.string().required("companyName is required"),
-  contactName: yup.string().required("contactName is required"),
-  describeIssue: yup.string().required("describeIssue is required"),
-  stepsToResolve: yup.string().required("stepsToResolve is required"),
-  howIssueResolved: yup.string().required("howIssueResolved is required"),
+  memberName: yup
+    .string()
+    .required("memberName is required")
+    .min(3, "Member Name  must be at least 3 characters"),
+  // .length(3, "memberName must be exactly 3 characters")
+  propertyAddress: yup
+    .string()
+    .required("propertyAddress is required")
+    .min(3, "Property Address Name  must be at least 3 characters"),
+  companyName: yup
+    .string()
+    .required("companyName is required")
+    .min(3, "Company Name  must be at least 3 characters"),
+  contactName: yup
+    .string()
+    .required("contactName is required")
+    .min(3, "Contact Name  must be at least 3 characters"),
+  describeIssue: yup
+    .string()
+    .required("describeIssue is required")
+    .min(100, "Issues  must be at least 100 characters"),
+  stepsToResolve: yup
+    .string()
+    .required("stepsToResolve is required")
+    .min(100, "Steps to resolve  must be at least 100 characters"),
+  howIssueResolved: yup
+    .string()
+    .required("howIssueResolved is required")
+    .min(100, "How issues resolved  must be at least 100 characters"),
   photos: photosSchema,
 });
 
@@ -295,6 +317,7 @@ const ContactUs = () => {
                       <div className="column">
                         <input
                           type="file"
+                          accept=".jpg,.jpeg,.png"
                           {...register(`photos[${index}].file`)}
                           className={`form-control mb-3 ${
                             errors.photos && errors?.photos[index]?.file
@@ -325,7 +348,7 @@ const ContactUs = () => {
                             />
                           )}
                         />
-                        {fields.length !== 0 && (
+                        {fields.length !== 1 && (
                           <button
                             type="button"
                             onClick={() => remove(index)}
@@ -355,7 +378,7 @@ const ContactUs = () => {
                 </div>
 
                 <button
-                  className="sub-button btn bg-dark text-white text-uppercase fw-bold"
+                  className="sub-button btn bg-danger text-white text-uppercase fw-bold"
                   type="submit"
                 >
                   Submit

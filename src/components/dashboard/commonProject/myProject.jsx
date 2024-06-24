@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 import {
   viewPhd,
   getCompletePhd,
+  // getSavedPhd,
   openConfirmPopup,
   deleteAgentFeatures,
   deleteProjectFeatures,
@@ -46,6 +47,7 @@ const MyProject = () => {
   const itemsPerPage = 5;
   const totalCount = projectData?.totalCount;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (projectData?.length === 0) {
@@ -189,20 +191,57 @@ const MyProject = () => {
                             {items?.project_name}
                           </h4>
                           <div>
-                            <button
-                              className="btn btn-outline-success m-1 btn-sm"
-                              onClick={() => dispatch(openConfirmPopup(true))}
-                            >
-                              <AddIcon />
-                              <span className="del">ADD Rooms</span>
-                            </button>
+                            {/* <button
+                          type="submit"
+                          className="btn btn-danger"
+                          onClick={(e) => save(e, "save")}
+                        >
+                          Add another room
+                        </button> */}
                             <button
                               className="btn btn-outline-danger m-1 btn-sm"
-                              onClick={() => dispatch(openConfirmPopup(true))}
+                              onClick={() => setShowModal(true)}
                             >
                               <DeleteForeverIcon />
-                              <span className="del">DELETE Rooms</span>
+                              <span className="del">Delete Project</span>
                             </button>
+
+                            <Modal
+                              show={showModal}
+                              onHide={() => setShowModal(false)}
+                              centered
+                            >
+                              <Modal.Header closeButton>
+                                <Modal.Title>Delete Project</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <div className="text-center fs-5">
+                                  Are you sure you want to delete this project?
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button
+                                  variant="primary"
+                                  onClick={() => {
+                                    deleteProject(
+                                      items.project_id,
+                                      items.housing_segment_id
+                                    );
+                                    setShowModal(false);
+                                  }}
+                                  className="px-4"
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  variant="secondary"
+                                  onClick={() => setShowModal(false)}
+                                  className="px-4"
+                                >
+                                  No
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
                           </div>
                         </div>
                         <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4">
@@ -388,7 +427,7 @@ const MyProject = () => {
                                   key={index}
                                   className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2"
                                 >
-                                  <div className="col-5">
+                                  <div className="col-6">
                                     <div
                                       style={{
                                         fontWeight: "bold",
@@ -480,7 +519,7 @@ const MyProject = () => {
                                       <div>{opportunity.message}</div>
                                     </div>
                                   </div>
-                                  <div
+                                  {/* <div
                                     className="col-1"
                                     style={{
                                       display: "flex",
@@ -549,7 +588,7 @@ const MyProject = () => {
                                         Save
                                       </div>
                                     </div>
-                                  </div>
+                                  </div> */}
                                 </div>
                               )
                             )}
@@ -590,51 +629,5 @@ export default MyProject;
 
 // import Button from 'react-bootstrap/Button';
 // import Modal from 'react-bootstrap/Modal';
-
-function ConfirmModal() {
-  const dispatch = useDispatch();
-  const selector = useSelector((state) => state.dashboardSlice);
-
-  return (
-    <div
-      className="modal show"
-      style={{ display: "block", position: "initial" }}
-    >
-      <Modal.Dialog>
-        {/* <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
-        </Modal.Header> */}
-
-        <Modal.Body>
-          <div className="d-flex justify-content-center fs-1 fw-bold">
-            Delete Project
-          </div>
-          <div className="text-center  fs-5">
-            Are you sure you want to delete this project ?{" "}
-          </div>
-        </Modal.Body>
-        <Modal.Footer className="justify-content-center border-0">
-          <Button
-            variant="primary"
-            onClick={() =>
-              deleteProject(items.project_id, items.housing_segment_id)
-            }
-            className="px-4"
-          >
-            Yes
-          </Button>
-
-          <Button
-            variant="primary"
-            // onClick={() => dispatch(openConfirmPopup(false))}
-            className="px-4"
-          >
-            No
-          </Button>
-        </Modal.Footer>
-      </Modal.Dialog>
-    </div>
-  );
-}
 
 // export default StaticExample;

@@ -3,6 +3,7 @@ import "./professional.css";
 import SendIcon from "@mui/icons-material/Send";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { Toastify } from "../../../services/toastify/toastContainer";
 import {
   viewServicePhd,
   sendMailHomeOwner,
@@ -35,6 +36,13 @@ const ProjectOpportunity = () => {
         homeOwnerName: data.customer.first_name + " " + data.customer.last_name,
       })
     );
+    if (dispatch) {
+      Toastify({
+        data: "success",
+        msg: "Response Sent  successfully",
+      });
+      return;
+    }
   };
 
   console.log(data);

@@ -490,7 +490,7 @@ const Commonproject = ({
         setSelectvalue={setSelectvalue}
         selectValue={selectValue}
         setInitialFields={setInitialFields}
-        width="w-50"
+        // width="w-50"
       />
       {show ? (
         <>
@@ -581,13 +581,11 @@ const Commonproject = ({
                         <button
                           type="button"
                           className="btn btn-primary my-3"
-                          onClick={() => {
-                            append({ description: "", file: null });
-                          }}
-                          disabled={
-                            fields.filter((field) => field.indexId === index)
-                              .length >= 5 || !textValues[index] // Disable if description is empty
-                          }
+                          onClick={() => append({ indexId: index, file: null })}
+                          // disabled={
+                          //   fields.filter((field) => field.indexId === index)
+                          //     .length >= 5 || !textValues[index]
+                          // }
                         >
                           Upload Image
                         </button>

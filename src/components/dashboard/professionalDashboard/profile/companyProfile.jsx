@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./companyProfile.css";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
@@ -69,7 +69,6 @@ const CompanyProfile = () => {
   const {
     control,
     reset,
-    register,
     setValue,
     handleSubmit,
     formState: { errors },
@@ -79,7 +78,7 @@ const CompanyProfile = () => {
   });
 
   const onSubmit = (data) => {
-    if (disable === true) {
+    if (disable) {
       dispatch(UpdateCompanyProfile({ values: data, images }));
       reset();
       setDisable(false);
@@ -90,15 +89,15 @@ const CompanyProfile = () => {
 
   const handleDelete = (index) => {
     if (images) {
-      const updatedImages = images.filter((item, idx) => idx !== index);
-      setImages(updatedImages.length > 0 ? updatedImages : null);
+      const updatedImages = [...images];
+      updatedImages[index] = "undefined"; // Set the image to "undefined" instead of undefined
+      setImages(updatedImages);
+      setDisable(true); // Set disable to true when an image is deleted
     }
   };
 
   const uploadImage = (e, index) => {
-    setDisable(true);
     const file = e.target.files[0];
-
     const isImage = file && file.type.startsWith("image/");
 
     const formData = new FormData();
@@ -118,7 +117,7 @@ const CompanyProfile = () => {
       });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
@@ -141,7 +140,55 @@ const CompanyProfile = () => {
         </h2>
         <div className="">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <h3>Name: {companydata?.name}</h3>
+            <div className="d-flex flex-row justify-content-between align-items-center">
+              <h3 className="text-capitalize">Name: {companydata?.name}</h3>
+              <div>
+                {companydata?.website && (
+                  <a
+                    href={companydata.website}
+                    target="_blank"
+                    className="btn btn-sm btn-danger m-1"
+                  >
+                    Website
+                  </a>
+                )}
+                {companydata?.facebook && (
+                  <a
+                    href={companydata.facebook}
+                    target="_blank"
+                    className="btn btn-sm btn-danger m-1"
+                  >
+                    <svg
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                      focusable="false"
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      data-testid="FacebookIcon"
+                    >
+                      <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5A3.5 3.5 0 0 0 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9a1 1 0 0 1 1-1h2V5z"></path>
+                    </svg>
+                  </a>
+                )}
+                {companydata?.twitter && (
+                  <a
+                    href={companydata.twitter}
+                    target="_blank"
+                    className="btn btn-sm btn-danger m-1"
+                  >
+                    <svg
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                      focusable="false"
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      data-testid="XIcon"
+                    >
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+
             <div className="row">
               <p className="col-md-4">
                 <div className="col-inner bg-light p-3 rounded-3">
@@ -173,43 +220,52 @@ const CompanyProfile = () => {
                     }}
                   >
                     {photo !== "undefined" ? (
-                      <img
-                        src={photo}
-                        alt="Profile"
-                        className="rounded-full"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
+                      <>
+                        <img
+                          src={photo}
+                          alt="Profile"
+                          className="rounded-full"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                        {disable && (
+                          <button
+                            type="button"
+                            class="btn btn-light bg-light-red border-danger p-1 space delete-button"
+                            onClick={() => handleDelete(index)}
+                            style={{
+                              position: "absolute",
+                              top: "10px",
+                              right: "10px",
+                            }}
+                          >
+                            <DeleteIcon />
+                          </button>
+                        )}
+                      </>
                     ) : (
-                      " Image Not Uploaded"
+                      ""
                     )}
-                    <button
-                      type="button"
-                      class="btn btn-light bg-light-red border-danger p-1 space delete-button"
-                      onClick={() => handleDelete(index)}
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                      }}
-                    >
-                      <DeleteIcon />
-                    </button>
-                    <input
-                      type="file"
-                      className={`form-control form-image ${
-                        errors[`image${index + 1}`] &&
-                        errors[`image${index + 1}`].value
-                          ? "error"
-                          : ""
-                      }`}
-                      accept="image/*"
-                      onChange={(e) => {
-                        uploadImage(e, index);
-                      }}
-                    />
+                    {disable && (
+                      <>
+                        {photo === "undefined" ? "Image Not Uploaded" : ""}
+                        <input
+                          type="file"
+                          className={`form-control mt-2 form-image ${
+                            errors[`image${index + 1}`] &&
+                            errors[`image${index + 1}`].value
+                              ? "error"
+                              : ""
+                          }`}
+                          accept="image/*"
+                          onChange={(e) => {
+                            uploadImage(e, index);
+                          }}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               ))}
@@ -225,7 +281,7 @@ const CompanyProfile = () => {
                       Years In Business
                       <input
                         {...field}
-                        disabled={disable ? false : true}
+                        disabled={!disable}
                         className={` form-control width-input ${
                           errors.firstName ? "error" : ""
                         }`}
@@ -251,7 +307,7 @@ const CompanyProfile = () => {
                           }
                         }}
                         {...field}
-                        disabled={disable ? false : true}
+                        disabled={!disable}
                         className={` form-control  width-input${
                           errors.lastName ? "error" : ""
                         }`}
@@ -270,7 +326,7 @@ const CompanyProfile = () => {
                       Email Address
                       <input
                         {...field}
-                        disabled={disable ? false : true}
+                        disabled={!disable}
                         className={` form-control  width-input ${
                           errors.email ? "error" : ""
                         }`}
@@ -289,7 +345,7 @@ const CompanyProfile = () => {
                       Company Name
                       <input
                         {...field}
-                        disabled={disable ? false : true}
+                        disabled={!disable}
                         className={` form-control  width-input  ${
                           errors.companyName ? "error" : ""
                         }`}
@@ -308,7 +364,7 @@ const CompanyProfile = () => {
                       Insurance Contact
                       <input
                         {...field}
-                        disabled={disable ? false : true}
+                        disabled={!disable}
                         className={` form-control  width-input${
                           errors.lastName ? "error" : ""
                         }`}
@@ -327,7 +383,7 @@ const CompanyProfile = () => {
                       Insurance Number
                       <input
                         {...field}
-                        disabled={disable ? false : true}
+                        disabled={!disable}
                         className={` form-control width-input${
                           errors.lastName ? "error" : ""
                         }`}

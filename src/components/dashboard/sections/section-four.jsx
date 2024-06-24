@@ -15,7 +15,8 @@ const SectionFour = () => {
               </h6>
               <h2 className="text-uppercase">
                 Retro Colors Make a Comeback: What’s{" "}
-                <span className="text-primary">Hot in Decor</span> Right Now
+                <span className="text-primary">Hot in Decor</span> Right
+                Now/contact-us
               </h2>
               <p className="mb-0">
                 {" "}

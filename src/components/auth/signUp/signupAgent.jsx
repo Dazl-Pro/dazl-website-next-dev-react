@@ -31,8 +31,16 @@ const defaultValues = {
 };
 
 const schema = yup.object().shape({
-  firstName: yup.string().required("First Name is required").trim(),
-  lastName: yup.string().required("Last Name is required").trim(),
+  firstName: yup
+    .string()
+    .required("First Name is required")
+    .trim()
+    .min(3, "First Name must be atleast 3 charachters"),
+  lastName: yup
+    .string()
+    .required("Last Name is required")
+    .trim()
+    .min(3, "Last Name must be atleast 3 charachters"),
   email: yup
     .string()
     .email("Please enter valid email address")
@@ -40,13 +48,14 @@ const schema = yup.object().shape({
     .trim(),
   password: yup
     .string()
-    .required("Password is required")
-    .matches(
-      /^(?=.*[A-Z])/,
-      "Password must contain at least one uppercase letter"
-    )
-    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
-    .min(8, "Password must be atleast 8 characters long")
+
+    // .matches(
+    //   /^(?=.*[A-Z])/,
+    //   "Password must contain at least one uppercase letter"
+    // )
+    // .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(6, "Password must be atleast 6 characters long")
+    .max(15, "Password must be atmost 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -54,17 +63,38 @@ const schema = yup.object().shape({
     .required("Confirm password is required")
     .oneOf([yup.ref("password")], "Passwords do not match")
     .trim(),
-  companyName: yup.string().required("companyName is required").trim(),
+  companyName: yup
+    .string()
+    .required("companyName is required")
+    .trim()
+    .min(3, "Company Name must be atleast 3 charachters"),
+
   // location: yup.string().required("Location is required").trim(),
-  // number: yup
-  //   .string()
-  //   .matches(/^[0-9]+$/, "Please enter a valid number")
-  //   .required("Number is required")
-  //   .trim(),
-  streetAddress: yup.string().trim(),
-  city: yup.string().required("Location is required").trim(),
-  state: yup.string().required("state is required").trim(),
-  zip: yup.string().required("Zip Code is required").trim(),
+  number: yup
+    .string()
+    .matches(/^\d+$/, "Number must be digits only")
+    .required("Phone number is required")
+    .trim(),
+
+  streetAddress: yup
+    .string()
+    .trim()
+    .min(3, "Street Address must be atleast 3 charachters"),
+  city: yup
+    .string()
+    .required("Location is required")
+    .trim()
+    .min(3, "City must be atleast 3 charachters"),
+  state: yup
+    .string()
+    .required("state is required")
+    .trim()
+    .min(3, "State must be atleast 3 charachters"),
+  zip: yup
+    .string()
+    .required("Zip Code is required")
+    .trim()
+    .min(3, "Zip Name must be atleast 3 charachters"),
   agreeToTerms: yup
     .bool()
     .oneOf([true], "Please accept the terms and conditions"),
@@ -197,6 +227,7 @@ const SignupAgent = () => {
                           errors.email ? "error" : ""
                         }`}
                         placeholder="Email address*"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                       />
                     )}
                   />
@@ -214,7 +245,6 @@ const SignupAgent = () => {
                             errors.number ? "error" : ""
                           }`}
                           onKeyPress={(e) => {
-                            // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
                             const isValidInput = /^[0-9\b]+$/.test(e.key);
                             if (!isValidInput) {
                               e.preventDefault();
@@ -463,6 +493,12 @@ const SignupAgent = () => {
                   Submit
                 </button>
               </div>
+              <p className="d-flex justify-content-center align-items-center m-3">
+                Do not have an account?{" "}
+                <a href="/login/realtor" className="text-primary">
+                  Sign-In
+                </a>
+              </p>
             </form>
           </div>
         </div>

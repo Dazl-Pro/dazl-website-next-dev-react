@@ -41,10 +41,13 @@ const schema = yup.object().shape({
       file: yup.mixed().required("File is required"),
     })
   ),
-  textArea: yup.string(),
+  textArea: yup.string().required("Text Area is required"),
   selectedOption: yup.string().required("Please select an option"),
   // checkboxes: yup.array().of(yup.boolean()),
-  textAreaUpper: yup.string().required("Text Area is required"),
+  textAreaUpper: yup
+    .string()
+    .required("Text Area is required")
+    .min(3, "Text Area is required"),
   checkboxes: yup
     .array()
     .of(yup.boolean().oneOf([true], "Please check at least one checkbox")),
@@ -209,7 +212,7 @@ const RoomsInformation = (props) => {
     );
 
     // Perform other validations
-    if (input.phd_description === "") {
+    if (input.phd_description === "" || input.phd_description.length < 100) {
       setErrorborder(true);
       return;
     }
@@ -566,7 +569,7 @@ const RoomsInformation = (props) => {
               fullWidth
               {...register("textArea")}
               name={"phd_description"}
-              // Validator={ errors }
+              // Validator={errors}
               value={input.phd_description}
               onChange={onChange}
               required
@@ -822,7 +825,9 @@ const RoomsInformation = (props) => {
                                       )
                                     }
                                   />
-                                  {fields.length > 11 && (
+                                  {fields.filter(
+                                    (field) => field.indexId === index
+                                  ).length > 1 && (
                                     <button
                                       type="button"
                                       onClick={() => remove(imgIndex)}
@@ -839,13 +844,24 @@ const RoomsInformation = (props) => {
                           })}
                         </div>
                       </div>
-                      <button
+
+                      {fields.filter((field) => field.indexId === index)
+                        .length < 5 && (
+                        <button
+                          type="button"
+                          className="btn btn-success mt-3"
+                          onClick={() => append({ indexId: index, file: null })}
+                        >
+                          upload more
+                        </button>
+                      )}
+                      {/* <button
                         type="button"
                         className="btn btn-success btn btn-primary my-3"
                         onClick={() => append({ indexId: index, file: null })}
                       >
                         upload more
-                      </button>
+                      </button> */}
                     </>
                   )}
                 </div>
