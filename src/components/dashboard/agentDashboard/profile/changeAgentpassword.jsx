@@ -21,25 +21,25 @@ const defaultValues = {
 
 const schema = yup.object().shape({
   password: yup
-  .string()
-  .required("Password is required")
-  .matches(
-    /^(?=.*[A-Z])/,
-    "Password must contain at least one uppercase letter"
-  )
-  .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
-  .min(8, "Password must be atleast 8 characters long")
+    .string()
+    .required("Password is required")
+    .matches(
+      /^(?=.*[A-Z])/,
+      "Password must contain at least one uppercase letter"
+    )
+    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(8, "Password must be atleast 8 characters long")
     .required("Password is required")
     .trim(),
   currentPassword: yup
-  .string()
-  .required("Password is required")
-  .matches(
-    /^(?=.*[A-Z])/,
-    "Password must contain at least one uppercase letter"
-  )
-  .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
-  .min(8, "Password must be atleast 8 characters long")
+    .string()
+    .required("Password is required")
+    .matches(
+      /^(?=.*[A-Z])/,
+      "Password must contain at least one uppercase letter"
+    )
+    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(8, "Password must be atleast 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -96,10 +96,10 @@ const ChangeAgentpassword = () => {
     event.preventDefault();
   };
   return (
-    <div className="py-5 bg-light-red">
-      <div className="container">
+    <div className="py-5 bg-white mt-4">
+      <div className="container shadow-lg rounded-4  p-2">
         <h2 className="text-uppercase text-center mb-4">Change Password</h2>
-        <div className="shadow-lg bg-white rounded-4 p-4 p-xl-5 text-center mw-560px mx-auto">
+        <div className="  p-0 p-xl-4 text-center mw-560px mx-auto">
           <div className="">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="row">

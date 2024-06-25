@@ -188,10 +188,11 @@ const ViewPhdAlt = () => {
       setButtonsVisibility(false);
       const canvas = await html2canvas(input, { useCORS: true });
       const imgData = canvas.toDataURL("image/png");
+      const timestamp = new Date().toISOString().replace(/[-T:\.Z]/g, "");
       pdf.addImage(imgData, "PNG", 0, 0, input.offsetWidth, input.offsetHeight);
 
       // Save the PDF file
-      pdf.save("document.pdf");
+      pdf.save(`phd_report_${timestamp}.pdf`);
 
       // Restore original content
       componentRef.current.innerHTML = originalContent;
@@ -404,7 +405,7 @@ const ViewPhdAlt = () => {
                                           <div>{eleInner?.imageDesc}</div>
                                         </div>
                                         <div className="ps-0 mb-3">
-                                          <div className="d-flex gap-1">
+                                          <div className="d-flex gap-1  flex-wrap">
                                             {eleInner?.images?.map(
                                               (image, imageIndex) => (
                                                 <div key={imageIndex}>

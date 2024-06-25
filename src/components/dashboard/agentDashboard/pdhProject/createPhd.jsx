@@ -36,7 +36,7 @@ const CreatePhd = () => {
     lastName: yup
       .string()
       .required("Last Name is required")
-      .min(3, "First Name have atleast 3 character")
+      .min(3, "Last Name have atleast 3 character")
 
       .trim(),
     email: yup
@@ -47,7 +47,7 @@ const CreatePhd = () => {
     location: yup
       .string()
       .required("Location is required")
-      .min(3, "First Name have atleast 3 character")
+      .min(3, "Location have atleast 3 character")
       .trim(),
   });
 

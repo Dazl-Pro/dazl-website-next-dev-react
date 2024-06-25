@@ -587,7 +587,7 @@ const Commonproject = ({
                           //     .length >= 5 || !textValues[index]
                           // }
                         >
-                          Upload Image
+                          Upload More
                         </button>
                       )}
                       {/* )} */}

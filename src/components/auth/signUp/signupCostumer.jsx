@@ -14,22 +14,31 @@ import IconButton from "@mui/material/IconButton";
 import "./signUp.css";
 
 const schema = yup.object().shape({
-  firstName: yup.string().required("First Name is required").trim(),
-  lastName: yup.string().required("Last Name is required").trim(),
+  firstName: yup
+    .string()
+    .required("First Name is required")
+    .trim()
+    .min(3, "First Name have atleast 3 characters"),
+  lastName: yup
+    .string()
+    .required("Last Name is required")
+    .trim()
+    .min(3, "Last Name have atleast 3 characters"),
   email: yup
     .string()
     .email("Please enter valid email address")
     .required("Email is required")
     .trim(),
-    password: yup
+  password: yup
     .string()
     .required("Password is required")
-    .matches(
-      /^(?=.*[A-Z])/,
-      "Password must contain at least one uppercase letter"
-    )
-    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
-    .min(8, "Password must be atleast 8 characters long")
+    // .matches(
+    //   /^(?=.*[A-Z])/,
+    //   "Password must contain at least one uppercase letter"
+    // )
+    // .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(6, "Password have atleast 6 characters long")
+    .max(15, "Password  have atmost 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -93,7 +102,7 @@ const SignupCostumer = () => {
       .unwrap()
       .then((data) => {
         // if (data === undefined) {
-          if (data === undefined) {
+        if (data === undefined) {
         } else {
           localStorage.setItem("token", data.data.token);
           localStorage.setItem("userType", "customer");
@@ -136,6 +145,11 @@ const SignupCostumer = () => {
                       />
                     )}
                   />
+                  {errors.firstName && (
+                    <p className="text-danger mt-2">
+                      {errors.firstName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6 `}>
                   <Controller
@@ -151,6 +165,11 @@ const SignupCostumer = () => {
                       />
                     )}
                   />
+                  {errors.lastName && (
+                    <p className="text-danger mt-2">
+                      {errors.lastName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-12`}>
                   <Controller
@@ -166,6 +185,9 @@ const SignupCostumer = () => {
                       />
                     )}
                   />
+                  {errors.email && (
+                    <p className="text-danger mt-2">{errors.email.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
                   <Controller
@@ -188,7 +210,9 @@ const SignupCostumer = () => {
                             }
                           }}
                         />
-                        {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
+                        {errors.number && (
+                          <p className="text-danger">{errors.number.message}</p>
+                        )}
                       </>
                     )}
                   />
@@ -214,9 +238,11 @@ const SignupCostumer = () => {
                             }
                           }}
                         />
-                        {/* {errors.zipCode && (
-                        <p className="text-danger mt-2">{errors.zipCode.message}</p>
-                      )} */}
+                        {errors.zipCode && (
+                          <p className="text-danger mt-2">
+                            {errors.zipCode.message}
+                          </p>
+                        )}
                       </>
                     )}
                   />
@@ -334,6 +360,12 @@ const SignupCostumer = () => {
                   Submit
                 </button>
               </div>
+              <p className="d-flex justify-content-center align-items-center m-3">
+                Do not have an account?{" "}
+                <a href="/login/customer" className="text-primary">
+                  Sign-In
+                </a>
+              </p>
             </form>
           </div>
         </div>

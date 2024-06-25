@@ -73,8 +73,16 @@ const photosSchema = yup.array().of(
 );
 
 const schema = yup.object().shape({
-  firstName: yup.string().required("First Name is required").trim(),
-  lastName: yup.string().required("Last Name is required").trim(),
+  firstName: yup
+    .string()
+    .required("First Name is required")
+    .trim()
+    .min(3, "First Name have atleast 3 characters"),
+  lastName: yup
+    .string()
+    .required("Last Name is required")
+    .trim()
+    .min(3, "Last Name  have atleast 3 characters"),
   email: yup
     .string()
     .email("Please enter valid email address")
@@ -83,12 +91,13 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required("Password is required")
-    .matches(
-      /^(?=.*[A-Z])/,
-      "Password must contain at least one uppercase letter"
-    )
-    .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
-    .min(8, "Password must be atleast 8 characters long")
+    // .matches(
+    //   /^(?=.*[A-Z])/,
+    //   "Password must contain at least one uppercase letter"
+    // )
+    // .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
+    .min(6, "Password have atleast 6 characters long")
+    .max(15, "Password have atmost 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -96,11 +105,30 @@ const schema = yup.object().shape({
     .required("Confirm password is required")
     .oneOf([yup.ref("password")], "Passwords do not match")
     .trim(),
-  companyName: yup.string().required("companyName is required").trim(),
-  streetAddress: yup.string().trim(),
-  city: yup.string().required("Location is required").trim(),
-  state: yup.string().required("state is required").trim(),
-  zip: yup.string().required("Zip Code is required").trim(),
+  companyName: yup
+    .string()
+    .required("companyName is required")
+    .trim()
+    .min(3, "Company Name have atleast 3 characters"),
+  streetAddress: yup
+    .string()
+    .trim()
+    .min(3, "Street Address have atleast 3 characters"),
+  city: yup
+    .string()
+    .required("Location is required")
+    .trim()
+    .min(3, "City  atleast have 3 characters"),
+  state: yup
+    .string()
+    .required("state is required")
+    .trim()
+    .min(3, "State have atleast 3 characters"),
+  zip: yup
+    .string()
+    .required("Zip Code is required")
+    .trim()
+    .min(3, "Zip Name have atleast 3 characters"),
   number: yup
     .string()
     .matches(/^[0-9]+$/, "Please enter a valid number")
@@ -109,6 +137,7 @@ const schema = yup.object().shape({
   mobilenumber: yup
     .string()
     .matches(/^[0-9]+$/, "Please enter a valid number")
+
     .trim(),
   yearofbusiness: yup
     .string()
@@ -317,6 +346,11 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.firstName && (
+                    <p className="text-danger mt-2">
+                      {errors.firstName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row col-md-4 mb-3 `}>
                   <Controller
@@ -332,6 +366,11 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.lastName && (
+                    <p className="text-danger mt-2">
+                      {errors.lastName.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className={`form-row mb-3 col-md-4`}>
@@ -348,6 +387,9 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.email && (
+                    <p className="text-danger mt-2">{errors.email.message}</p>
+                  )}
                 </div>
 
                 <div className={`form-row mb-3 col-md-4 position-relative`}>
@@ -433,6 +475,11 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.companyName && (
+                    <p className="text-danger mt-2">
+                      {errors.companyName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-12`}>
                   <Controller
@@ -448,6 +495,11 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.streetAddress && (
+                    <p className="text-danger mt-2">
+                      {errors.streetAddress.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className={`form-row mb-3 col-md-4 `}>
@@ -464,6 +516,9 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.city && (
+                    <p className="text-danger mt-2">{errors.city.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-4 `}>
                   <Controller
@@ -479,6 +534,9 @@ const SignupPros = () => {
                       />
                     )}
                   />
+                  {errors.state && (
+                    <p className="text-danger mt-2">{errors.state.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-4 `}>
                   <Controller
@@ -509,6 +567,9 @@ const SignupPros = () => {
                       </>
                     )}
                   />
+                  {errors.zip && (
+                    <p className="text-danger mt-2">{errors.zip.message}</p>
+                  )}
                 </div>
                 <div className={`form-row col-md-4 mb-3`}>
                   <Controller
@@ -531,7 +592,9 @@ const SignupPros = () => {
                             }
                           }}
                         />
-                        {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
+                        {errors.number && (
+                          <p className="text-danger">{errors.number.message}</p>
+                        )}
                       </>
                     )}
                   />
@@ -557,7 +620,11 @@ const SignupPros = () => {
                             }
                           }}
                         />
-                        {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
+                        {errors.mobilenumber && (
+                          <p className="text-danger">
+                            {errors.mobilenumber.message}
+                          </p>
+                        )}
                       </>
                     )}
                   />
@@ -583,7 +650,11 @@ const SignupPros = () => {
                             }
                           }}
                         />
-                        {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
+                        {errors.yearofbusiness && (
+                          <p className="text-danger">
+                            {errors.yearofbusiness.message}
+                          </p>
+                        )}
                       </>
                     )}
                   />
@@ -882,6 +953,12 @@ const SignupPros = () => {
                   Submit
                 </button>
               </div>
+              <p className="d-flex justify-content-center align-items-center m-3">
+                Do not have an account?{" "}
+                <a href="/login/professional" className="text-primary">
+                  Sign-In
+                </a>
+              </p>
             </form>
           </div>
         </div>

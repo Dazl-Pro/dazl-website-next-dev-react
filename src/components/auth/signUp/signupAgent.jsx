@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import { agentSignUp } from "../../../store/auth/authSlice";
 import { Toastify } from "../../../services/toastify/toastContainer";
+
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -35,12 +36,12 @@ const schema = yup.object().shape({
     .string()
     .required("First Name is required")
     .trim()
-    .min(3, "First Name must be atleast 3 charachters"),
+    .min(3, "First Name have atleast 3 characters"),
   lastName: yup
     .string()
     .required("Last Name is required")
     .trim()
-    .min(3, "Last Name must be atleast 3 charachters"),
+    .min(3, "Last Name have atleast 3 characters"),
   email: yup
     .string()
     .email("Please enter valid email address")
@@ -54,8 +55,8 @@ const schema = yup.object().shape({
     //   "Password must contain at least one uppercase letter"
     // )
     // .matches(/^(?=.*[0-9])/, "Password must contain at least one number")
-    .min(6, "Password must be atleast 6 characters long")
-    .max(15, "Password must be atmost 8 characters long")
+    .min(6, "Password have atleast 6 characters long")
+    .max(15, "Password have atmost 8 characters long")
     .required("Password is required")
     .trim(),
   confirmPassword: yup
@@ -65,9 +66,9 @@ const schema = yup.object().shape({
     .trim(),
   companyName: yup
     .string()
-    .required("companyName is required")
+    .required("Company Name is required")
     .trim()
-    .min(3, "Company Name must be atleast 3 charachters"),
+    .min(3, "Company Name have atleast 3 characters"),
 
   // location: yup.string().required("Location is required").trim(),
   number: yup
@@ -79,22 +80,22 @@ const schema = yup.object().shape({
   streetAddress: yup
     .string()
     .trim()
-    .min(3, "Street Address must be atleast 3 charachters"),
+    .min(3, "Street Address  atleast 3 characters"),
   city: yup
     .string()
     .required("Location is required")
     .trim()
-    .min(3, "City must be atleast 3 charachters"),
+    .min(3, "City have atleast 3 characters"),
   state: yup
     .string()
     .required("state is required")
     .trim()
-    .min(3, "State must be atleast 3 charachters"),
+    .min(3, "State have atleast 3 characters"),
   zip: yup
     .string()
     .required("Zip Code is required")
     .trim()
-    .min(3, "Zip Name must be atleast 3 charachters"),
+    .min(3, "Zip Name have atleast 3 characters"),
   agreeToTerms: yup
     .bool()
     .oneOf([true], "Please accept the terms and conditions"),
@@ -200,6 +201,11 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.firstName && (
+                    <p className="text-danger mt-2">
+                      {errors.firstName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
                   <Controller
@@ -215,6 +221,11 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.lastName && (
+                    <p className="text-danger mt-2">
+                      {errors.lastName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6 `}>
                   <Controller
@@ -231,6 +242,9 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.email && (
+                    <p className="text-danger mt-2">{errors.email.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6 `}>
                   <Controller
@@ -252,7 +266,9 @@ const SignupAgent = () => {
                           }}
                           placeholder="Phone Number*"
                         />
-                        {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
+                        {errors.number && (
+                          <p className="text-danger">{errors.number.message}</p>
+                        )}
                       </>
                     )}
                   />
@@ -307,7 +323,8 @@ const SignupAgent = () => {
                           type={showConfirmPassword ? "text" : "password"}
                         />
                         {errors.confirmPassword &&
-                          watch("password") !== watch("confirmPassword") && (
+                          watch("confirmPassword") !==
+                            watch("confirmPassword") && (
                             <p className="text-danger mt-2">
                               {errors.confirmPassword.message}
                             </p>
@@ -339,6 +356,11 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.companyName && (
+                    <p className="text-danger mt-2">
+                      {errors.companyName.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6 `}>
                   <Controller
@@ -354,6 +376,11 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.streetAddress && (
+                    <p className="text-danger mt-2">
+                      {errors.streetAddress.message}
+                    </p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-4 `}>
                   <Controller
@@ -369,6 +396,9 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.city && (
+                    <p className="text-danger mt-2">{errors.city.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-4 `}>
                   <Controller
@@ -384,6 +414,9 @@ const SignupAgent = () => {
                       />
                     )}
                   />
+                  {errors.state && (
+                    <p className="text-danger mt-2">{errors.state.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-4 `}>
                   <Controller
@@ -408,9 +441,11 @@ const SignupAgent = () => {
                             }
                           }}
                         />
-                        {/* {errors.zip && (
-                        <p className="text-danger mt-2">{errors.zip.message}</p>
-                      )} */}
+                        {errors.zip && (
+                          <p className="text-danger mt-2">
+                            {errors.zip.message}
+                          </p>
+                        )}
                       </>
                     )}
                   />

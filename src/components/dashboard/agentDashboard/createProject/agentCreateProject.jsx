@@ -5,6 +5,8 @@ import Commonproject from "../../commonProject/project";
 const AgentCreateProject = () => {
   const [selectValue, setSelectvalue] = React.useState("");
   const [show, setShow] = React.useState(false);
+  const roomId = localStorage.getItem("roomId");
+  console.log(roomId);
 
   return (
     <div className="py-0 create-project-container-height">

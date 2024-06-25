@@ -8,7 +8,20 @@ export const filterProject = createAsyncThunk(
   "dashboard/filterProject",
   async (data) => {
     try {
-      const response = await http.get("/filter_project");
+      const response = await http.get("/");
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+export const filtersavedProject = createAsyncThunk(
+  "dashboard/filtersavedProject",
+  async (data) => {
+    try {
+      const response = await http.get("/");
       if (response.status === 200) {
         return response.data;
       }
@@ -478,9 +491,9 @@ export const deleteProjectFeatures = createAsyncThunk(
 
 export const deleteAgentFeatures = createAsyncThunk(
   "dashboard/deleteAgentFeatures",
-  async ({ project_id, pageNo, numberofdata }, { dispatch }) => {
+  async ({ projectId, pageNo, numberofdata }, { dispatch }) => {
     try {
-      const response = await http.delete(`/realtor/project/${project_id}`);
+      const response = await http.delete(`/realtor/project/${projectId}`);
       if (response.status === 200) {
         dispatch(
           getAgentProject({ pageNo: pageNo, numberofdata: numberofdata })
@@ -500,6 +513,21 @@ export const getCompletePhd = createAsyncThunk(
   async () => {
     try {
       const response = await http.get(`/filter_project`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      return error.response.data;
+      // Toastify({ data: "error", msg: error.response.data.message })
+    }
+  }
+);
+
+export const getSavedPhd = createAsyncThunk(
+  "dashboard/getSavedPhd",
+  async () => {
+    try {
+      const response = await http.get(`/filter_savedproject`);
       if (response.status === 200) {
         return response.data;
       }
@@ -707,6 +735,7 @@ const dashboardSlice = createSlice({
   initialState: {
     data: {
       completePhd: [],
+      savedPhd: [],
       agentData: [],
       phdStepOne: null,
       companydata: [],
@@ -743,6 +772,17 @@ const dashboardSlice = createSlice({
         state.data.completePhd = action.payload;
       })
       .addCase(filterProject.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(filtersavedProject.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(filtersavedProject.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data.savedPhd = action.payload;
+      })
+
+      .addCase(filtersavedProject.rejected, (state, action) => {
         state.loading = false;
       })
       // get agent profile data
@@ -982,6 +1022,17 @@ const dashboardSlice = createSlice({
         state.loading = false;
       })
       .addCase(getCompletePhd.rejected, (state, action) => {
+        state.loading = false;
+      })
+      // get saved Phd
+      .addCase(getSavedPhd.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getSavedPhd.fulfilled, (state, action) => {
+        state.data.savedPhd = action.payload;
+        state.loading = false;
+      })
+      .addCase(getSavedPhd.rejected, (state, action) => {
         state.loading = false;
       })
       // view Phd

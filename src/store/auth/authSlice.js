@@ -8,9 +8,9 @@ export const agentSignUp = createAsyncThunk(
     try {
       const response = await http.post("/realtor/register", {
         address: data.streetAddress,
-        city: data.city,
+        city_of_real_state_agency: data.city,
         state: data.state,
-        zip: data.zip,
+        zip_code: data.zip,
         check_box: JSON.parse(data.agreeToTerms),
         confirm_password: data.confirmPassword,
         email: data.email,

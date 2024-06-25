@@ -5,6 +5,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Stack from "@mui/material/Stack";
+import CommonRoomform from "../commonForm/commonRoomForm";
 import "./project.css";
 import { useLocation } from "react-router-dom";
 import {
@@ -12,6 +13,7 @@ import {
   getCompletePhd,
   // getSavedPhd,
   openConfirmPopup,
+  addAnotherRoom,
   deleteAgentFeatures,
   deleteProjectFeatures,
   getAgentProject,
@@ -21,11 +23,17 @@ import {
 } from "../../../store/dashboard/dashboardSlice";
 import SendIcon from "@mui/icons-material/Send";
 import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Toastify } from "../../../services/toastify/toastContainer";
 import ModalImage from "react-modal-image";
 const MyProject = () => {
+  const [show, setShow] = React.useState(false);
+
+  const [selectValue, setSelectvalue] = React.useState("");
+
   const [editItem, setEditItem] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [formData, setFormData] = useState({
@@ -39,6 +47,7 @@ const MyProject = () => {
   const userType = localStorage.getItem("userType");
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const selector = useSelector((state) => state.dashboardSlice);
   const projectData =
     userType === "agent"
@@ -109,7 +118,7 @@ const MyProject = () => {
       dispatch(
         updateAgentFeatures({
           data: data,
-          project_id: item?.feature_id,
+          project_id: project_id,
           pageNo: pageNumber,
           numberofdata: 5,
         })
@@ -138,6 +147,97 @@ const MyProject = () => {
         })
       );
     }
+  };
+
+  const [projectInfo, setprojectInfo] = useState("");
+
+  const roomId = localStorage.getItem("roomId");
+  // const selector = useSelector((state) => state.dashboardSlice);
+  const phdRooms = selector.data.phdRoomsData;
+  const [selectedImages, setSelectedImages] = React.useState([]);
+
+  const [ImagesFinal, setImagesFinal] = React.useState(false);
+  const [textValues, setTextValues] = React.useState([]);
+  const [checkboxValues, setCheckboxValues] = React.useState(
+    Array(phdRooms?.length).fill(false)
+  );
+
+  const addAnother = (roomId) => {
+    setImagesFinal(true);
+    localStorage.setItem("roomId", roomId);
+    if (selectedImages.length === 0) {
+      // Collect checkbox IDs and descriptions for the selected checkboxes
+      const selectedCheckboxes = checkboxValues
+        .map((isChecked, index) => {
+          if (isChecked) {
+            return {
+              checkboxId: phdRooms[index].id, // Assuming phdRooms contains the ids
+              description: textValues[index] || "", // Include description if provided
+            };
+          }
+          return null;
+        })
+        .filter((item) => item !== null);
+      if (selectedCheckboxes.length > 0) {
+        // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
+        selectedCheckboxes.forEach((item) => {
+          dispatch(
+            addAnotherRoom({
+              roomId,
+              features: item.checkboxId,
+              inspectionNotes: item.description,
+            })
+          )
+            .unwrap()
+            .then((response) => {
+              setShow(false);
+              setSelectvalue("");
+              setCheckboxValues(Array(phdRooms?.length).fill(false));
+              setTextValues([]);
+              Toastify({
+                data: "success",
+                msg: "Room saved with selected checkboxes and descriptions. You can add more.",
+              });
+            });
+        });
+      } else {
+        // If no checkboxes are selected, just dispatch the room ID
+        console.log("called");
+        dispatch(addAnotherRoom({ roomId }))
+          .unwrap()
+          .then((response) => {
+            setShow(false);
+            setSelectvalue("");
+            setCheckboxValues(Array(phdRooms?.length).fill(false));
+            setTextValues([]);
+            Toastify({
+              data: "success",
+              msg: "Room saved without images or checkboxes. You can add more.",
+            });
+            navigate("/agent/createProject");
+          });
+      }
+    } else {
+      // Process selected images and room ID as in the original code
+      selectedImages.forEach((item) => {
+        dispatch(addAnotherRoom(item))
+          .unwrap()
+          .then((response) => {
+            setShow(false);
+            setSelectvalue("");
+            setCheckboxValues(Array(phdRooms?.length).fill(false));
+            setTextValues([]);
+            reset({ photos: [] });
+          });
+      });
+      Toastify({
+        data: "success",
+        msg: "Your item is saved, now you can add more.",
+      });
+      navigate("/agent/createProject");
+    }
+
+    setSelectedImages([]);
   };
 
   return (
@@ -191,57 +291,25 @@ const MyProject = () => {
                             {items?.project_name}
                           </h4>
                           <div>
-                            {/* <button
-                          type="submit"
-                          className="btn btn-danger"
-                          onClick={(e) => save(e, "save")}
-                        >
-                          Add another room
-                        </button> */}
+                            <button
+                              type="submit"
+                              className="btn btn-danger"
+                              onClick={() =>
+                                addAnother(items.roominfo[0].room_id)
+                              }
+                            >
+                              Add another room
+                            </button>
                             <button
                               className="btn btn-outline-danger m-1 btn-sm"
-                              onClick={() => setShowModal(true)}
+                              onClick={() => {
+                                setprojectInfo(items);
+                                setShowModal(true);
+                              }}
                             >
                               <DeleteForeverIcon />
                               <span className="del">Delete Project</span>
                             </button>
-
-                            <Modal
-                              show={showModal}
-                              onHide={() => setShowModal(false)}
-                              centered
-                            >
-                              <Modal.Header closeButton>
-                                <Modal.Title>Delete Project</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <div className="text-center fs-5">
-                                  Are you sure you want to delete this project?
-                                </div>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button
-                                  variant="primary"
-                                  onClick={() => {
-                                    deleteProject(
-                                      items.project_id,
-                                      items.housing_segment_id
-                                    );
-                                    setShowModal(false);
-                                  }}
-                                  className="px-4"
-                                >
-                                  Yes
-                                </Button>
-                                <Button
-                                  variant="secondary"
-                                  onClick={() => setShowModal(false)}
-                                  className="px-4"
-                                >
-                                  No
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
                           </div>
                         </div>
                         <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4">
@@ -313,7 +381,9 @@ const MyProject = () => {
                                                   (img, index) => (
                                                     <div
                                                       key={index}
-                                                      style={{ width: "200px" }}
+                                                      style={{
+                                                        width: "200px",
+                                                      }}
                                                     >
                                                       <ModalImage
                                                         small={img}
@@ -322,6 +392,7 @@ const MyProject = () => {
                                                         hideDownload={true}
                                                         isOpen={isViewerOpen}
                                                         onClose={closeViewer}
+                                                        className="m-2"
                                                       />
                                                     </div>
                                                   )
@@ -519,76 +590,6 @@ const MyProject = () => {
                                       <div>{opportunity.message}</div>
                                     </div>
                                   </div>
-                                  {/* <div
-                                    className="col-1"
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        alignItems: "center",
-                                        marginBottom: 8,
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          backgroundColor: "#dc3545",
-                                          color: "#fff",
-                                          padding: 4,
-                                          borderRadius: "50%", // Set borderRadius to 50% for a circular shape
-                                          width: 40, // Specify width (adjust as needed)
-                                          height: 40, // Specify height (adjust as needed)
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <SendIcon />
-                                      </div>
-                                      <div
-                                        style={{
-                                          color: "#dc3545",
-                                        }}
-                                      >
-                                        Reply
-                                      </div>
-                                    </div>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        alignItems: "center",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          backgroundColor: "lightblue",
-                                          color: "#fff",
-                                          padding: 4,
-                                          borderRadius: "50%", // Set borderRadius to 50% for a circular shape
-                                          width: 40, // Specify width (adjust as needed)
-                                          height: 40, // Specify height (adjust as needed)
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <SaveIcon />
-                                      </div>
-                                      <div
-                                        style={{
-                                          color: "lightblue",
-                                        }}
-                                      >
-                                        Save
-                                      </div>
-                                    </div>
-                                  </div> */}
                                 </div>
                               )
                             )}
@@ -621,13 +622,40 @@ const MyProject = () => {
           </div>
         </div>
       </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Project</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center fs-5">
+            Are you sure you want to delete this project?
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              deleteProject(
+                // projectInfo.project_name,
+                projectInfo.project_id,
+                projectInfo.housing_segment_id
+              );
+              setShowModal(false);
+            }}
+            className="px-4"
+          >
+            Yes
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => setShowModal(false)}
+            className="px-4"
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
-
 export default MyProject;
-
-// import Button from 'react-bootstrap/Button';
-// import Modal from 'react-bootstrap/Modal';
-
-// export default StaticExample;
