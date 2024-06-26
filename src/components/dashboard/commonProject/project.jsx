@@ -126,17 +126,21 @@ const Commonproject = ({
     updatedTextValues[index] = value;
     setTextValues(updatedTextValues);
   };
-
-  console.log("checkboxValues", checkboxValues);
-  console.log("phdRooms", phdRooms);
-
-  // const isLastFieldComplete = () => {
-  //   if (fields.length === 0) return true;
+  // const isLastFieldFilled = () => {
+  //   const lastIndex = fields.length - 1;
+  //   const lastImageField = selectedImages[lastIndex];
+  //   return lastImageField !== "";
+  // };
+  // const isLastFieldFilled = () => {
+  //   // if (fields.length === 0) return true;
   //   const lastIndex = fields.length - 1;
   //   const lastImageField = selectedImages[lastIndex];
   //   const lastTextValue = textValues[lastIndex] || "";
   //   return lastImageField && lastTextValue.trim() !== "";
   // };
+
+  console.log("checkboxValues", checkboxValues);
+  console.log("phdRooms", phdRooms);
 
   const handleGetCheckboxValues = () => {
     let payload;
@@ -148,11 +152,15 @@ const Commonproject = ({
 
     const roomId = localStorage.getItem("roomId");
 
+    const projectID = localStorage.getItem("projectID");
+    console.log(projectID);
+
     const selectedCheckboxes = checkboxValues
       .map((isChecked, index) => {
         if (isChecked) {
           return {
             roomId,
+            projectID,
             features: phdRooms[index].id, // Assuming phdRooms contains the ids
             inspectionNotes: textValues[index] || "", // Include description if provided
           };
@@ -173,6 +181,7 @@ const Commonproject = ({
             dispatch(
               addAnotherRoom({
                 roomId,
+                projectID,
                 features: item.features,
                 inspectionNotes: item.inspectionNotes,
               })
@@ -180,7 +189,7 @@ const Commonproject = ({
               .unwrap()
               .then((response) => {
                 const data = [...selectImagesFinal, response];
-                dispatch(addRoomFeatures({ data, payload, name }))
+                dispatch(addRoomFeatures({ data, payload, name, projectID }))
                   .unwrap()
                   .then((res) => {
                     completedPromises++;
@@ -200,6 +209,7 @@ const Commonproject = ({
                     setSelectedImages([]);
                     localStorage.removeItem("roomselect");
                     localStorage.removeItem("roomId");
+                    localStorage.removeItem("projectID");
                     localStorage.removeItem("value");
                     localStorage.removeItem("projectItem");
                   });
@@ -210,12 +220,13 @@ const Commonproject = ({
           dispatch(
             addAnotherRoom({
               roomId,
+              projectID,
             })
           )
             .unwrap()
             .then((response) => {
               const data = [...selectImagesFinal, response];
-              dispatch(addRoomFeatures({ data, payload, name }))
+              dispatch(addRoomFeatures({ data, payload, name, projectID }))
                 .unwrap()
                 .then((res) => {
                   completedPromises++;
@@ -235,6 +246,7 @@ const Commonproject = ({
                   setSelectedImages([]);
                   localStorage.removeItem("roomselect");
                   localStorage.removeItem("roomId");
+                  localStorage.removeItem("projectID");
                   localStorage.removeItem("value");
                   localStorage.removeItem("projectItem");
                 });
@@ -246,7 +258,7 @@ const Commonproject = ({
             .unwrap()
             .then((response) => {
               const data = [...selectImagesFinal, response];
-              dispatch(addRoomFeatures({ data, payload, name }))
+              dispatch(addRoomFeatures({ data, payload, name, projectID }))
                 .unwrap()
                 .then((res) => {
                   completedPromises++;
@@ -266,6 +278,7 @@ const Commonproject = ({
                   setSelectedImages([]);
                   localStorage.removeItem("roomselect");
                   localStorage.removeItem("roomId");
+                  localStorage.removeItem("projectID");
                   localStorage.removeItem("value");
                   localStorage.removeItem("projectItem");
                 });
@@ -275,29 +288,13 @@ const Commonproject = ({
     } else {
       if (selectedImages.length === 0) {
         if (selectedCheckboxes.length > 0) {
-          dispatch(addRoomFeatures({ data: selectedCheckboxes, payload, name }))
-            .unwrap()
-            .then((res) => {
-              Toastify({ data: "success", msg: res.message });
-              if (location.pathname === "/agent/createProject") {
-                navigate("/agent/my-project");
-              } else {
-                navigate("/homeOwner/my-project");
-              }
-              setImagesFinal(false);
-              setShow(false);
-              setSelectvalue("");
-              setCheckboxValues(Array(phdRooms?.length).fill(false));
-              setTextValues([]);
-              setSelectedImages([]);
-              localStorage.removeItem("roomselect");
-              localStorage.removeItem("roomId");
-              localStorage.removeItem("value");
-              localStorage.removeItem("projectItem");
-            });
-        } else {
           dispatch(
-            addRoomFeatures({ data: [{ roomId: roomId }], payload, name })
+            addRoomFeatures({
+              data: selectedCheckboxes,
+              payload,
+              name,
+              projectID,
+            })
           )
             .unwrap()
             .then((res) => {
@@ -315,12 +312,42 @@ const Commonproject = ({
               setSelectedImages([]);
               localStorage.removeItem("roomselect");
               localStorage.removeItem("roomId");
+              localStorage.removeItem("projectID");
+              localStorage.removeItem("value");
+              localStorage.removeItem("projectItem");
+            });
+        } else {
+          dispatch(
+            addRoomFeatures({
+              data: [{ roomId: roomId, projectID }],
+              payload,
+              name,
+              projectID,
+            })
+          )
+            .unwrap()
+            .then((res) => {
+              Toastify({ data: "success", msg: res.message });
+              if (location.pathname === "/agent/createProject") {
+                navigate("/agent/my-project");
+              } else {
+                navigate("/homeOwner/my-project");
+              }
+              setImagesFinal(false);
+              setShow(false);
+              setSelectvalue("");
+              setCheckboxValues(Array(phdRooms?.length).fill(false));
+              setTextValues([]);
+              setSelectedImages([]);
+              localStorage.removeItem("roomselect");
+              localStorage.removeItem("roomId");
+              localStorage.removeItem("projectID");
               localStorage.removeItem("value");
               localStorage.removeItem("projectItem");
             });
         }
       } else {
-        dispatch(addRoomFeatures({ selectedImages, payload, name }))
+        dispatch(addRoomFeatures({ selectedImages, payload, name, projectID }))
           .unwrap()
           .then((res) => {
             Toastify({ data: "success", msg: res.message });
@@ -337,6 +364,7 @@ const Commonproject = ({
             setSelectedImages([]);
             localStorage.removeItem("roomselect");
             localStorage.removeItem("roomId");
+            localStorage.removeItem("projectID");
             localStorage.removeItem("value");
             localStorage.removeItem("projectItem");
           });
@@ -347,6 +375,7 @@ const Commonproject = ({
   const addAnother = () => {
     setImagesFinal(true);
     const roomId = localStorage.getItem("roomId");
+    const projectID = localStorage.getItem("projectID");
 
     // Check if there are no selected images
     if (selectedImages.length === 0) {
@@ -369,6 +398,7 @@ const Commonproject = ({
           dispatch(
             addAnotherRoom({
               roomId,
+              projectID,
               features: item.checkboxId,
               inspectionNotes: item.description,
             })
@@ -388,7 +418,7 @@ const Commonproject = ({
       } else {
         // If no checkboxes are selected, just dispatch the room ID
         console.log("called");
-        dispatch(addAnotherRoom({ roomId }))
+        dispatch(addAnotherRoom({ roomId, projectID }))
           .unwrap()
           .then((response) => {
             setShow(false);
@@ -463,6 +493,7 @@ const Commonproject = ({
                 images: [responseImage],
                 inspectionNotes: textValues[index],
                 roomId: localStorage.getItem("roomId"),
+                projectID: localStorage.getItem("projectID"),
                 realtor_id: localStorage.getItem("userId"),
               };
               setSelectedImages((prevData) => [...prevData, newItem]);
@@ -474,6 +505,7 @@ const Commonproject = ({
                 images: [responseImage],
                 inspectionNotes: textValues[index],
                 roomId: localStorage.getItem("roomId"),
+                projectID: localStorage.getItem("projectID"),
                 realtor_id: localStorage.getItem("userId"),
               };
               setSelectedImages((prevData) => [...prevData, newItem]);
@@ -558,6 +590,11 @@ const Commonproject = ({
                                   accept="image/*"
                                   onChange={(e) => handleImage(_, imgIndex, e)}
                                 />
+                                {errors.file && (
+                                  <p className="text-danger mt-2">
+                                    {errors.file.message}
+                                  </p>
+                                )}
                                 {fields.length > 11 && (
                                   <button
                                     type="button"
@@ -576,16 +613,14 @@ const Commonproject = ({
                       </div>
                       {/* {fields.filter((field) => field.indexId === index)
                         .length < 5 && ( */}
+                      {/* // disabled={fields.length === 0 || !isLastFieldFilled()} */}
                       {fields.filter((field) => field.indexId === index)
                         .length < 5 && (
                         <button
                           type="button"
                           className="btn btn-primary my-3"
                           onClick={() => append({ indexId: index, file: null })}
-                          // disabled={
-                          //   fields.filter((field) => field.indexId === index)
-                          //     .length >= 5 || !textValues[index]
-                          // }
+                          // disabled={!isLastFieldFilled()}
                         >
                           Upload More
                         </button>

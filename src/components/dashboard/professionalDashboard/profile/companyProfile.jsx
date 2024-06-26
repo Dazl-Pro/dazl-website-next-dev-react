@@ -26,7 +26,7 @@ const defaultValues = {
 };
 
 const schema = yup.object().shape({
-  yearofbusiness: yup.string().max(4, ""),
+  yearofbusiness: yup.string(),
   email: yup
     .string()
     .email("Please enter valid email address")
@@ -117,8 +117,9 @@ const CompanyProfile = () => {
       });
   };
 
+  console.log(errors);
   useEffect(() => {
-    setValue("yearofbusiness", companydata?.years_in_business);
+    // setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
     setValue(

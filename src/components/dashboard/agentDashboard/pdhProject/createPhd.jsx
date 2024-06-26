@@ -244,6 +244,11 @@ const CreatePhd = () => {
                               />
                             )}
                           />
+                          {errors.firstName && (
+                            <p className="text-danger mt-2">
+                              {errors.firstName.message}
+                            </p>
+                          )}
                         </div>
                         <div className={`form-row mb-3 col-md-6 `}>
                           <Controller
@@ -267,6 +272,11 @@ const CreatePhd = () => {
                               />
                             )}
                           />
+                          {errors.lastName && (
+                            <p className="text-danger mt-2">
+                              {errors.lastName.message}
+                            </p>
+                          )}
                         </div>
                         <div className={`form-row mb-3 col-md-6 `}>
                           <Controller
@@ -282,6 +292,11 @@ const CreatePhd = () => {
                               />
                             )}
                           />
+                          {errors.email && (
+                            <p className="text-danger mt-2">
+                              {errors.email.message}
+                            </p>
+                          )}
                         </div>
                         <div
                           className={`form-row mb-3 col-md-6 position-relative`}
@@ -351,6 +366,11 @@ const CreatePhd = () => {
                               </PlacesAutocomplete>
                             )}
                           />
+                          {errors.location && (
+                            <p className="text-danger mt-2">
+                              {errors.location.message}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="d-flex justify-content-center align-items-center">

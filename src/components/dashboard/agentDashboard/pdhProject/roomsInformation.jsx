@@ -41,13 +41,16 @@ const schema = yup.object().shape({
       file: yup.mixed().required("File is required"),
     })
   ),
-  textArea: yup.string().required("Text Area is required"),
+  textArea: yup
+    .string()
+    .required("Text Area is required")
+    .min(100, "Please enter atleast 100 characters"),
   selectedOption: yup.string().required("Please select an option"),
   // checkboxes: yup.array().of(yup.boolean()),
   textAreaUpper: yup
     .string()
     .required("Text Area is required")
-    .min(3, "Text Area is required"),
+    .min(100, "Please enter atleast 100 characters"),
   checkboxes: yup
     .array()
     .of(yup.boolean().oneOf([true], "Please check at least one checkbox")),
@@ -100,6 +103,7 @@ const RoomsInformation = (props) => {
   const [addValueCheckbox, setAddvalueCheckbox] = useState([]);
   const [fileUploadError, setFileUploadError] = useState(null);
   const [errorBorder, setErrorborder] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [errorBorder1, setErrorborder1] = useState(false);
   const [errorBorder2, setErrorborder2] = useState(false);
   const [errorBorder3, setErrorborder3] = useState(false);
@@ -212,10 +216,15 @@ const RoomsInformation = (props) => {
     );
 
     // Perform other validations
-    if (input.phd_description === "" || input.phd_description.length < 100) {
+    if (input.phd_description === "") {
       setErrorborder(true);
+      setErrorMessage("Note is required.");
+    } else if (input.phd_description.length < 100) {
+      setErrorborder(true);
+      setErrorMessage("Description must be at least 100 characters long.");
       return;
     }
+
     if (input.options === "") {
       setErrorborder1(true);
       return;
@@ -566,6 +575,7 @@ const RoomsInformation = (props) => {
               multiline
               rows={4}
               variant="outlined"
+              // name="textArea"
               fullWidth
               {...register("textArea")}
               name={"phd_description"}
@@ -575,6 +585,9 @@ const RoomsInformation = (props) => {
               required
               className={`${errorBorder ? "error" : ""} `}
             />
+            {errorMessage && (
+              <p className="error-message text-danger mt-2">{errorMessage}</p>
+            )}
           </div>
         </div>
         <div className="mb-3">
@@ -599,6 +612,7 @@ const RoomsInformation = (props) => {
                       accept="image/*"
                       onChange={(e) => handleImage(index, e)}
                     />
+
                     {photoFields.length > 1 && (
                       <button
                         type="button"
@@ -607,6 +621,9 @@ const RoomsInformation = (props) => {
                       >
                         <DeleteIcon />
                       </button>
+                    )}
+                    {errors.file && (
+                      <p className="text-danger mt-2">{errors.file.message}</p>
                     )}
                   </div>
                 </div>

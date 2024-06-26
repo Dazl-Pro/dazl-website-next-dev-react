@@ -35,6 +35,7 @@ const MyProject = () => {
   const [selectValue, setSelectvalue] = React.useState("");
 
   const [editItem, setEditItem] = useState(null);
+  const [editImage, setEditImage] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
@@ -82,6 +83,11 @@ const MyProject = () => {
       ["title"]: item?.inspectionNotes,
     }));
     setEditItem(item?.feature_id);
+    setFormData((prevData) => ({
+      ...prevData,
+      ["photo"]: item?.photos,
+    }));
+    setEditImage(item?.images);
   };
 
   const handleChange = (e) => {
@@ -99,6 +105,7 @@ const MyProject = () => {
       feature_id: item?.feature_id,
       images: item?.images,
       inspectionNotes: formData.title,
+      photos: formData.photo,
     };
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
@@ -162,9 +169,10 @@ const MyProject = () => {
     Array(phdRooms?.length).fill(false)
   );
 
-  const addAnother = (roomId) => {
+  const addAnother = (roomId, project_id) => {
     setImagesFinal(true);
     localStorage.setItem("roomId", roomId);
+    localStorage.setItem("projectID", project_id);
     if (selectedImages.length === 0) {
       // Collect checkbox IDs and descriptions for the selected checkboxes
       const selectedCheckboxes = checkboxValues
@@ -184,6 +192,7 @@ const MyProject = () => {
           dispatch(
             addAnotherRoom({
               roomId,
+              project_id,
               features: item.checkboxId,
               inspectionNotes: item.description,
             })
@@ -203,7 +212,7 @@ const MyProject = () => {
       } else {
         // If no checkboxes are selected, just dispatch the room ID
         console.log("called");
-        dispatch(addAnotherRoom({ roomId }))
+        dispatch(addAnotherRoom({ roomId, project_id }))
           .unwrap()
           .then((response) => {
             setShow(false);
@@ -214,7 +223,14 @@ const MyProject = () => {
               data: "success",
               msg: "Room saved without images or checkboxes. You can add more.",
             });
-            navigate("/agent/createProject");
+            // navigate("/agent/createProject");
+            // navigate("/homeOwner/create-project");
+
+            if (location.pathname === "/agent/my-project") {
+              navigate("/agent/createProject");
+            } else {
+              navigate("/homeOwner/create-project");
+            }
           });
       }
     } else {
@@ -235,6 +251,7 @@ const MyProject = () => {
         msg: "Your item is saved, now you can add more.",
       });
       navigate("/agent/createProject");
+      // navigate("/homeOwner/create-project");
     }
 
     setSelectedImages([]);
@@ -295,7 +312,10 @@ const MyProject = () => {
                               type="submit"
                               className="btn btn-danger"
                               onClick={() =>
-                                addAnother(items.roominfo[0].room_id)
+                                addAnother(
+                                  items.roominfo[0].room_id,
+                                  items.project_id
+                                )
                               }
                             >
                               Add another room

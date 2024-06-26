@@ -321,6 +321,7 @@ export const addRoomFeatures = createAsyncThunk(
       const response = await http.post(`/${data.payload}`, {
         data: data.selectedImages ?? data.data,
         name: data.name,
+        projectID: data.projectID,
       });
       if (response.status === 200) {
         if (data.payload === "realtorprojects") {

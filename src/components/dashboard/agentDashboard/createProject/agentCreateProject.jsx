@@ -7,6 +7,8 @@ const AgentCreateProject = () => {
   const [show, setShow] = React.useState(false);
   const roomId = localStorage.getItem("roomId");
   console.log(roomId);
+  const project_id = localStorage.getItem("project_id");
+  console.log(project_id);
 
   return (
     <div className="py-0 create-project-container-height">

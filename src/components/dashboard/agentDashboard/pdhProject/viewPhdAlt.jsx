@@ -99,24 +99,20 @@ const ViewPhdAlt = () => {
 
             viewPhdData[0].roominfo.forEach((room) => {
               room.feature.forEach((feature) => {
-                if (feature.feature_id === eleInner.feature_id) {
+                if (feature.feature_id === feature_id) {
                   if (status === "Bid") {
-                    updatedProgressBars[eleInner.feature_id] =
-                      Number(mainPrice) + 100;
+                    updatedProgressBars[feature_id] = Number(mainPrice) + 100;
                   } else if (status === "Pass") {
-                    updatedProgressBars[eleInner.feature_id] =
+                    updatedProgressBars[feature_id] =
                       Number(mainPrice) - 100000;
                   } else if (status === "D.I.Y") {
-                    updatedProgressBars[eleInner.feature_id] =
-                      Number(mainPrice);
+                    updatedProgressBars[feature_id] = Number(mainPrice);
                   }
                 }
               });
             });
             setProgressBars(updatedProgressBars);
           });
-
-        setProgressBars(updatedProgressBars);
       });
   };
 

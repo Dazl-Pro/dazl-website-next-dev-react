@@ -14,6 +14,7 @@ const photosSchema = yup.array().of(
   yup.object().shape({
     file: yup
       .mixed()
+      .required("This field is required.")
       .test(
         "isImageFile",
         "Invalid file type. Only image files (png, jpg) are allowed.",
@@ -36,33 +37,33 @@ const photosSchema = yup.array().of(
 const schema = yup.object().shape({
   memberName: yup
     .string()
-    .required("memberName is required")
-    .min(3, "Member Name  must be at least 3 characters"),
-  // .length(3, "memberName must be exactly 3 characters")
+    .required("Member Name is required")
+    .min(3, "Member Name  have at least 3 characters"),
+  // .length(3, "memberName have exactly 3 characters")
   propertyAddress: yup
     .string()
-    .required("propertyAddress is required")
-    .min(3, "Property Address Name  must be at least 3 characters"),
+    .required("Property Address is required")
+    .min(3, "Property Address Name  have at least 3 characters"),
   companyName: yup
     .string()
-    .required("companyName is required")
-    .min(3, "Company Name  must be at least 3 characters"),
+    .required("Company Name is required")
+    .min(3, "Company Name  have at least 3 characters"),
   contactName: yup
     .string()
-    .required("contactName is required")
-    .min(3, "Contact Name  must be at least 3 characters"),
+    .required("Contact Name is required")
+    .min(3, "Contact Name  have at least 3 characters"),
   describeIssue: yup
     .string()
-    .required("describeIssue is required")
-    .min(100, "Issues  must be at least 100 characters"),
+    .required("Issues is required")
+    .min(100, "Issues  have at least 100 characters"),
   stepsToResolve: yup
     .string()
-    .required("stepsToResolve is required")
-    .min(100, "Steps to resolve  must be at least 100 characters"),
+    .required("Steps to resolve is required")
+    .min(100, "Steps to resolve  have at least 100 characters"),
   howIssueResolved: yup
     .string()
-    .required("howIssueResolved is required")
-    .min(100, "How issues resolved  must be at least 100 characters"),
+    .required("How issues resolved is required")
+    .min(100, "How issues resolved  have at least 100 characters"),
   photos: photosSchema,
 });
 
@@ -194,6 +195,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.memberName && (
+                    <p className="text-danger mt-2">
+                      {errors.memberName.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -212,6 +218,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.propertyAddress && (
+                    <p className="text-danger mt-2">
+                      {errors.propertyAddress.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -230,6 +241,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.companyName && (
+                    <p className="text-danger mt-2">
+                      {errors.companyName.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -248,6 +264,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.contactName && (
+                    <p className="text-danger mt-2">
+                      {errors.contactName.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -266,6 +287,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.describeIssue && (
+                    <p className="text-danger mt-2">
+                      {errors.describeIssue.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -284,6 +310,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.stepsToResolve && (
+                    <p className="text-danger mt-2">
+                      {errors.stepsToResolve.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="form-row">
@@ -302,6 +333,11 @@ const ContactUs = () => {
                       />
                     )}
                   />
+                  {errors.howIssueResolved && (
+                    <p className="text-danger mt-2">
+                      {errors.howIssueResolved.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="border border-1 form-row-outer p-3 rounded-2 mb-3">
@@ -318,6 +354,7 @@ const ContactUs = () => {
                         <input
                           type="file"
                           accept=".jpg,.jpeg,.png"
+                          required
                           {...register(`photos[${index}].file`)}
                           className={`form-control mb-3 ${
                             errors.photos && errors?.photos[index]?.file
@@ -326,6 +363,11 @@ const ContactUs = () => {
                           }`}
                           onChange={(e) => handleImage(item.id, index, e)}
                         />
+                        {/* {errors.file && errors.file[index]?.file && (
+                          <p className="error-message text-danger mt-2">
+                            {errors.file[index].file.message}
+                          </p>
+                        )} */}
                       </div>
                       <div className="column">
                         <Controller
