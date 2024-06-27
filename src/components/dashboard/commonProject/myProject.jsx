@@ -23,6 +23,7 @@ import {
 } from "../../../store/dashboard/dashboardSlice";
 import SendIcon from "@mui/icons-material/Send";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import AddIcon from "@mui/icons-material/Add";
@@ -36,9 +37,11 @@ const MyProject = () => {
 
   const [editItem, setEditItem] = useState(null);
   const [editImage, setEditImage] = useState(null);
+
   const [pageNumber, setPageNumber] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
+    images: [],
   });
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
@@ -81,31 +84,54 @@ const MyProject = () => {
     setFormData((prevData) => ({
       ...prevData,
       ["title"]: item?.inspectionNotes,
+      images: item?.images,
     }));
     setEditItem(item?.feature_id);
-    setFormData((prevData) => ({
-      ...prevData,
-      ["photo"]: item?.photos,
-    }));
-    setEditImage(item?.images);
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, files } = e.target;
+    if (name === "images") {
+      setFormData((prevData) => ({
+        ...prevData,
+        images: files,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
+  // const uploadImage = (e, index) => {
+  //   const file = e.target.files[0];
+  //   const isImage = file && file.type.startsWith("image/");
+
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+  //   dispatch(uploadImageAuth(formData))
+  //     .unwrap()
+  //     .then((res) => {
+  //       const newImage = res?.image?.startsWith("https://")
+  //         ? res.image
+  //         : `data:image/jpeg;base64,${res.image}`;
+
+  //       setImages((prevImages) => {
+  //         const newImages = [...prevImages];
+  //         newImages[index] = newImage;
+  //         return newImages;
+  //       });
+  //     });
+  // };
 
   const handleSubmit = (item, project_id) => {
     //e.preventDefault();
     // Access the form data for further processing
     const data = {
       feature_id: item?.feature_id,
-      images: item?.images,
+
       inspectionNotes: formData.title,
-      photos: formData.photo,
+      images: formData.images,
     };
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
@@ -162,8 +188,11 @@ const MyProject = () => {
   // const selector = useSelector((state) => state.dashboardSlice);
   const phdRooms = selector.data.phdRoomsData;
   const [selectedImages, setSelectedImages] = React.useState([]);
-
+  const [disable, setDisable] = React.useState(false);
+  const [images, setImages] = useState([]);
+  // const [roomImagesObject, setRoomImagesObject] = useState([]);
   const [ImagesFinal, setImagesFinal] = React.useState(false);
+
   const [textValues, setTextValues] = React.useState([]);
   const [checkboxValues, setCheckboxValues] = React.useState(
     Array(phdRooms?.length).fill(false)
@@ -257,6 +286,85 @@ const MyProject = () => {
     setSelectedImages([]);
   };
 
+  const roominfo = [
+    {
+      room_id: 17,
+      room_name: "Dining Room",
+      feature: [
+        {
+          feature_name: "Electrical",
+          feature_id: 74,
+          featureoption: "",
+          featureissue: [],
+          images: [
+            "https://example.com/dining_room_electrical1.jpg",
+            "https://example.com/dining_room_electrical2.jpg",
+          ],
+        },
+      ],
+    },
+    {
+      room_id: 10,
+      room_name: "Bath - Additional",
+      feature: [
+        {
+          feature_name: "Complete Remodel",
+          feature_id: 90,
+          featureoption: "",
+          featureissue: [],
+          images: [
+            "https://example.com/bath_additional_remodel1.jpg",
+            "https://example.com/bath_additional_remodel2.jpg",
+          ],
+        },
+      ],
+    },
+    {
+      room_id: 3,
+      room_name: "Bath-Primary",
+      feature: [
+        {
+          feature_name: "Plumbing",
+          feature_id: 45,
+          featureoption: "",
+          featureissue: [],
+          images: [
+            "https://example.com/bath_primary_plumbing1.jpg",
+            "https://example.com/bath_primary_plumbing2.jpg",
+          ],
+        },
+      ],
+    },
+    // Add more rooms if needed
+  ];
+  const transformedRoomImagesObject = roominfo.map((room) => ({
+    room_id: room.room_id,
+    room_name: room.room_name,
+    images: room.feature.flatMap((feature) => feature.images),
+  }));
+  console.log(transformedRoomImagesObject);
+
+  // const handleRemoveImage = (room_id, imageIndex) => {
+  //   const updatedRoomImagesObject = [...roomImagesObject];
+
+  //   const roomIndex = updatedRoomImagesObject.findIndex(
+  //     (room) => room.room_id === room_id
+  //   );
+
+  //   if (roomIndex !== -1) {
+  //     const updatedImages = [...updatedRoomImagesObject[roomIndex].images];
+
+  //     updatedImages.splice(imageIndex, 1);
+
+  //     updatedRoomImagesObject[roomIndex] = {
+  //       ...updatedRoomImagesObject[roomIndex],
+  //       images: updatedImages,
+  //     };
+
+  //     setRoomImagesObject(updatedRoomImagesObject);
+  //   }
+  // };
+
   return (
     <div className="py-0">
       <div className="">
@@ -264,35 +372,6 @@ const MyProject = () => {
           My Projects
         </h2>
         <div className="">
-          {/* <div className="mb-4">
-            <div className="row pb-3">
-              <div className="col-md-6 text-start">
-                <h5>
-                  <span className="fw-semibold">Homeowner Name:</span>{" "}
-                  {projectData?.customer_data?.owner_name ?? ""}
-                </h5>
-              </div>
-              <div className="col-md-6 text-start">
-                <h5>
-                  <span className="fw-semibold">Email Address:</span>{" "}
-                  {projectData?.customer_data?.email_address ?? ""}
-                </h5>
-              </div>
-              <div className="col-md-6 text-start">
-                <h5>
-                  <span className="fw-semibold">Phone Number:</span>{" "}
-                  {projectData?.customer_data?.phone_number ?? ""}{" "}
-                </h5>
-              </div>
-              <div className="col-md-6 text-start">
-                <h5>
-                  <span className="fw-semibold">Zip Code:</span>{" "}
-                  {projectData?.customer_data?.zip_code ?? ""}
-                </h5>
-              </div>
-            </div>
-          </div> */}
-
           <div className="">
             <div className="d-flex flex-wrap">
               {projectData?.data?.length > 0
@@ -405,14 +484,36 @@ const MyProject = () => {
                                                         width: "200px",
                                                       }}
                                                     >
-                                                      <ModalImage
-                                                        small={img}
-                                                        large={img}
-                                                        alt="Full Size"
-                                                        hideDownload={true}
-                                                        isOpen={isViewerOpen}
-                                                        onClose={closeViewer}
-                                                        className="m-2"
+                                                      {img && (
+                                                        <div>
+                                                          <img
+                                                            alt="img"
+                                                            src={img}
+                                                            accept=".jpg,.jpeg,.png"
+                                                            className="object-fit-cover border"
+                                                            width={"100px"}
+                                                            height={"100px"}
+                                                          />
+                                                          <div className="d-flex justify-content-center">
+                                                            <button
+                                                              type="button"
+                                                              className="btn btn-primary btn-sm mt-2"
+                                                              onClick={() =>
+                                                                handleRemoveImage(
+                                                                  index
+                                                                )
+                                                              }
+                                                            >
+                                                              <DeleteIcon />
+                                                            </button>
+                                                          </div>
+                                                        </div>
+                                                      )}
+                                                      <input
+                                                        type="file"
+                                                        onChange={(e) => {
+                                                          uploadImage(e, index);
+                                                        }}
                                                       />
                                                     </div>
                                                   )

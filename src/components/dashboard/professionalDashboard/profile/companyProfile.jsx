@@ -119,7 +119,7 @@ const CompanyProfile = () => {
 
   console.log(errors);
   useEffect(() => {
-    // setValue("yearofbusiness", companydata?.years_in_business);
+    setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
     setValue(
