@@ -620,7 +620,7 @@ const Commonproject = ({
                           type="button"
                           className="btn btn-primary my-3"
                           onClick={() => append({ indexId: index, file: null })}
-                          // disabled={!isLastFieldFilled()}
+                          // disabled={fields.length === 0 || !isLastFieldFilled()}
                         >
                           Upload More
                         </button>

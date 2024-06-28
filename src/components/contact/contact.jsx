@@ -158,7 +158,7 @@ const ContactUs = () => {
     }
   };
 
-  const isLastFieldComplete = () => {
+  const isLastFieldCompleted = () => {
     if (fields.length === 0) return true;
     const lastIndex = fields.length - 1;
     const lastImageField = selectedImages[lastIndex];
@@ -408,11 +408,11 @@ const ContactUs = () => {
                       type="button"
                       className="btn btn-success"
                       onClick={() => {
-                        if (isLastFieldComplete()) {
+                        if (isLastFieldCompleted()) {
                           append({ description: "", file: null });
                         }
                       }}
-                      disabled={!isLastFieldComplete()}
+                      disabled={!isLastFieldCompleted()}
                     >
                       Upload more
                     </button>

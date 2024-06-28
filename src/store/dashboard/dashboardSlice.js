@@ -453,12 +453,16 @@ export const updateReportFeatures = createAsyncThunk(
 
 export const updateAgentFeatures = createAsyncThunk(
   "dashboard/updateAgentFeatures",
-  async ({ data, project_id, pageNo, numberofdata }, { dispatch }) => {
+  async ({ data, project_id, pageNo, project, numberofdata }, { dispatch }) => {
     try {
       const response = await http.patch(`/update-report/${project_id}`, data);
       if (response.status === 200) {
         dispatch(
-          getAgentProject({ pageNo: pageNo, numberofdata: numberofdata })
+          getAgentProject({
+            pageNo: pageNo,
+            numberofdata: numberofdata,
+            project: project,
+          })
         );
         return response.data;
       }

@@ -32,7 +32,8 @@ import { Toastify } from "../../../services/toastify/toastContainer";
 import ModalImage from "react-modal-image";
 const MyProject = () => {
   const [show, setShow] = React.useState(false);
-
+  const [delShow, setDelShow] = React.useState(false);
+  const [chooseShow, setChooseShow] = React.useState(false);
   const [selectValue, setSelectvalue] = React.useState("");
 
   const [editItem, setEditItem] = useState(null);
@@ -45,9 +46,14 @@ const MyProject = () => {
   });
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
+  const [imagesArray, setImagesAray] = useState([]);
+
+  console.log(imagesArray);
+
   const closeViewer = () => {
     setIsViewerOpen(false);
   };
+
   const userType = localStorage.getItem("userType");
   const dispatch = useDispatch();
   const location = useLocation();
@@ -69,6 +75,8 @@ const MyProject = () => {
       } else {
         dispatch(getAgentProject({ pageNo: 1, numberofdata: 5 }));
       }
+    } else {
+      setImagesAray(projectData.data);
     }
   }, [projectData, location]);
   const handlePageChange = (event, value) => {
@@ -87,6 +95,8 @@ const MyProject = () => {
       images: item?.images,
     }));
     setEditItem(item?.feature_id);
+    setDelShow(true);
+    setChooseShow(true);
   };
 
   const handleChange = (e) => {
@@ -109,7 +119,7 @@ const MyProject = () => {
 
   //   const formData = new FormData();
   //   formData.append("image", file);
-  //   dispatch(uploadImageAuth(formData))
+  //   dispatch(uploadImage(formData))
   //     .unwrap()
   //     .then((res) => {
   //       const newImage = res?.image?.startsWith("https://")
@@ -124,15 +134,38 @@ const MyProject = () => {
   //     });
   // };
 
-  const handleSubmit = (item, project_id) => {
+  const handleSubmit = (item, project_id, roominfoItems) => {
     //e.preventDefault();
     // Access the form data for further processing
+
+    // const imagesCompare = imagesArray.find(
+    //   (img) => img.roominfo.room_id === images[0]
+    // );
+    // console.log(imagesCompare);
+    let images;
+    const project = imagesArray.find(
+      (project) => project?.project_id === project_id
+    );
+    if (project) {
+      console.log(project);
+      const room = project?.roominfo?.find(
+        (room) => room?.room_id === roominfoItems.room_id
+      );
+      if (room) {
+        images = room.feature[0].images;
+        console.log(images);
+      } else {
+        console.log("Room not found");
+      }
+    } else {
+      console.log("Project not found");
+    }
     const data = {
       feature_id: item?.feature_id,
-
       inspectionNotes: formData.title,
-      images: formData.images,
+      images,
     };
+    console.log(project);
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
         updateReportFeatures({
@@ -150,7 +183,8 @@ const MyProject = () => {
     } else {
       dispatch(
         updateAgentFeatures({
-          data: data,
+          data,
+          project: project,
           project_id: project_id,
           pageNo: pageNumber,
           numberofdata: 5,
@@ -158,6 +192,8 @@ const MyProject = () => {
       );
       setEditItem(null);
     }
+    setDelShow(false);
+    setChooseShow(false);
   };
 
   const deleteProject = (projectId, housingSegmentId) => {
@@ -188,8 +224,8 @@ const MyProject = () => {
   // const selector = useSelector((state) => state.dashboardSlice);
   const phdRooms = selector.data.phdRoomsData;
   const [selectedImages, setSelectedImages] = React.useState([]);
-  const [disable, setDisable] = React.useState(false);
-  const [images, setImages] = useState([]);
+  // const [disable, setDisable] = React.useState(false);
+
   // const [roomImagesObject, setRoomImagesObject] = useState([]);
   const [ImagesFinal, setImagesFinal] = React.useState(false);
 
@@ -282,88 +318,34 @@ const MyProject = () => {
       navigate("/agent/createProject");
       // navigate("/homeOwner/create-project");
     }
-
     setSelectedImages([]);
   };
 
-  const roominfo = [
-    {
-      room_id: 17,
-      room_name: "Dining Room",
-      feature: [
-        {
-          feature_name: "Electrical",
-          feature_id: 74,
-          featureoption: "",
-          featureissue: [],
-          images: [
-            "https://example.com/dining_room_electrical1.jpg",
-            "https://example.com/dining_room_electrical2.jpg",
-          ],
-        },
-      ],
-    },
-    {
-      room_id: 10,
-      room_name: "Bath - Additional",
-      feature: [
-        {
-          feature_name: "Complete Remodel",
-          feature_id: 90,
-          featureoption: "",
-          featureissue: [],
-          images: [
-            "https://example.com/bath_additional_remodel1.jpg",
-            "https://example.com/bath_additional_remodel2.jpg",
-          ],
-        },
-      ],
-    },
-    {
-      room_id: 3,
-      room_name: "Bath-Primary",
-      feature: [
-        {
-          feature_name: "Plumbing",
-          feature_id: 45,
-          featureoption: "",
-          featureissue: [],
-          images: [
-            "https://example.com/bath_primary_plumbing1.jpg",
-            "https://example.com/bath_primary_plumbing2.jpg",
-          ],
-        },
-      ],
-    },
-    // Add more rooms if needed
-  ];
-  const transformedRoomImagesObject = roominfo.map((room) => ({
-    room_id: room.room_id,
-    room_name: room.room_name,
-    images: room.feature.flatMap((feature) => feature.images),
-  }));
-  console.log(transformedRoomImagesObject);
-
-  // const handleRemoveImage = (room_id, imageIndex) => {
-  //   const updatedRoomImagesObject = [...roomImagesObject];
-
-  //   const roomIndex = updatedRoomImagesObject.findIndex(
-  //     (room) => room.room_id === room_id
-  //   );
-
-  //   if (roomIndex !== -1) {
-  //     const updatedImages = [...updatedRoomImagesObject[roomIndex].images];
-
-  //     updatedImages.splice(imageIndex, 1);
-
-  //     updatedRoomImagesObject[roomIndex] = {
-  //       ...updatedRoomImagesObject[roomIndex],
-  //       images: updatedImages,
-  //     };
-
-  //     setRoomImagesObject(updatedRoomImagesObject);
-  //   }
-  // };
+  const handleRemoveImage = (projectIdx, roomIdx, featureIdx, imageIdx) => {
+    setImagesAray((prevProjects) =>
+      prevProjects.map((project, pIdx) => {
+        if (pIdx === projectIdx) {
+          const updatedRoomInfo = project.roominfo.map((room, rIdx) => {
+            if (rIdx === roomIdx) {
+              const updatedFeatures = room.feature.map((feature, fIdx) => {
+                if (fIdx === featureIdx) {
+                  const updatedImages = feature.images.filter(
+                    (_, imgIdx) => imgIdx !== imageIdx
+                  );
+                  return { ...feature, images: updatedImages };
+                }
+                return feature;
+              });
+              return { ...room, feature: updatedFeatures };
+            }
+            return room;
+          });
+          return { ...project, roominfo: updatedRoomInfo };
+        }
+        return project;
+      })
+    );
+  };
 
   return (
     <div className="py-0">
@@ -441,7 +423,8 @@ const MyProject = () => {
                                                     onClick={() =>
                                                       handleSubmit(
                                                         item,
-                                                        items?.project_id
+                                                        items?.project_id,
+                                                        roominfoItems
                                                       )
                                                     }
                                                   >
@@ -475,11 +458,17 @@ const MyProject = () => {
                                                   {item?.inspectionNotes}
                                                 </p>
                                               )}
-                                              <div className="row mt-2 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 d-flex flex-wrap pe-0">
-                                                {item?.images?.map(
-                                                  (img, index) => (
+                                              <div className="row mt-2 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 d-flex flex-column flex-wrap pe-0">
+                                                {imagesArray?.[
+                                                  dataIndex
+                                                ]?.roominfo?.[
+                                                  indexroomInfo
+                                                ]?.feature?.[
+                                                  index
+                                                ]?.images?.map(
+                                                  (img, imageIdx) => (
                                                     <div
-                                                      key={index}
+                                                      key={imageIdx}
                                                       style={{
                                                         width: "200px",
                                                       }}
@@ -494,29 +483,37 @@ const MyProject = () => {
                                                             width={"100px"}
                                                             height={"100px"}
                                                           />
-                                                          <div className="d-flex justify-content-center">
-                                                            <button
-                                                              type="button"
-                                                              className="btn btn-primary btn-sm mt-2"
-                                                              onClick={() =>
-                                                                handleRemoveImage(
-                                                                  index
-                                                                )
-                                                              }
-                                                            >
-                                                              <DeleteIcon />
-                                                            </button>
-                                                          </div>
+                                                          {delShow && (
+                                                            <div className="d-flex justify-content-center">
+                                                              <button
+                                                                type="button"
+                                                                className="btn btn-primary btn-sm mt-2"
+                                                                onClick={() =>
+                                                                  handleRemoveImage(
+                                                                    dataIndex,
+                                                                    indexroomInfo,
+                                                                    index,
+                                                                    imageIdx
+                                                                  )
+                                                                }
+                                                              >
+                                                                <DeleteIcon />
+                                                              </button>
+                                                            </div>
+                                                          )}
                                                         </div>
                                                       )}
-                                                      <input
-                                                        type="file"
-                                                        onChange={(e) => {
-                                                          uploadImage(e, index);
-                                                        }}
-                                                      />
                                                     </div>
                                                   )
+                                                )}
+                                                {chooseShow && (
+                                                  <input
+                                                    className="w-100"
+                                                    type="file"
+                                                    onChange={(e) => {
+                                                      uploadImage(e, imageIdx);
+                                                    }}
+                                                  />
                                                 )}
                                               </div>
                                             </div>
