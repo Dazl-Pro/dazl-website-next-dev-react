@@ -7,12 +7,17 @@ import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import {
   UpdateCompanyProfile,
+  UpdateCompanyProfileSecond,
   getCompanyProfile,
 } from "../../../../store/dashboard/dashboardSlice";
 import { uploadImageAuth } from "../../../../store/auth/authSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const defaultValues = {
+  company_name: "",
+  address: "",
+  company_city: "",
+  state: "",
   yearofbusiness: "",
   insuranceCertificate: "",
   insuranceContactNumber: "",
@@ -26,6 +31,22 @@ const defaultValues = {
 };
 
 const schema = yup.object().shape({
+  // company_name: yup
+  //   .string()
+  //   .required("Name is required")
+  //   .min(3, "Name have atleast 3 characters"),
+  // address: yup
+  // .string()
+  // .required("Name is required")
+  // .min(3, "Name have atleast 3 characters"),
+  // address: yup
+  // .string()
+  // .required("Name is required")
+  // .min(3, "Name have atleast 3 characters"),
+  // address: yup
+  // .string()
+  // .required("Name is required")
+  // .min(3, "Name have atleast 3 characters"),
   yearofbusiness: yup.string(),
   email: yup
     .string()
@@ -39,6 +60,7 @@ const schema = yup.object().shape({
     .required("Number is required")
     .trim(),
   insuranceContactNumber: yup.string().trim(),
+
   insuranceNumber: yup.string().trim(),
   image1: yup.string(),
   image2: yup.string(),
@@ -54,7 +76,7 @@ const CompanyProfile = () => {
 
   const [disable, setDisable] = React.useState(false);
   const [images, setImages] = useState([]);
-  console.log("images", images);
+  // console.log("images", images);
 
   useEffect(() => {
     companydata &&
@@ -78,8 +100,19 @@ const CompanyProfile = () => {
   });
 
   const onSubmit = (data) => {
+    // console.log("-------------ssss------", data);
     if (disable) {
       dispatch(UpdateCompanyProfile({ values: data, images }));
+      dispatch(
+        UpdateCompanyProfileSecond({
+          data: {
+            company_name: data.company_name,
+            address: data.address,
+            company_city: data.company_city,
+            state: data.state,
+          },
+        })
+      );
       reset();
       setDisable(false);
     } else {
@@ -119,6 +152,11 @@ const CompanyProfile = () => {
 
   console.log(errors);
   useEffect(() => {
+    setValue("company_name", companydata?.company_name);
+    setValue("address", companydata?.address);
+    setValue("city", companydata?.city);
+    setValue("state", companydata?.state);
+
     setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
@@ -142,7 +180,25 @@ const CompanyProfile = () => {
         <div className="">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="d-flex flex-row justify-content-between align-items-center">
-              <h3 className="text-capitalize">Name: {companydata?.name}</h3>
+              <Controller
+                name="company_name"
+                control={control}
+                render={({ field }) => (
+                  <label className="bg-light p-2 m-3 rounded-4 w-100">
+                    Name:
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={` form-control width-input ${
+                        errors.companydata?.company_name ? "error" : ""
+                      }`}
+                      placeholder="Enter your Company-name"
+                    />
+                  </label>
+                )}
+              />
+
+              {/* <h3 className="text-capitalize">Name: {companydata?.company_name}</h3> */}
               <div>
                 {companydata?.website && (
                   <a
@@ -193,20 +249,71 @@ const CompanyProfile = () => {
             <div className="row">
               <p className="col-md-4">
                 <div className="col-inner bg-light p-3 rounded-3">
-                  <span className="d-block fw-bold">Address:</span>
-                  <span>{companydata?.address}</span>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <label className="bg-light p-2 rounded-4 w-100">
+                        Address:
+                        <input
+                          {...field}
+                          disabled={!disable}
+                          className={` form-control width-input ${
+                            errors.companydata?.address ? "error" : ""
+                          }`}
+                          placeholder="Enter your address"
+                        />
+                      </label>
+                    )}
+                  />
+                  {/* // <span className="d-block fw-bold">Address:</span>
+                  // <span>{companydata?.address}</span> */}
                 </div>
               </p>
               <p className="col-md-4">
                 <div className="col-inner bg-light p-3 rounded-3">
-                  <span className="d-block fw-bold">City:</span>
-                  <span>{companydata?.city}</span>
+                  <Controller
+                    name="company_city"
+                    control={control}
+                    render={({ field }) => (
+                      <label className="bg-light p-2 rounded-4 w-100">
+                        City:
+                        <input
+                          {...field}
+                          disabled={!disable}
+                          className={` form-control width-input ${
+                            errors.companydata?.company_city ? "error" : ""
+                          }`}
+                          placeholder="Enter your city"
+                        />
+                      </label>
+                    )}
+                  />
+                  {/* <span className="d-block fw-bold">City:</span>
+                  <span>{companydata?.city}</span> */}
                 </div>
               </p>
               <p className="col-md-4">
                 <div className="col-inner bg-light p-3 rounded-3">
-                  <span className="d-block fw-bold">State:</span>
-                  <span>{companydata?.state}</span>
+                  <Controller
+                    name="state"
+                    control={control}
+                    render={({ field }) => (
+                      <label className="bg-light p-2 rounded-4 w-100">
+                        State:
+                        <input
+                          {...field}
+                          disabled={!disable}
+                          className={` form-control width-input ${
+                            errors.companydata?.state ? "error" : ""
+                          }`}
+                          placeholder="Enter your state"
+                        />
+                      </label>
+                    )}
+                  />
+                  {/* <span className="d-block fw-bold">State:</span>
+                  <span>{companydata?.state}</span> */}
                 </div>
               </p>
             </div>

@@ -113,26 +113,27 @@ const MyProject = () => {
       }));
     }
   };
-  // const uploadImage = (e, index) => {
-  //   const file = e.target.files[0];
-  //   const isImage = file && file.type.startsWith("image/");
 
-  //   const formData = new FormData();
-  //   formData.append("image", file);
-  //   dispatch(uploadImage(formData))
-  //     .unwrap()
-  //     .then((res) => {
-  //       const newImage = res?.image?.startsWith("https://")
-  //         ? res.image
-  //         : `data:image/jpeg;base64,${res.image}`;
+  const uploadImage = (e, index) => {
+    const file = e.target.files[0];
+    const isImage = file && file.type.startsWith("image/");
 
-  //       setImages((prevImages) => {
-  //         const newImages = [...prevImages];
-  //         newImages[index] = newImage;
-  //         return newImages;
-  //       });
-  //     });
-  // };
+    const formData = new FormData();
+    formData.append("image", file);
+    dispatch(uploadImage(formData))
+      .unwrap()
+      .then((res) => {
+        const newImage = res?.image?.startsWith("https://")
+          ? res.image
+          : `data:image/jpeg;base64,${res.image}`;
+
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[index] = newImage;
+          return newImages;
+        });
+      });
+  };
 
   const handleSubmit = (item, project_id, roominfoItems) => {
     //e.preventDefault();
@@ -510,6 +511,7 @@ const MyProject = () => {
                                                   <input
                                                     className="w-100"
                                                     type="file"
+                                                    accept="image/*"
                                                     onChange={(e) => {
                                                       uploadImage(e, imageIdx);
                                                     }}

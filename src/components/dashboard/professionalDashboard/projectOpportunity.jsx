@@ -7,9 +7,11 @@ import { Toastify } from "../../../services/toastify/toastContainer";
 import {
   viewServicePhd,
   sendMailHomeOwner,
+  deleteProfessionalProjects,
 } from "../../../store/dashboard/dashboardSlice";
 import "./style.css";
-
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 const ProjectOpportunity = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -17,13 +19,18 @@ const ProjectOpportunity = () => {
   const [data, setData] = useState(null);
   const [message, setMessage] = useState("");
   const [interested, setInterested] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isModalOptionSelected, setIsModalOptionSelected] = useState(false);
 
   console.log(message);
 
   useEffect(() => {
     dispatch(viewServicePhd(id))
       .unwrap()
-      .then((res) => setData(res.reports.original.final));
+      .then((res) => {
+        console.log(res.reports.original.final);
+        setData(res.reports.original.final);
+      });
   }, [id]);
 
   const handleSendMail = () => {
@@ -42,6 +49,37 @@ const ProjectOpportunity = () => {
         msg: "Response Sent  successfully",
       });
       return;
+    }
+  };
+
+  const deleteProject = (project_id) => {
+    dispatch(
+      deleteProfessionalProjects({
+        project_id: project_id,
+      })
+    );
+    if (dispatch) {
+      Toastify({
+        data: "success",
+        msg: "Project delete  successfully",
+      });
+      return;
+    }
+  };
+
+  const handleAnotherClick = () => {
+    if (isModalOptionSelected) {
+      handleSendMail();
+    }
+    setShowModal(true);
+  };
+
+  const handleButtonClick = () => {
+    if (interested === true) {
+      handleSendMail();
+    } else if (interested === false) {
+      setShowModal(true);
+      handleAnotherClick();
     }
   };
 
@@ -221,6 +259,7 @@ const ProjectOpportunity = () => {
                     id="checkbox"
                     checked={interested === true}
                     onChange={() => setInterested(true)}
+                    // onClick={() => setShowModal(false)}
                   />
                   <span className="fw-bold fs-6"> YES </span>, I'm interseted.
                 </div>
@@ -230,6 +269,10 @@ const ProjectOpportunity = () => {
                     id="checkbox"
                     checked={interested === false}
                     onChange={() => setInterested(false)}
+
+                    // onClick={() => setShowModal(true)}
+                    // checked={isModalOptionSelected}
+                    // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
                   />
                   <span className="fw-bold fs-6"> NO </span>, I'm not
                   interseted.{" "}
@@ -239,11 +282,52 @@ const ProjectOpportunity = () => {
             <div className="col-md-3 text-end">
               <button
                 className="inner-text send-message d-flex align-items-center gap-2"
-                onClick={handleSendMail}
+                // onClick={handleSendMail}
+                onClick={handleButtonClick}
               >
                 Send
                 <SendIcon />
               </button>
+              <Modal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                centered
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>Delete Project</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="text-center fs-5">
+                    Are you sure you want to delete this project?
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      deleteProject(data.project_id);
+                      setShowModal(false);
+                    }}
+                    checked={isModalOptionSelected}
+                    onChange={(e) => setIsModalOptionSelected(e.target.checked)}
+                    className="px-4"
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      handleSendMail();
+                      setShowModal(false);
+                    }}
+                    checked={isModalOptionSelected}
+                    onChange={(e) => setIsModalOptionSelected(e.target.checked)}
+                    className="px-4"
+                  >
+                    No
+                  </Button>
+                </Modal.Footer>
+              </Modal>
             </div>
           </div>
           <div className="message-box pt-4 " id="messageBox">

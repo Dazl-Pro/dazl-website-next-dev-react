@@ -178,7 +178,7 @@ export const UpdateCompanyProfile = createAsyncThunk(
   async ({ values, images }, { dispatch }) => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await http.patch(
+      const response = await http.post(
         `company-from-professional/update?phone=${values.phoneNumber}&years_in_business=${values.yearofbusiness}&email=${values.email}&insurance_certificate=${values.insuranceCertificate}&insurance_contact_number=${values.insuranceContactNumber}&insurance_number=${values.insuranceNumber}&images1=${images[0]}&images2=${images[1]}&images3=${images[2]}&images4=${images[3]}`
       );
       if (response.status === 200) {
@@ -188,6 +188,29 @@ export const UpdateCompanyProfile = createAsyncThunk(
           Toastify({ data: "success", msg: response.data.message })
         );
       }
+    } catch (error) {
+      return (
+        error.response.data,
+        Toastify({ data: "error", msg: error.response.data.message })
+      );
+    }
+  }
+);
+
+export const UpdateCompanyProfileSecond = createAsyncThunk(
+  "dashboard/UpdateCompanyProfileSecond",
+  async (data, { dispatch }) => {
+    const userId = localStorage.getItem("userId");
+    try {
+      const response = await http.post(`professional/update`, data);
+      if (response.status === 200) {
+        return (
+          response.data,
+          dispatch(getCompanyProfile(userId)),
+          Toastify({ data: "success", msg: response.data.message })
+        );
+      }
+      return await response.json();
     } catch (error) {
       return (
         error.response.data,
@@ -505,6 +528,27 @@ export const deleteAgentFeatures = createAsyncThunk(
         );
         return response.data;
       }
+    } catch (error) {
+      return (
+        error.response.data,
+        Toastify({ data: "error", msg: error.response.data.message })
+      );
+    }
+  }
+);
+export const deleteProfessionalProjects = createAsyncThunk(
+  "dashboard/deleteProfessionalProjects",
+  async ({ project_id }, { dispatch }) => {
+    try {
+      const response = await http.delete(`/professional/project/${project_id}`);
+      // if (response.status === 200) {
+      //   dispatch(
+      //     getAgentProject({ pageNo: pageNo, numberofdata: numberofdata })
+      //   );
+      // //   // Navigate(/company/projectOpportunities)
+      // //
+      // }
+      return response.data;
     } catch (error) {
       return (
         error.response.data,
@@ -867,6 +911,20 @@ const dashboardSlice = createSlice({
       })
       .addCase(UpdateCompanyProfile.rejected, (state, action) => {
         state.loading = false;
+      })
+      .addCase(UpdateCompanyProfileSecond.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(UpdateCompanyProfileSecond.fulfilled, (state, action) => {
+        if (action.payload.status === 200) {
+          Toastify({ data: "success", msg: action.payload.message });
+          state.data.agentData = [];
+        }
+        state.loading = false;
+      })
+      .addCase(UpdateCompanyProfileSecond.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
       //update agent Passwprd
       .addCase(changeAgentPassword.pending, (state, action) => {

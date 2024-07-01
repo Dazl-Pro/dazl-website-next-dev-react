@@ -4,6 +4,11 @@ import { projectOpportunities } from "../../../store/dashboard/dashboardSlice";
 import { Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import PreviewIcon from "@mui/icons-material/Preview";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  openConfirmPopup,
+  deleteProfessionalProjects,
+} from "../../../store/dashboard/dashboardSlice";
 
 const ProjectOpportunities = () => {
   const dispatch = useDispatch();
@@ -18,6 +23,24 @@ const ProjectOpportunities = () => {
       });
   }, []);
 
+  // const deleteProject = (project_id) => {
+  //   console.log("------------", project_id);
+
+  //   dispatch(
+  //     deleteProfessionalProjects({
+  //       project_id: project_id,
+  //     })
+  //   );
+  //   dispatch(openConfirmPopup(true));
+
+  //   if (dispatch) {
+  //     Toastify({
+  //       data: "success",
+  //       msg: "Project delete  successfully",
+  //     });
+  //     return;
+  //   }
+  // };
   const Selector = useSelector((state) => state.dashboardSlice);
   const projectOpportunitiesData = Selector.data.projectOpportunities;
   console.log(projectOpportunitiesData);
@@ -63,21 +86,39 @@ const ProjectOpportunities = () => {
               <thead>
                 <tr className="align-middle">
                   <th>Sr-No</th>
+                  <th>Date</th>
                   <th>Location</th>
+
                   <th className="ps-3">Action</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.map((item, index) => (
                   <tr key={index} className="align-middle">
                     <td>{index + 1}</td>
+                    <td>{item.created_at}</td>
                     <td className="w-75">{item.customer?.house?.address}</td>
                     <td className="ps-2">
                       <button
                         className="btn btn-outline-success mx-1 btn-sm"
-                        onClick={() => viewPhdHandler(item.project_id)}
+                        onClick={() => viewPhdHandler(index.project_id)}
                       >
                         <PreviewIcon />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-outline-danger mx-1 btn-sm"
+                        // onClick={() => {
+                        //   deleteProject(item.project_id);
+                        // }}
+                        // onClick={() => (
+                        //   dispatch(deleteProfessionalProjects(item.indexId)),
+                        //   dispatch(openConfirmPopup(true))
+                        // )}
+                      >
+                        <DeleteIcon />
                       </button>
                     </td>
                   </tr>
