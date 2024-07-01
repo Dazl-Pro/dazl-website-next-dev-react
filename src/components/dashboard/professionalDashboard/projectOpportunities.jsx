@@ -23,24 +23,24 @@ const ProjectOpportunities = () => {
       });
   }, []);
 
-  // const deleteProject = (project_id) => {
-  //   console.log("------------", project_id);
+  const deleteProject = (project_id) => {
+    console.log("------------", project_id);
 
-  //   dispatch(
-  //     deleteProfessionalProjects({
-  //       project_id: project_id,
-  //     })
-  //   );
-  //   dispatch(openConfirmPopup(true));
+    dispatch(
+      deleteProfessionalProjects({
+        project_id: project_id,
+      })
+    );
+    dispatch(openConfirmPopup(true));
 
-  //   if (dispatch) {
-  //     Toastify({
-  //       data: "success",
-  //       msg: "Project delete  successfully",
-  //     });
-  //     return;
-  //   }
-  // };
+    if (dispatch) {
+      Toastify({
+        data: "success",
+        msg: "Project delete  successfully",
+      });
+      return;
+    }
+  };
   const Selector = useSelector((state) => state.dashboardSlice);
   const projectOpportunitiesData = Selector.data.projectOpportunities;
   console.log(projectOpportunitiesData);
@@ -59,6 +59,7 @@ const ProjectOpportunities = () => {
   };
 
   const viewPhdHandler = (itemId) => {
+    console.log(itemId);
     navigate(`/company/projectOpportunities/${itemId}`);
   };
 
@@ -102,7 +103,7 @@ const ProjectOpportunities = () => {
                     <td className="ps-2">
                       <button
                         className="btn btn-outline-success mx-1 btn-sm"
-                        onClick={() => viewPhdHandler(index.project_id)}
+                        onClick={() => viewPhdHandler(item.project_id)}
                       >
                         <PreviewIcon />
                       </button>
@@ -110,9 +111,9 @@ const ProjectOpportunities = () => {
                     <td>
                       <button
                         className="btn btn-outline-danger mx-1 btn-sm"
-                        // onClick={() => {
-                        //   deleteProject(item.project_id);
-                        // }}
+                        onClick={() => {
+                          deleteProject(item.project_id);
+                        }}
                         // onClick={() => (
                         //   dispatch(deleteProfessionalProjects(item.indexId)),
                         //   dispatch(openConfirmPopup(true))
