@@ -4,11 +4,12 @@ import { projectOpportunities } from "../../../store/dashboard/dashboardSlice";
 import { Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import PreviewIcon from "@mui/icons-material/Preview";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import { Toastify } from "../../../services/toastify/toastContainer";
+
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  openConfirmPopup,
-  deleteProfessionalProjects,
-} from "../../../store/dashboard/dashboardSlice";
+import { deleteProfessionalProjects } from "../../../store/dashboard/dashboardSlice";
 
 const ProjectOpportunities = () => {
   const dispatch = useDispatch();
@@ -18,35 +19,57 @@ const ProjectOpportunities = () => {
     dispatch(projectOpportunities())
       .unwrap()
       .then((res) => {
-        console.log("-----------", res);
+        console.log("-----------", res.data.final);
         setFilteredData(res.data.final);
       });
   }, []);
 
-  const deleteProject = (project_id) => {
-    console.log("------------", project_id);
-
-    dispatch(
-      deleteProfessionalProjects({
-        project_id: project_id,
-      })
-    );
-    dispatch(openConfirmPopup(true));
-
-    if (dispatch) {
-      Toastify({
-        data: "success",
-        msg: "Project delete  successfully",
-      });
-      return;
-    }
-  };
   const Selector = useSelector((state) => state.dashboardSlice);
   const projectOpportunitiesData = Selector.data.projectOpportunities;
   console.log(projectOpportunitiesData);
 
   const [searchInput, setSearchInput] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
+  const [project, setProject] = useState("");
+
+  const deleteProject = (project_id) => {
+    console.log("------------?", project_id);
+    // if (!project_id) {
+    //   console.log(
+    //     "project_id is undefined.................................................."
+    //   );
+    //   return;
+    // }
+
+    // dispatch(openConfirmPopup(true));
+
+    dispatch(
+      deleteProfessionalProjects({
+        project_id: project_id,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(projectOpportunities())
+          .unwrap()
+          .then((res) => {
+            console.log("-----------", res.data.final);
+            setFilteredData(res.data.final);
+          });
+      });
+    if (dispatch === true) {
+      Toastify({
+        data: "success",
+        msg: "Project delete  successfully",
+      });
+      return;
+
+      // setFilteredData(
+      //   filteredData.filter((item) => item.project_id !== project_id)
+      // );
+    }
+  };
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
@@ -111,13 +134,19 @@ const ProjectOpportunities = () => {
                     <td>
                       <button
                         className="btn btn-outline-danger mx-1 btn-sm"
+                        // onClick={() => {
+                        //   setShowModal(true);
+                        // }}
                         onClick={() => {
-                          deleteProject(item.project_id);
+                          setShowModal(true);
+                          setProject(item.project_id);
                         }}
-                        // onClick={() => (
-                        //   dispatch(deleteProfessionalProjects(item.indexId)),
-                        //   dispatch(openConfirmPopup(true))
-                        // )}
+
+                        // dispatch(
+                        //   deleteProfessionalProjects({
+                        //     project_id: project_id,
+                        //   })
+                        // );
                       >
                         <DeleteIcon />
                       </button>
@@ -131,6 +160,37 @@ const ProjectOpportunities = () => {
           )}
         </div>
       </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Project</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center fs-5">
+            Are you sure you want to delete this project?
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              deleteProject(project);
+              setShowModal(false);
+            }}
+            className="px-4"
+          >
+            Yes
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowModal(false);
+            }}
+            className="px-4"
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

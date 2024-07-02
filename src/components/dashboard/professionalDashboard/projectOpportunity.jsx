@@ -12,6 +12,7 @@ import {
 import "./style.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import ModalImage from "react-modal-image";
 const ProjectOpportunity = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -21,9 +22,14 @@ const ProjectOpportunity = () => {
   const [interested, setInterested] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isModalOptionSelected, setIsModalOptionSelected] = useState(false);
+  const [delShow, setDelShow] = React.useState(false);
+  const [chooseShow, setChooseShow] = React.useState(false);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   console.log(message);
-
+  const closeViewer = () => {
+    setIsViewerOpen(false);
+  };
   useEffect(() => {
     dispatch(viewServicePhd(id))
       .unwrap()
@@ -53,6 +59,7 @@ const ProjectOpportunity = () => {
   };
 
   const deleteProject = (project_id) => {
+    console.log("-----------", project_id);
     dispatch(
       deleteProfessionalProjects({
         project_id: project_id,
@@ -202,16 +209,26 @@ const ProjectOpportunity = () => {
                                     (image, imageIndex) => (
                                       <div key={imageIndex}>
                                         <a
-                                          href={image}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
+                                        // href={image}
+                                        // target="_blank"
+                                        // rel="noopener noreferrer"
                                         >
-                                          <img
+                                          {/* <img
                                             alt="img"
                                             src={image}
                                             className="object-fit-cover border"
                                             width={"100px"}
                                             height={"100px"}
+                                          /> */}
+
+                                          <ModalImage
+                                            small={image}
+                                            large={image}
+                                            alt="Full Size"
+                                            hideDownload={true}
+                                            isOpen={isViewerOpen}
+                                            onClose={closeViewer}
+                                            className="m-2 object-fit-cover border"
                                           />
                                         </a>
                                       </div>

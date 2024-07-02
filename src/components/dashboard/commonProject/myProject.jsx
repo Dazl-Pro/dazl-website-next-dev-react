@@ -29,6 +29,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Toastify } from "../../../services/toastify/toastContainer";
+import { uploadImageAuth } from "../../../store/auth/authSlice";
 import ModalImage from "react-modal-image";
 const MyProject = () => {
   const [show, setShow] = React.useState(false);
@@ -42,11 +43,11 @@ const MyProject = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
-    images: [],
   });
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const [imagesArray, setImagesAray] = useState([]);
+  const [images, setImages] = useState([]);
 
   console.log(imagesArray);
 
@@ -114,26 +115,25 @@ const MyProject = () => {
     }
   };
 
-  const uploadImage = (e, index) => {
-    const file = e.target.files[0];
-    const isImage = file && file.type.startsWith("image/");
+  //   const file = e.target.files[0];
+  //   const isImage = file && file.type.startsWith("image/");
 
-    const formData = new FormData();
-    formData.append("image", file);
-    dispatch(uploadImage(formData))
-      .unwrap()
-      .then((res) => {
-        const newImage = res?.image?.startsWith("https://")
-          ? res.image
-          : `data:image/jpeg;base64,${res.image}`;
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+  //   dispatch(uploadImage(formData))
+  //     .unwrap()
+  //     .then((res) => {
+  //       const newImage = res?.image?.startsWith("https://")
+  //         ? res.image
+  //         : `data:image/jpeg;base64,${res.image}`;
 
-        setImages((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[index] = newImage;
-          return newImages;
-        });
-      });
-  };
+  //       setImages((prevImages) => {
+  //         const newImages = [...prevImages];
+  //         newImages[index] = newImage;
+  //         return newImages;
+  //       });
+  //     });
+  // };
 
   const handleSubmit = (item, project_id, roominfoItems) => {
     //e.preventDefault();
@@ -165,6 +165,7 @@ const MyProject = () => {
       feature_id: item?.feature_id,
       inspectionNotes: formData.title,
       images,
+      imagesArray,
     };
     console.log(project);
     if (location.pathname === "/homeOwner/my-project") {
@@ -190,7 +191,11 @@ const MyProject = () => {
           pageNo: pageNumber,
           numberofdata: 5,
         })
-      );
+      )
+        .unwrap()
+        .then(() =>
+          dispatch(getCustomerProject({ pageNo: 1, numberofdata: 5 }))
+        );
       setEditItem(null);
     }
     setDelShow(false);
@@ -220,6 +225,8 @@ const MyProject = () => {
   };
 
   const [projectInfo, setprojectInfo] = useState("");
+
+  const [newImages, setNewImages] = useState([{}]);
 
   const roomId = localStorage.getItem("roomId");
   // const selector = useSelector((state) => state.dashboardSlice);
@@ -346,6 +353,27 @@ const MyProject = () => {
         return project;
       })
     );
+  };
+
+  const uploadImage = (e, imgIdx) => {
+    const file = e.target.files[0];
+    const isImage = file && file.type.startsWith("image/");
+
+    const formData = new FormData();
+    formData.append("image", file);
+    dispatch(uploadImageAuth(formData))
+      .unwrap()
+      .then((res) => {
+        const newImage = res?.image?.startsWith("https://")
+          ? res.image
+          : `data:image/jpeg;base64,${res.image}`;
+
+        setImagesAray((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[imgIdx] = newImage;
+          return newImages;
+        });
+      });
   };
 
   return (
@@ -507,16 +535,23 @@ const MyProject = () => {
                                                     </div>
                                                   )
                                                 )}
-                                                {chooseShow && (
-                                                  <input
-                                                    className="w-100"
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={(e) => {
-                                                      uploadImage(e, imageIdx);
-                                                    }}
-                                                  />
-                                                )}
+                                                {chooseShow &&
+                                                  newImages.length < 4 &&
+                                                  newImages.map(
+                                                    (img, imgIdx) => (
+                                                      <input
+                                                        className="w-100"
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                          uploadImage(
+                                                            e,
+                                                            imgIdx
+                                                          );
+                                                        }}
+                                                      />
+                                                    )
+                                                  )}
                                               </div>
                                             </div>
                                           </div>

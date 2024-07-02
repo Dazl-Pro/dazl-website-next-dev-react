@@ -150,9 +150,10 @@ const CompanyProfile = () => {
       });
   };
 
-  console.log(errors);
+  console.log(companydata);
+
   useEffect(() => {
-    setValue("company_name", companydata?.company_name);
+    setValue("name", companydata?.name);
     setValue("address", companydata?.address);
     setValue("city", companydata?.city);
     setValue("state", companydata?.state);
@@ -181,7 +182,7 @@ const CompanyProfile = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="d-flex flex-row justify-content-between align-items-center">
               <Controller
-                name="company_name"
+                name="name"
                 control={control}
                 render={({ field }) => (
                   <label className="bg-light p-2 m-3 rounded-4 w-100">
@@ -190,7 +191,7 @@ const CompanyProfile = () => {
                       {...field}
                       disabled={!disable}
                       className={` form-control width-input ${
-                        errors.companydata?.company_name ? "error" : ""
+                        errors.companydata?.name ? "error" : ""
                       }`}
                       placeholder="Enter your Company-name"
                     />
@@ -273,7 +274,7 @@ const CompanyProfile = () => {
               <p className="col-md-4">
                 <div className="col-inner bg-light p-3 rounded-3">
                   <Controller
-                    name="company_city"
+                    name="city"
                     control={control}
                     render={({ field }) => (
                       <label className="bg-light p-2 rounded-4 w-100">

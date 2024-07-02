@@ -541,15 +541,17 @@ export const deleteProfessionalProjects = createAsyncThunk(
   async ({ project_id }, { dispatch }) => {
     try {
       const response = await http.delete(`/professional/project/${project_id}`);
-      // if (response.status === 200) {
-      //   dispatch(
-      //     getAgentProject({ pageNo: pageNo, numberofdata: numberofdata })
-      //   );
-      // //   // Navigate(/company/projectOpportunities)
-      // //
-      // }
+      if (response.status === 200) {
+        // dispatch(
+        //   getAgentProject({ pageNo: pageNo, numberofdata: numberofdata })
+        // );
+        //   // Navigate(/company/projectOpportunities)
+        //
+      }
+      console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%", response);
       return response.data;
     } catch (error) {
+      console.error("error", error);
       return (
         error.response.data,
         Toastify({ data: "error", msg: error.response.data.message })
