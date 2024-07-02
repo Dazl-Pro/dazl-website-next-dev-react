@@ -176,10 +176,25 @@ export const getCompanyProfile = createAsyncThunk(
 export const UpdateCompanyProfile = createAsyncThunk(
   "dashboard/UpdateCompanyProfile",
   async ({ values, images }, { dispatch }) => {
+    console.log(values);
     const userId = localStorage.getItem("userId");
     try {
       const response = await http.post(
-        `company-from-professional/update?phone=${values.phoneNumber}&years_in_business=${values.yearofbusiness}&email=${values.email}&insurance_certificate=${values.insuranceCertificate}&insurance_contact_number=${values.insuranceContactNumber}&insurance_number=${values.insuranceNumber}&images1=${images[0]}&images2=${images[1]}&images3=${images[2]}&images4=${images[3]}`
+        `company-from-professional/update?company_name=${
+          values.company_name
+        }&company_city=${values.company_city}&state=${values.state}&phone=${
+          values.phoneNumber
+        }&years_in_business=${values.yearofbusiness}&email=${
+          values.email
+        }&insurance_certificate=${
+          values.insuranceCertificate
+        }&insurance_contact_number=${
+          values.insuranceContactNumber
+        }&insurance_number=${values.insuranceNumber}&images1=${
+          images[0] || null
+        }&images2=${images[1] || null}&images3=${images[2] || null}&images4=${
+          images[3] || null
+        }`
       );
       if (response.status === 200) {
         return (

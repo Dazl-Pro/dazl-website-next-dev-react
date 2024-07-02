@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./professional.css";
 import SendIcon from "@mui/icons-material/Send";
 import { useDispatch, useSelector } from "react-redux";
+
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Toastify } from "../../../services/toastify/toastContainer";
 import {
@@ -25,7 +27,7 @@ const ProjectOpportunity = () => {
   const [delShow, setDelShow] = React.useState(false);
   const [chooseShow, setChooseShow] = React.useState(false);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
-
+  const navigate = useNavigate();
   console.log(message);
   const closeViewer = () => {
     setIsViewerOpen(false);
@@ -56,6 +58,7 @@ const ProjectOpportunity = () => {
       });
       return;
     }
+    // navigate("/company/projectOpportunities");
   };
 
   const deleteProject = (project_id) => {
@@ -65,6 +68,7 @@ const ProjectOpportunity = () => {
         project_id: project_id,
       })
     );
+    navigate("/company/projectOpportunities");
     if (dispatch) {
       Toastify({
         data: "success",

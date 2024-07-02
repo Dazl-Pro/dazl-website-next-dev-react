@@ -135,6 +135,8 @@ const MyProject = () => {
   //     });
   // };
 
+  console.log(imagesArray);
+
   const handleSubmit = (item, project_id, roominfoItems) => {
     //e.preventDefault();
     // Access the form data for further processing
@@ -143,7 +145,7 @@ const MyProject = () => {
     //   (img) => img.roominfo.room_id === images[0]
     // );
     // console.log(imagesCompare);
-    let images;
+    let images = [];
     const project = imagesArray.find(
       (project) => project?.project_id === project_id
     );
@@ -161,6 +163,8 @@ const MyProject = () => {
     } else {
       console.log("Project not found");
     }
+
+    images = [...images, ...imagesArray];
     const data = {
       feature_id: item?.feature_id,
       inspectionNotes: formData.title,
