@@ -138,9 +138,25 @@ const Commonproject = ({
   //   const lastTextValue = textValues[lastIndex] || "";
   //   return lastImageField && lastTextValue.trim() !== "";
   // };
+  const groupByRoomId = (data) => {
+    const groupedData = data.reduce((acc, item) => {
+      const { roomId, features, inspectionNotes, images } = item;
+      const existingRoom = acc.find((room) => room.roomId === roomId);
 
-  console.log("checkboxValues", checkboxValues);
-  console.log("phdRooms", phdRooms);
+      if (existingRoom) {
+        existingRoom.features.push({ features, inspectionNotes, images });
+      } else {
+        acc.push({
+          roomId,
+          features: [{ features, inspectionNotes, images }],
+        });
+      }
+
+      return acc;
+    }, []);
+
+    return groupedData;
+  };
 
   const handleGetCheckboxValues = () => {
     let payload;
@@ -150,10 +166,11 @@ const Commonproject = ({
       payload = "projects";
     }
 
+    const groupedDataImages = groupByRoomId(selectedImages);
+
     const roomId = localStorage.getItem("roomId");
 
     const projectID = localStorage.getItem("projectID");
-    console.log(projectID);
 
     const selectedCheckboxes = checkboxValues
       .map((isChecked, index) => {
@@ -169,15 +186,14 @@ const Commonproject = ({
       })
       .filter((item) => item !== null);
 
-    console.log("selectedCheckboxes", selectedCheckboxes);
+    const groupedData = groupByRoomId(selectedCheckboxes);
 
     if (ImagesFinal === true) {
       let completedPromises = 0;
       if (selectedImages.length === 0) {
-        if (selectedCheckboxes.length > 0) {
-          console.log("called");
+        if (groupedData.length > 0) {
           // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
-          selectedCheckboxes.forEach((item) => {
+          groupedData.forEach((item) => {
             dispatch(
               addAnotherRoom({
                 roomId,
@@ -216,7 +232,6 @@ const Commonproject = ({
               });
           });
         } else {
-          console.log("Wrong Called");
           dispatch(
             addAnotherRoom({
               roomId,
@@ -253,7 +268,7 @@ const Commonproject = ({
             });
         }
       } else {
-        selectedImages.forEach((item) => {
+        groupedDataImages.forEach((item) => {
           dispatch(addAnotherRoom(item))
             .unwrap()
             .then((response) => {
@@ -376,7 +391,7 @@ const Commonproject = ({
     setImagesFinal(true);
     const roomId = localStorage.getItem("roomId");
     const projectID = localStorage.getItem("projectID");
-
+    const groupedDataImages = groupByRoomId(selectedImages);
     // Check if there are no selected images
     if (selectedImages.length === 0) {
       // Collect checkbox IDs and descriptions for the selected checkboxes
@@ -384,23 +399,29 @@ const Commonproject = ({
         .map((isChecked, index) => {
           if (isChecked) {
             return {
-              checkboxId: phdRooms[index].id, // Assuming phdRooms contains the ids
-              description: textValues[index] || "", // Include description if provided
+              roomId,
+              projectID,
+              features: phdRooms[index].id, // Assuming phdRooms contains the ids
+              inspectionNotes: textValues[index] || "", // Include description if provided
+              // Include description if provided
             };
           }
           return null;
         })
         .filter((item) => item !== null); // Filter out null values
+      const groupedData = groupByRoomId(selectedCheckboxes);
 
-      if (selectedCheckboxes.length > 0) {
+      console.log("-=-=-=-=-=-=-=-", groupedData);
+      if (groupedData.length > 0) {
         // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
-        selectedCheckboxes.forEach((item) => {
+        groupedData.forEach((item) => {
+          console.log("object");
           dispatch(
             addAnotherRoom({
               roomId,
               projectID,
-              features: item.checkboxId,
-              inspectionNotes: item.description,
+              features: item.features,
+              inspectionNotes: item.inspectionNotes,
             })
           )
             .unwrap()
@@ -417,7 +438,6 @@ const Commonproject = ({
         });
       } else {
         // If no checkboxes are selected, just dispatch the room ID
-        console.log("called");
         dispatch(addAnotherRoom({ roomId, projectID }))
           .unwrap()
           .then((response) => {
@@ -433,7 +453,7 @@ const Commonproject = ({
       }
     } else {
       // Process selected images and room ID as in the original code
-      selectedImages.forEach((item) => {
+      groupedDataImages.forEach((item) => {
         dispatch(addAnotherRoom(item))
           .unwrap()
           .then((response) => {
@@ -452,8 +472,6 @@ const Commonproject = ({
 
     setSelectedImages([]);
   };
-
-  console.log(selectedImages);
 
   const handleImage = (phd, index, e) => {
     const file = e.target.files[0];
@@ -487,26 +505,26 @@ const Commonproject = ({
           } else {
             if (location.pathname === "/agent/createProject") {
               const newItem = {
-                featureOptionIssues: [],
+                // featureOptionIssues: [],
                 features: phd.id,
-                imageDesc: [],
+                // imageDesc: [],
                 images: [responseImage],
                 inspectionNotes: textValues[index],
                 roomId: localStorage.getItem("roomId"),
                 projectID: localStorage.getItem("projectID"),
-                realtor_id: localStorage.getItem("userId"),
+                // realtor_id: localStorage.getItem("userId"),
               };
               setSelectedImages((prevData) => [...prevData, newItem]);
             } else {
               const newItem = {
-                featureOptionIssues: [],
+                // featureOptionIssues: [],
                 features: phd.id,
-                imageDesc: [],
+                // imageDesc: [],
                 images: [responseImage],
                 inspectionNotes: textValues[index],
                 roomId: localStorage.getItem("roomId"),
                 projectID: localStorage.getItem("projectID"),
-                realtor_id: localStorage.getItem("userId"),
+                // realtor_id: localStorage.getItem("userId"),
               };
               setSelectedImages((prevData) => [...prevData, newItem]);
             }

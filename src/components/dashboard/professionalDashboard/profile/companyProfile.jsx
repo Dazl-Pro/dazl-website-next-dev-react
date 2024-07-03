@@ -108,12 +108,12 @@ const CompanyProfile = () => {
 
       dispatch(
         UpdateCompanyProfileSecond({
-          data: {
-            company_name: data.company_name,
-            address: data.address,
-            company_city: data.company_city,
-            state: data.state,
-          },
+          // data: {
+          company_name: data.company_name,
+          address: data.address,
+          company_city: data.company_city,
+          state: data.state,
+          // },
         })
       );
       reset();

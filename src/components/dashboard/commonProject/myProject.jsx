@@ -47,9 +47,7 @@ const MyProject = () => {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const [imagesArray, setImagesAray] = useState([]);
-  const [images, setImages] = useState([]);
-
-  console.log(imagesArray);
+  const [imagesUpload, setImagesUpload] = useState([]);
 
   const closeViewer = () => {
     setIsViewerOpen(false);
@@ -135,7 +133,7 @@ const MyProject = () => {
   //     });
   // };
 
-  console.log(imagesArray);
+  console.log(imagesUpload);
 
   const handleSubmit = (item, project_id, roominfoItems) => {
     //e.preventDefault();
@@ -149,6 +147,7 @@ const MyProject = () => {
     const project = imagesArray.find(
       (project) => project?.project_id === project_id
     );
+
     if (project) {
       console.log(project);
       const room = project?.roominfo?.find(
@@ -164,12 +163,12 @@ const MyProject = () => {
       console.log("Project not found");
     }
 
-    images = [...images, ...imagesArray];
+    images = [...images, ...imagesUpload];
     const data = {
+      room_id: roominfoItems.room_id,
       feature_id: item?.feature_id,
       inspectionNotes: formData.title,
       images,
-      imagesArray,
     };
     console.log(project);
     if (location.pathname === "/homeOwner/my-project") {
@@ -371,12 +370,7 @@ const MyProject = () => {
         const newImage = res?.image?.startsWith("https://")
           ? res.image
           : `data:image/jpeg;base64,${res.image}`;
-
-        setImagesAray((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[imgIdx] = newImage;
-          return newImages;
-        });
+        setImagesUpload((prev) => [...prev, newImage]);
       });
   };
 
@@ -516,6 +510,7 @@ const MyProject = () => {
                                                             width={"100px"}
                                                             height={"100px"}
                                                           />
+
                                                           {delShow && (
                                                             <div className="d-flex justify-content-center">
                                                               <button
@@ -540,7 +535,7 @@ const MyProject = () => {
                                                   )
                                                 )}
                                                 {chooseShow &&
-                                                  newImages.length < 4 &&
+                                                  // newImages.length < 4 &&
                                                   newImages.map(
                                                     (img, imgIdx) => (
                                                       <input

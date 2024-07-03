@@ -27,9 +27,22 @@ const ProjectOpportunity = () => {
   const [delShow, setDelShow] = React.useState(false);
   const [chooseShow, setChooseShow] = React.useState(false);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const navigate = useNavigate();
   console.log(message);
-  const closeViewer = () => {
+
+  const openModal = (image) => {
+    setSelectedImage(image);
+    // setIsViewerOpen(true);
+  };
+
+  // const closeViewer = () => {
+  //   setSelectedImage(null);
+  //   setIsViewerOpen(false);
+  // };
+  const closeModal = () => {
+    setSelectedImage(null);
     setIsViewerOpen(false);
   };
   useEffect(() => {
@@ -212,29 +225,40 @@ const ProjectOpportunity = () => {
                                   {eleInner?.images?.map(
                                     (image, imageIndex) => (
                                       <div key={imageIndex}>
-                                        <a
-                                        // href={image}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                        >
-                                          {/* <img
-                                            alt="img"
-                                            src={image}
-                                            className="object-fit-cover border"
-                                            width={"100px"}
-                                            height={"100px"}
-                                          /> */}
-
+                                        {/* <div
+                                          onClick={() => {
+                                            setIsViewerOpen(true);
+                                          }}
+                                        > */}
+                                        <img
+                                          alt="img"
+                                          src={image}
+                                          className="object-fit-cover border"
+                                          width={"100px"}
+                                          height={"100px"}
+                                          onClick={() => {
+                                            setIsViewerOpen(true);
+                                            openModal(image);
+                                          }}
+                                        />
+                                        {/* </div> */}
+                                        {selectedImage === image && (
                                           <ModalImage
                                             small={image}
                                             large={image}
                                             alt="Full Size"
                                             hideDownload={true}
                                             isOpen={isViewerOpen}
-                                            onClose={closeViewer}
+                                            onClose={closeModal}
                                             className="m-2 object-fit-cover border"
+                                            style={{
+                                              maxWidth: "100%",
+                                              maxHeight: "100%",
+                                              width: "auto",
+                                              height: "auto",
+                                            }}
                                           />
-                                        </a>
+                                        )}
                                       </div>
                                     )
                                   )}

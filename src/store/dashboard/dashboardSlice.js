@@ -176,17 +176,17 @@ export const getCompanyProfile = createAsyncThunk(
 export const UpdateCompanyProfile = createAsyncThunk(
   "dashboard/UpdateCompanyProfile",
   async ({ values, images }, { dispatch }) => {
-    console.log(values);
+    // console.log(values);
     const userId = localStorage.getItem("userId");
     try {
       const response = await http.post(
-        `company-from-professional/update?company_name=${
+        `company-from-professional/update?name=${
           values.company_name
         }&company_city=${values.company_city}&state=${values.state}&phone=${
           values.phoneNumber
-        }&years_in_business=${values.yearofbusiness}&email=${
-          values.email
-        }&insurance_certificate=${
+        }&address=${values.address}&years_in_business=${
+          values.yearofbusiness
+        }&email=${values.email}&insurance_certificate=${
           values.insuranceCertificate
         }&insurance_contact_number=${
           values.insuranceContactNumber
@@ -215,9 +215,12 @@ export const UpdateCompanyProfile = createAsyncThunk(
 export const UpdateCompanyProfileSecond = createAsyncThunk(
   "dashboard/UpdateCompanyProfileSecond",
   async (data, { dispatch }) => {
+    console.log(data);
     const userId = localStorage.getItem("userId");
     try {
-      const response = await http.post(`professional/update`, data);
+      const response = await http.post(
+        `professional/update?company_name=${data.company_name}&company_city=${data.company_city}&state=${data.state}&address=${data.address}`
+      );
       if (response.status === 200) {
         return (
           response.data,
