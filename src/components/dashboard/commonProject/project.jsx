@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Checkbox,
   FormControlLabel,
@@ -63,6 +63,7 @@ const Commonproject = ({
   const [checkboxValues, setCheckboxValues] = React.useState(
     Array(phdRooms?.length).fill(false)
   );
+  const [errorBorder, setErrorBorder] = useState(false);
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [selectImagesFinal, setselectImagesFinal] = React.useState([]);
@@ -123,6 +124,7 @@ const Commonproject = ({
 
   const handleChange = (index, value) => {
     const updatedTextValues = [...textValues];
+
     updatedTextValues[index] = value;
     setTextValues(updatedTextValues);
   };
@@ -175,6 +177,10 @@ const Commonproject = ({
     const selectedCheckboxes = checkboxValues
       .map((isChecked, index) => {
         if (isChecked) {
+          if (!textValues[index] || "") {
+            setErrorBorder(true);
+            return;
+          }
           return {
             roomId,
             projectID,
@@ -182,9 +188,14 @@ const Commonproject = ({
             inspectionNotes: textValues[index] || "", // Include description if provided
           };
         }
+
         return null;
       })
       .filter((item) => item !== null);
+    // if (setErrorBorder(true)) {
+    //   setErrorMessage("Note is required for all selected checkboxes.");
+    //   return;
+    // }
 
     const groupedData = groupByRoomId(selectedCheckboxes);
 
@@ -583,13 +594,20 @@ const Commonproject = ({
                     {/* Textarea */}
                     <TextField
                       // label={` ${_.name}`}
-                      className="text-areamt w-100 form-control"
+                      className={`text-areamt w-100 fs-3 form-control ${
+                        errorBorder ? "error" : ""
+                      }`}
                       multiline
                       rows={4}
                       variant="outlined"
+                      required
                       value={textValues[index] || ""}
+                      // value={textValues[index] ? textValues[index] : ""}
                       onChange={(e) => handleChange(index, e.target.value)}
                     />
+                    {errorBorder && !textValues[index] && (
+                      <p className="text-danger mt-2">Note is required.</p>
+                    )}
                     {/* Image Upload Fields */}
                     <div className="form-row bg-light rounded-2 btn-mt">
                       <div className="row">

@@ -5,6 +5,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Stack from "@mui/material/Stack";
+import ModalImage from "react-modal-image";
 import CommonRoomform from "../commonForm/commonRoomForm";
 import "./project.css";
 import { useLocation } from "react-router-dom";
@@ -30,7 +31,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Toastify } from "../../../services/toastify/toastContainer";
 import { uploadImageAuth } from "../../../store/auth/authSlice";
-import ModalImage from "react-modal-image";
+// import ModalImage from "react-modal-image";
 const MyProject = () => {
   const [show, setShow] = React.useState(false);
   const [delShow, setDelShow] = React.useState(false);
@@ -46,13 +47,20 @@ const MyProject = () => {
   });
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const [imagesArray, setImagesAray] = useState([]);
   const [imagesUpload, setImagesUpload] = useState([]);
 
-  const closeViewer = () => {
-    setIsViewerOpen(false);
+  const openModal = (image) => {
+    setSelectedImage(image);
+    // setIsViewerOpen(true);
   };
 
+  const closeModal = () => {
+    setSelectedImage(null);
+    setIsViewerOpen(false);
+  };
   const userType = localStorage.getItem("userType");
   const dispatch = useDispatch();
   const location = useLocation();
@@ -136,13 +144,6 @@ const MyProject = () => {
   console.log(imagesUpload);
 
   const handleSubmit = (item, project_id, roominfoItems) => {
-    //e.preventDefault();
-    // Access the form data for further processing
-
-    // const imagesCompare = imagesArray.find(
-    //   (img) => img.roominfo.room_id === images[0]
-    // );
-    // console.log(imagesCompare);
     let images = [];
     const project = imagesArray.find(
       (project) => project?.project_id === project_id
@@ -170,6 +171,8 @@ const MyProject = () => {
       inspectionNotes: formData.title,
       images,
     };
+    // console.log("-------------------", imagesUpload);
+    console.log("--------------------", images);
     console.log(project);
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
@@ -357,22 +360,60 @@ const MyProject = () => {
       })
     );
   };
-
-  const uploadImage = (e, imgIdx) => {
-    const file = e.target.files[0];
-    const isImage = file && file.type.startsWith("image/");
-
+  const uploadImage = (file, projectIdx, roomIdx, featureIdx) => {
     const formData = new FormData();
     formData.append("image", file);
+
     dispatch(uploadImageAuth(formData))
       .unwrap()
       .then((res) => {
         const newImage = res?.image?.startsWith("https://")
           ? res.image
           : `data:image/jpeg;base64,${res.image}`;
-        setImagesUpload((prev) => [...prev, newImage]);
+
+        setImagesAray((prevProjects) =>
+          prevProjects.map((project, pIdx) => {
+            if (pIdx === projectIdx) {
+              const updatedRoomInfo = project.roominfo.map((room, rIdx) => {
+                if (rIdx === roomIdx) {
+                  const updatedFeatures = room.feature.map((feature, fIdx) => {
+                    if (fIdx === featureIdx) {
+                      const updatedImages = [...feature.images, newImage];
+                      return { ...feature, images: updatedImages };
+                    }
+                    return feature;
+                  });
+                  return { ...room, feature: updatedFeatures };
+                }
+                return room;
+              });
+              return { ...project, roominfo: updatedRoomInfo };
+            }
+            return project;
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error);
+        // Handle error state or display error message to user
       });
   };
+  console.log("projectData------------", projectData);
+  // const uploadImage = (e, imgIdx) => {
+  //   const file = e.target.files[0];
+  //   const isImage = file && file.type.startsWith("image/");
+
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+  //   dispatch(uploadImageAuth(formData))
+  //     .unwrap()
+  //     .then((res) => {
+  //       const newImage = res?.image?.startsWith("https://")
+  //         ? res.image
+  //         : `data:image/jpeg;base64,${res.image}`;
+  //       setImagesUpload((prev) => [...prev, newImage]);
+  //     });
+  // };
 
   return (
     <div className="py-0">
@@ -392,7 +433,9 @@ const MyProject = () => {
                       <div className="grid-item rounded-4 p-0 border-0 mb-4">
                         <div className="d-flex justify-content-between">
                           <h4 className="text-start my-projects-head d-flex">
-                            <div className="text-dark me-1">Project Name: </div>{" "}
+                            <div className="text-dark  me-1">
+                              Project Name:{" "}
+                            </div>{" "}
                             {items?.project_name}
                           </h4>
                           <div>
@@ -469,7 +512,7 @@ const MyProject = () => {
                                                 )}
                                               </div>
                                             </div>
-                                            <div className="mt-2 text-start images-project-all px-0 me-0">
+                                            <div className="mt-2 text-start  images-project-all px-0 me-0">
                                               {item?.feature_id === editItem ? (
                                                 <div className="input-mt mt-1">
                                                   <input
@@ -481,7 +524,7 @@ const MyProject = () => {
                                                   />
                                                 </div>
                                               ) : (
-                                                <p className="notessss text-start">
+                                                <p className="notessss fs-5 text-start">
                                                   {item?.inspectionNotes}
                                                 </p>
                                               )}
@@ -509,8 +552,39 @@ const MyProject = () => {
                                                             className="object-fit-cover border"
                                                             width={"100px"}
                                                             height={"100px"}
+                                                            onClick={() => {
+                                                              setIsViewerOpen(
+                                                                true
+                                                              );
+                                                              openModal(img);
+                                                            }}
                                                           />
-
+                                                          {selectedImage ===
+                                                            img && (
+                                                            <ModalImage
+                                                              small={img}
+                                                              large={img}
+                                                              alt="Full Size"
+                                                              hideDownload={
+                                                                true
+                                                              }
+                                                              isOpen={
+                                                                isViewerOpen
+                                                              }
+                                                              onClose={
+                                                                closeModal
+                                                              }
+                                                              className="m-2 object-fit-cover border"
+                                                              style={{
+                                                                maxWidth:
+                                                                  "100%",
+                                                                maxHeight:
+                                                                  "100%",
+                                                                width: "auto",
+                                                                height: "auto",
+                                                              }}
+                                                            />
+                                                          )}
                                                           {delShow && (
                                                             <div className="d-flex justify-content-center">
                                                               <button
@@ -543,18 +617,35 @@ const MyProject = () => {
                                                         type="file"
                                                         accept="image/*"
                                                         onChange={(e) => {
-                                                          uploadImage(
-                                                            e,
-                                                            imgIdx
-                                                          );
+                                                          const file =
+                                                            e.target.files[0];
+                                                          if (
+                                                            file &&
+                                                            file.type.startsWith(
+                                                              "image/"
+                                                            )
+                                                          ) {
+                                                            // Ensure to pass the correct indices for the image location
+                                                            uploadImage(
+                                                              file,
+                                                              projectIdx,
+                                                              imgIdx,
+                                                              featureIdx
+                                                            );
+                                                          }
                                                         }}
+                                                        // onChange={(e) => {
+                                                        //   uploadImage(
+                                                        //     e,
+                                                        //     imgIdx
+                                                        //   );
+                                                        // }}
                                                       />
                                                     )
                                                   )}
                                               </div>
                                             </div>
                                           </div>
-
                                           {/* <div className="ed-del-icons ">
                                         <div className="ed-del-icons-div">
                                           {item?.feature_id === editItem ? (

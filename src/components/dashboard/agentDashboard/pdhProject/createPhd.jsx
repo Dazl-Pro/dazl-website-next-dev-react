@@ -109,6 +109,10 @@ const CreatePhd = () => {
   const [loading, setLoading] = React.useState(false);
   const [select, setSelect] = React.useState(false);
   const [address, setAddress] = React.useState("");
+  const [error, setError] = useState("");
+  const [lowValue, setLowValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(600);
+  const [sliderValue, setSliderValue] = useState(null);
 
   const handleSelect = async (selectedAddress) => {
     try {
@@ -134,17 +138,36 @@ const CreatePhd = () => {
 
   const handleChange = (event, newValue) => {
     if (!isNaN(newValue)) {
-      // Check if newValue is a valid number
       setSliderValue(newValue);
     }
   };
+
   const handleLowValueChange = (e) => {
-    const newValue = parseFloat(e.target.value); // Parse input value as a float
+    const newValue = e.target.value;
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
-      // Check if the parsed value is a valid number and not negative
-      setLowValue(newValue); // Set the new low value
+      const trimmedValue = newValue.toString().replace(/^0+/, "0");
+      if (trimmedValue > maxValue) {
+        setError("Please select a low value than the high value.");
+      } else {
+        setError(false);
+      }
+
+      setLowValue(trimmedValue);
     }
+
     // You can add an optional else condition to handle negative numbers or invalid input
+    // setLowValue((prevMaxValue) => {
+    //   if (prevMaxValue < newValue) {
+    //     setError("Please select a high value greater than the low value.");
+    //     return newValue;
+    //   }
+    //   setError("");
+    //   return prevMaxValue;
+    // });
+    // // Update slider value if it's outside the new lowValue-maxValue range
+    // if (sliderValue < newValue) {
+    //   setSliderValue(newValue);
+    // }
   };
 
   // const handleMaxValueChange = (e) => {
@@ -156,28 +179,32 @@ const CreatePhd = () => {
   //   }
   // };
   const handleMaxValueChange = (e) => {
-    const newValue = parseFloat(e.target.value);
+    const newValue = e.target.value;
 
-    // Check if newValue is a valid number and within the limit
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
       // Trim leading zeros and update maxValue
-      const trimmedValue = newValue.toString().replace(/^0+/, "");
-      setMaxValue(parseFloat(trimmedValue));
+      const trimmedValue = newValue.toString().replace(/^0+/, "0");
+      // setMaxValue(trimmedValue);
+      // setMaxValue(newValue);
 
-      // Update slider value if it's outside the new lowValue-maxValue range
-      if (sliderValue !== null && sliderValue > parseFloat(trimmedValue)) {
-        setSliderValue(parseFloat(trimmedValue));
+      if (sliderValue !== null && sliderValue > trimmedValue) {
+        // setSliderValue(trimmedValue);
+        if (trimmedValue < lowValue) {
+          setError("Please select a high value  than the low value.");
+        } else {
+          setError(false);
+        }
       }
+      // console.log("---------*******-", lowValue);
+      // console.log("-----------", trimmedValue);
+
+      setMaxValue(trimmedValue);
     }
   };
 
   const letStart = () => {
     navigate("/agent/createPhd/rooms");
   };
-
-  const [lowValue, setLowValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(600);
-  const [sliderValue, setSliderValue] = useState(null);
 
   return (
     <div className="py-0">
@@ -404,6 +431,7 @@ const CreatePhd = () => {
                             $ {maxValue}
                           </Typography>
                         </div>
+
                         <div className="slider-container position-relative">
                           <Slider
                             value={sliderValue}
@@ -432,7 +460,9 @@ const CreatePhd = () => {
                             // }}
                             onChange={handleLowValueChange}
                           />
+                          {error && <div style={{ color: "red" }}>{error}</div>}
                         </div>
+
                         <div>
                           <Typography variant="body">
                             Set high Value: {"$ "}
@@ -445,6 +475,7 @@ const CreatePhd = () => {
                             // }}
                             onChange={handleMaxValueChange}
                           />
+                          {error && <div style={{ color: "red" }}>{error}</div>}
                         </div>
                       </div>
                     </Box>

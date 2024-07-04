@@ -219,11 +219,12 @@ const RoomsInformation = (props) => {
     if (input.phd_description === "") {
       setErrorborder(true);
       setErrorMessage("Note is required.");
-    } else if (input.phd_description.length < 100) {
-      setErrorborder(true);
-      setErrorMessage("Description must be at least 100 characters long.");
-      return;
     }
+    // else if (input.phd_description.length < 100) {
+    //   setErrorborder(true);
+    //   setErrorMessage("Description have at least 100 characters long.");
+    //   return;
+    // }
 
     if (input.options === "") {
       setErrorborder1(true);
