@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "@mui/material/Pagination";
 import SaveIcon from "@mui/icons-material/Save";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+// import Button from "react-bootstrap/Button";
+import { Modal, Button } from "react-bootstrap";
 import Stack from "@mui/material/Stack";
 import ModalImage from "react-modal-image";
 import CommonRoomform from "../commonForm/commonRoomForm";
@@ -45,22 +45,30 @@ const MyProject = () => {
   const [formData, setFormData] = useState({
     title: "",
   });
-  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  // const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  // const [selectedImage, setSelectedImage] = useState(null);
 
   const [imagesArray, setImagesAray] = useState([]);
   const [imagesUpload, setImagesUpload] = useState([]);
 
-  const openModal = (image) => {
-    setSelectedImage(image);
-    // setIsViewerOpen(true);
-  };
+  // const openModal = (image) => {
+  //   setSelectedImage(image);
+  //   // setIsViewerOpen(true);
+  // };
 
-  const closeModal = () => {
-    setSelectedImage(null);
-    setIsViewerOpen(false);
-  };
+  // const closeModal = () => {
+  //   setSelectedImage(null);
+  //   setIsViewerOpen(false);
+  // };
+  // const handleDownload = (image) => {
+  //   const link = document.createElement("a");
+  //   link.href = image;
+  //   link.download = "downloaded-image.jpg"; // You can change the filename here
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
   const userType = localStorage.getItem("userType");
   const dispatch = useDispatch();
   const location = useLocation();
@@ -74,6 +82,8 @@ const MyProject = () => {
   const totalCount = projectData?.totalCount;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
 
   useEffect(() => {
     if (projectData?.length === 0) {
@@ -141,7 +151,7 @@ const MyProject = () => {
   //     });
   // };
 
-  console.log(imagesUpload);
+  // console.log( imagesUpload);
 
   const handleSubmit = (item, project_id, roominfoItems) => {
     let images = [];
@@ -156,7 +166,7 @@ const MyProject = () => {
       );
       if (room) {
         images = room.feature[0].images;
-        console.log(images);
+        console.log("images", images);
       } else {
         console.log("Room not found");
       }
@@ -165,14 +175,15 @@ const MyProject = () => {
     }
 
     images = [...images, ...imagesUpload];
+    // setImagesUpload(images);
     const data = {
       room_id: roominfoItems.room_id,
       feature_id: item?.feature_id,
       inspectionNotes: formData.title,
       images,
     };
-    // console.log("-------------------", imagesUpload);
-    console.log("--------------------", images);
+    console.log("-------------------", imagesUpload);
+    console.log("------------------dcddvdvdvd--", images);
     console.log(project);
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
@@ -202,8 +213,10 @@ const MyProject = () => {
         .then(() =>
           dispatch(getCustomerProject({ pageNo: 1, numberofdata: 5 }))
         );
-      setEditItem(null);
+      // setEditItem(null);
     }
+    setImagesUpload([]);
+    setEditItem(null);
     setDelShow(false);
     setChooseShow(false);
   };
@@ -360,7 +373,8 @@ const MyProject = () => {
       })
     );
   };
-  const uploadImage = (file, projectIdx, roomIdx, featureIdx) => {
+
+  const uploadImage = (file, imgIdx) => {
     const formData = new FormData();
     formData.append("image", file);
 
@@ -371,27 +385,33 @@ const MyProject = () => {
           ? res.image
           : `data:image/jpeg;base64,${res.image}`;
 
-        setImagesAray((prevProjects) =>
-          prevProjects.map((project, pIdx) => {
-            if (pIdx === projectIdx) {
-              const updatedRoomInfo = project.roominfo.map((room, rIdx) => {
-                if (rIdx === roomIdx) {
-                  const updatedFeatures = room.feature.map((feature, fIdx) => {
-                    if (fIdx === featureIdx) {
-                      const updatedImages = [...feature.images, newImage];
-                      return { ...feature, images: updatedImages };
-                    }
-                    return feature;
-                  });
-                  return { ...room, feature: updatedFeatures };
-                }
-                return room;
-              });
-              return { ...project, roominfo: updatedRoomInfo };
-            }
-            return project;
-          })
-        );
+        setImagesUpload((prev) => {
+          if (!prev.includes(newImage)) {
+            return [...prev, newImage];
+          }
+          return prev;
+        });
+        // setImagesAray((prevProjects) =>
+        //   prevProjects.map((project, pIdx) => {
+        //     if (pIdx === projectIdx) {
+        //       const updatedRoomInfo = project.roominfo.map((room, rIdx) => {
+        //         if (rIdx === roomIdx) {
+        //           const updatedFeatures = room.feature.map((feature, fIdx) => {
+        //             if (fIdx === featureIdx) {
+        //               const updatedImages = [...feature.images, newImage];
+        //               return { ...feature, images: updatedImages };
+        //             }
+        //             return feature;
+        //           });
+        //           return { ...room, feature: updatedFeatures };
+        //         }
+        //         return room;
+        //       });
+        //       return { ...project, roominfo: updatedRoomInfo };
+        //     }
+        //     return project;
+        //   })
+        // );
       })
       .catch((error) => {
         console.error("Error uploading image:", error);
@@ -553,38 +573,41 @@ const MyProject = () => {
                                                             width={"100px"}
                                                             height={"100px"}
                                                             onClick={() => {
-                                                              setIsViewerOpen(
+                                                              setSelectedImageUrl(
+                                                                img
+                                                              );
+                                                              setShowModal2(
                                                                 true
                                                               );
-                                                              openModal(img);
                                                             }}
                                                           />
-                                                          {selectedImage ===
-                                                            img && (
-                                                            <ModalImage
-                                                              small={img}
-                                                              large={img}
-                                                              alt="Full Size"
-                                                              hideDownload={
-                                                                true
-                                                              }
-                                                              isOpen={
-                                                                isViewerOpen
-                                                              }
-                                                              onClose={
-                                                                closeModal
-                                                              }
-                                                              className="m-2 object-fit-cover border"
-                                                              style={{
-                                                                maxWidth:
-                                                                  "100%",
-                                                                maxHeight:
-                                                                  "100%",
-                                                                width: "auto",
-                                                                height: "auto",
-                                                              }}
-                                                            />
-                                                          )}
+
+                                                          {/* {selectedImage ===
+                                                              img && (
+                                                              <ModalImage
+                                                                small={img}
+                                                                large={img}
+                                                                alt="Full Size"
+                                                                hideDownload={
+                                                                  true
+                                                                }
+                                                                isOpen={
+                                                                  isViewerOpen
+                                                                }
+                                                                onClose={
+                                                                  closeModal
+                                                                }
+                                                                className="m-2 object-fit-cover border"
+                                                                style={{
+                                                                  maxWidth:
+                                                                    "100%",
+                                                                  maxHeight:
+                                                                    "100%",
+                                                                  width: "auto",
+                                                                  height: "auto",
+                                                                }}
+                                                              />
+                                                            )} */}
                                                           {delShow && (
                                                             <div className="d-flex justify-content-center">
                                                               <button
@@ -611,7 +634,11 @@ const MyProject = () => {
                                                 {chooseShow &&
                                                   // newImages.length < 4 &&
                                                   newImages.map(
-                                                    (img, imgIdx) => (
+                                                    (
+                                                      imgIdx
+                                                      // projectIdx,
+                                                      // featureIdx
+                                                    ) => (
                                                       <input
                                                         className="w-100"
                                                         type="file"
@@ -628,9 +655,9 @@ const MyProject = () => {
                                                             // Ensure to pass the correct indices for the image location
                                                             uploadImage(
                                                               file,
-                                                              projectIdx,
-                                                              imgIdx,
-                                                              featureIdx
+                                                              // projectIdx,
+                                                              imgIdx
+                                                              // featureIdx
                                                             );
                                                           }
                                                         }}
@@ -867,6 +894,7 @@ const MyProject = () => {
           </div>
         </div>
       </div>
+
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Delete Project</Modal.Title>
@@ -900,7 +928,35 @@ const MyProject = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal show={showModal2} onHide={() => setShowModal2(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Show Image</Modal.Title>
+          {/* <Button variant="link" onClick={() => handleDownload(image)}>
+            Download
+          </Button> */}
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            // src={img}
+            src={selectedImageUrl}
+            alt="Modal Image"
+            style={{
+              width: "60%",
+              height: "50%",
+              margin: "0 auto",
+              display: "flex",
+            }}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          {/* <Button variant="secondary" onClick={() => setShowModal2(false)}>
+            Close
+          </Button> */}
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
+
 export default MyProject;

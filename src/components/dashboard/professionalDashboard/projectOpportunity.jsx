@@ -29,6 +29,9 @@ const ProjectOpportunity = () => {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const [showModal2, setShowModal2] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+
   const navigate = useNavigate();
   console.log(message);
 
@@ -237,12 +240,12 @@ const ProjectOpportunity = () => {
                                           width={"100px"}
                                           height={"100px"}
                                           onClick={() => {
-                                            setIsViewerOpen(true);
-                                            openModal(image);
+                                            setSelectedImageUrl(image);
+                                            setShowModal2(true);
                                           }}
                                         />
                                         {/* </div> */}
-                                        {selectedImage === image && (
+                                        {/* {selectedImage === image && (
                                           <ModalImage
                                             small={image}
                                             large={image}
@@ -258,7 +261,7 @@ const ProjectOpportunity = () => {
                                               height: "auto",
                                             }}
                                           />
-                                        )}
+                                        )} */}
                                       </div>
                                     )
                                   )}
@@ -387,6 +390,33 @@ const ProjectOpportunity = () => {
           </div>
         </div>
       </div>
+
+      <Modal show={showModal2} onHide={() => setShowModal2(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Show Image</Modal.Title>
+          {/* <Button variant="link" onClick={() => handleDownload(image)}>
+            Download
+          </Button> */}
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            // src={img}
+            src={selectedImageUrl}
+            alt="Modal Image"
+            style={{
+              width: "60%",
+              height: "50%",
+              margin: "0 auto",
+              display: "flex",
+            }}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          {/* <Button variant="secondary" onClick={() => setShowModal2(false)}>
+            Close
+          </Button> */}
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

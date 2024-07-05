@@ -170,6 +170,8 @@ const Commonproject = ({
 
     const groupedDataImages = groupByRoomId(selectedImages);
 
+    console.log("object", groupedDataImages);
+
     const roomId = localStorage.getItem("roomId");
 
     const projectID = localStorage.getItem("projectID");
@@ -192,12 +194,10 @@ const Commonproject = ({
         return null;
       })
       .filter((item) => item !== null);
-    // if (setErrorBorder(true)) {
-    //   setErrorMessage("Note is required for all selected checkboxes.");
-    //   return;
-    // }
 
     const groupedData = groupByRoomId(selectedCheckboxes);
+
+    console.log("groupedData", groupedData);
 
     if (ImagesFinal === true) {
       let completedPromises = 0;
@@ -316,7 +316,7 @@ const Commonproject = ({
         if (selectedCheckboxes.length > 0) {
           dispatch(
             addRoomFeatures({
-              data: selectedCheckboxes,
+              data: groupedData,
               payload,
               name,
               projectID,
