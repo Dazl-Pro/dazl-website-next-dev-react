@@ -15,7 +15,7 @@ const AgentCreateProject = () => {
     <div className="py-0 create-project-container-height">
       <div className="">
         <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
-          Project opportunities
+          Project creation
         </h2>
         <div className="col-12">
           <label htmlFor="projectName" className="mt-2">
