@@ -611,9 +611,12 @@ const Commonproject = ({
                     {/* Image Upload Fields */}
                     <div className="form-row bg-light rounded-2 btn-mt">
                       <div className="row">
+                        <p className="mt-3 text-start">
+                          Add Photos of inspiration or issues.
+                        </p>
                         {fields?.map((field, imgIndex) => {
                           return field.indexId === index ? (
-                            <div className="col-md-6 mt-4" key={imgIndex}>
+                            <div className="col-md-6 mt-3" key={imgIndex}>
                               <div className="d-flex align-items-start gap-2">
                                 <input
                                   type="file"
