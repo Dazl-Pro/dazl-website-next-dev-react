@@ -6,11 +6,14 @@ import React, { useEffect, useState, useRef } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 import Checkbox from "@mui/material/Checkbox";
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 import {
   createPhd,
   uploadImage,
@@ -113,6 +116,25 @@ const RoomsInformation = (props) => {
   const [recording, setRecording] = useState(false);
   const [audioStream, setAudioStream] = useState(null);
   const mediaRecorderRef = useRef(null);
+  const [selectedOptionValue, setSelectedOptionValue] = useState("");
+  const [selectedPrice, setSelectedPrice] = useState("");
+  const [customPrice, setCustomPrice] = useState("");
+
+  const handleChangeValue = (event) => {
+    setSelectedOptionValue(event.target.value);
+    if (event.target.value !== "yes") {
+      setSelectedPrice("");
+      setCustomPrice("");
+    }
+  };
+
+  const handleSelectionChange = (event) => {
+    const value = event.target.value;
+    setSelectedPrice(value);
+    if (value === "other") {
+      setCustomPrice("");
+    }
+  };
 
   const dispatch = useDispatch();
   const {
@@ -256,6 +278,11 @@ const RoomsInformation = (props) => {
       formData.append("last_name", phdUserDetail?.lastName);
       formData.append("client_email", phdUserDetail?.email);
       formData.append("type", phdvalue?.type);
+      formData.append("selectedOption", selectedOptionValue);
+      formData.append(
+        "selectedPrice",
+        selectedPrice === "other" ? customPrice : selectedPrice
+      );
       formData.append("year_built", phdvalue?.year_built);
       formData.append("bedrooms", phdvalue?.bedrooms);
       formData.append("bathrooms", phdvalue?.bathrooms);
@@ -726,6 +753,56 @@ const RoomsInformation = (props) => {
           ""
         )}
         <div className="mt-2 mb-2">
+          <FormLabel className="text-body">
+            {addValueData?.length > 0 ? "4. " : "3. "} Has the basement been
+            finished since last listing?
+          </FormLabel>
+          <RadioGroup value={selectedOptionValue} onChange={handleChangeValue}>
+            <div className="d-flex gap-2">
+              <div className="d-flex align-items-center">
+                <Radio value="yes" />
+                Yes
+              </div>
+              <div className="d-flex align-items-center">
+                <Radio value="no" />
+                No
+              </div>
+            </div>
+          </RadioGroup>
+
+          {selectedOptionValue === "yes" && (
+            <FormControl variant="outlined" className="mt-2 w-25">
+              <InputLabel id="dropdown-label">Select Value</InputLabel>
+              <Select
+                labelId="dropdown-label"
+                value={selectedPrice}
+                onChange={handleSelectionChange}
+                label="Select Value"
+              >
+                <MenuItem value={5000}>$5000</MenuItem>
+                <MenuItem value={10000}>$10000</MenuItem>
+                <MenuItem value={20000}>$20000</MenuItem>
+                <MenuItem value={50000}>$50000</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+          {selectedPrice === "other" && (
+            <TextField
+              variant="outlined"
+              className="mt-2 w-25 ms-2"
+              label="Enter Custom Value"
+              value={customPrice}
+              onChange={(e) => setCustomPrice(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+            />
+          )}
+        </div>
+        <div className="mt-2 mb-2">
           <FormLabel className="text-body">Overall first impressions</FormLabel>
           <RadioGroup
             aria-label="options"
@@ -819,11 +896,14 @@ const RoomsInformation = (props) => {
                           watch(`textArea[${index}]`) === "" ? "error" : ""
                         } `}
                       />
-                      <div className="form-row bg-light rounded-2">
+                      <div className="form-row bg-light rounded-2 mt-2">
+                        <div className="fw-semibold">
+                          Add pictures of the issue or inspiration here
+                        </div>
                         <div className="row">
                           {fields?.map((field, imgIndex) => {
                             return field.indexId === index ? (
-                              <div className="col-md-6 mt-4" key={imgIndex}>
+                              <div className="col-md-6 mt-2" key={imgIndex}>
                                 <div className="d-flex align-items-start gap-2">
                                   <input
                                     type="file"

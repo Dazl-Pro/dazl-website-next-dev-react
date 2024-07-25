@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { createphdStepone } from "../../../../store/dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
-import { Typography, TextField } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import PlacesAutocomplete, {
   geocodeByAddress,
@@ -112,7 +112,7 @@ const CreatePhd = () => {
   const [error, setError] = useState("");
   const [lowValue, setLowValue] = useState(0);
   const [maxValue, setMaxValue] = useState(600);
-  const [sliderValue, setSliderValue] = useState(null);
+  const [sliderValue, setSliderValue] = useState(300);
 
   const handleSelect = async (selectedAddress) => {
     try {
@@ -143,62 +143,32 @@ const CreatePhd = () => {
   };
 
   const handleLowValueChange = (e) => {
-    const newValue = e.target.value;
+    const newValue = parseInt(e.target.value, 10);
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
-      const trimmedValue = newValue.toString().replace(/^0+/, "0");
-      if (trimmedValue > maxValue) {
-        setError("Please select a low value than the high value.");
+      if (newValue >= maxValue) {
+        setError("Please select a low value less than the high value.");
       } else {
-        setError(false);
-      }
-
-      setLowValue(trimmedValue);
-    }
-
-    // You can add an optional else condition to handle negative numbers or invalid input
-    // setLowValue((prevMaxValue) => {
-    //   if (prevMaxValue < newValue) {
-    //     setError("Please select a high value greater than the low value.");
-    //     return newValue;
-    //   }
-    //   setError("");
-    //   return prevMaxValue;
-    // });
-    // // Update slider value if it's outside the new lowValue-maxValue range
-    // if (sliderValue < newValue) {
-    //   setSliderValue(newValue);
-    // }
-  };
-
-  // const handleMaxValueChange = (e) => {
-  //   const newValue = parseFloat(e.target.value);
-  //   setMaxValue(newValue);
-  //   // Update slider value if it's outside the new lowValue-maxValue range
-  //   if (sliderValue !== null && sliderValue > newValue) {
-  //     setSliderValue(newValue);
-  //   }
-  // };
-  const handleMaxValueChange = (e) => {
-    const newValue = e.target.value;
-
-    if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
-      // Trim leading zeros and update maxValue
-      const trimmedValue = newValue.toString().replace(/^0+/, "0");
-      // setMaxValue(trimmedValue);
-      // setMaxValue(newValue);
-
-      if (sliderValue !== null && sliderValue > trimmedValue) {
-        // setSliderValue(trimmedValue);
-        if (trimmedValue < lowValue) {
-          setError("Please select a high value  than the low value.");
-        } else {
-          setError(false);
+        setError("");
+        setLowValue(newValue);
+        if (sliderValue < newValue) {
+          setSliderValue(newValue);
         }
       }
-      // console.log("---------*******-", lowValue);
-      // console.log("-----------", trimmedValue);
+    }
+  };
 
-      setMaxValue(trimmedValue);
+  const handleMaxValueChange = (e) => {
+    const newValue = parseInt(e.target.value, 10);
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
+      if (newValue <= lowValue) {
+        setError("Please select a high value greater than the low value.");
+      } else {
+        setError("");
+        setMaxValue(newValue);
+        if (sliderValue > newValue) {
+          setSliderValue(newValue);
+        }
+      }
     }
   };
 
@@ -452,12 +422,6 @@ const CreatePhd = () => {
                           <input
                             type="number"
                             value={lowValue}
-                            // onChange={(e) => {
-                            //   const newValue = parseFloat(e.target.value);
-                            //   if (!isNaN(newValue) && newValue >= 0) {
-                            //     setLowValue(newValue);
-                            //   }
-                            // }}
                             onChange={handleLowValueChange}
                           />
                           {error && <div style={{ color: "red" }}>{error}</div>}
