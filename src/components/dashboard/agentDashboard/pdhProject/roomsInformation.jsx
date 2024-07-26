@@ -278,11 +278,9 @@ const RoomsInformation = (props) => {
       formData.append("last_name", phdUserDetail?.lastName);
       formData.append("client_email", phdUserDetail?.email);
       formData.append("type", phdvalue?.type);
-      formData.append("selectedOption", selectedOptionValue);
-      formData.append(
-        "selectedPrice",
-        selectedPrice === "other" ? customPrice : selectedPrice
-      );
+      formData.append("selectedOptionValue", selectedOptionValue);
+      formData.append("selectedPrice", selectedPrice);
+      formData.append("customPrice", customPrice);
       formData.append("year_built", phdvalue?.year_built);
       formData.append("bedrooms", phdvalue?.bedrooms);
       formData.append("bathrooms", phdvalue?.bathrooms);

@@ -6,18 +6,27 @@ import React, { useEffect, useState } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 import Checkbox from "@mui/material/Checkbox";
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 import {
   updatePhd,
   uploadImage,
 } from "../../../../store/dashboard/dashboardSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./style.css";
-import { Grid, TextField, MenuItem, FormLabel } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  MenuItem,
+  FormLabel,
+  InputAdornment,
+} from "@mui/material";
 import {
   viewPhdAlt,
   phdRooms,
@@ -35,11 +44,6 @@ const EditPhd = (props) => {
   const selectorPhd = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selectorPhd?.data?.viewPhdAlt;
 
-  // useEffect(() => {
-  //   dispatch(viewPhdAlt({ id: itemId, value: "open" }));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [itemId]);
-
   const [roomIds, setRoomIds] = useState([]);
 
   useEffect(() => {
@@ -52,6 +56,49 @@ const EditPhd = (props) => {
   const [roomData, setRoomData] = useState("");
 
   const [input, setInput] = React.useState([]);
+
+  const handleChangeValue = (event, id) => {
+    setInput((prevState) =>
+      prevState?.map((room) => {
+        if (room.roomId === id) {
+          return { ...room, selectedOptionValue: event.target.value };
+        }
+        return room;
+      })
+    );
+    if (event.target.value !== "yes") {
+      setInput((prevState) =>
+        prevState?.map((room) => {
+          if (room.roomId === id) {
+            return { ...room, selectedPrice: "", customPrice: "" };
+          }
+          return room;
+        })
+      );
+    }
+  };
+
+  const handleSelectionChange = (event, id) => {
+    const value = event.target.value;
+    setInput((prevState) =>
+      prevState?.map((room) => {
+        if (room.roomId === id) {
+          return { ...room, selectedPrice: event.target.value };
+        }
+        return room;
+      })
+    );
+    if (value === "other") {
+      setInput((prevState) =>
+        prevState?.map((room) => {
+          if (room.roomId === id) {
+            return { ...room, customPrice: "" };
+          }
+          return room;
+        })
+      );
+    }
+  };
 
   useEffect(() => {
     const initialInputState = [];
@@ -68,6 +115,9 @@ const EditPhd = (props) => {
         status: room.status || "",
         additionalValues: room.additionalValues || [],
         mainImages: room.mainImages || [],
+        selectedOptionValue: room.selectedOptionValue || "",
+        selectedPrice: room.selectedPrice || "",
+        customPrice: room.customPrice || "",
         roadBlocks:
           room.roadBlocks ||
           room.feature?.map((item) => ({
@@ -182,8 +232,6 @@ const EditPhd = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomIds]);
 
-  console.log("photoFieldsCheckBox", photoFieldsCheckBox);
-
   const appendPhoto = (roomId) => {
     setPhotoFields((prevPhotoFields) =>
       prevPhotoFields?.map((fields, index) =>
@@ -259,7 +307,7 @@ const EditPhd = (props) => {
       updatedPrice = price * 1.15;
     }
 
-    if (input && !requiresDescription) {
+    if (input) {
       let formData = new FormData();
       formData.append("lowest_price", lowestValue);
       formData.append("mid_price", midValue);
@@ -797,6 +845,88 @@ const EditPhd = (props) => {
               ) : (
                 ""
               )}
+              <div className="mt-2 mb-2">
+                <FormLabel className="text-body">
+                  {roomData[index]?.data?.addValueData?.length > 0
+                    ? "4. "
+                    : "3. "}{" "}
+                  Has the basement been finished since last listing?
+                </FormLabel>
+                <RadioGroup
+                  value={
+                    input.find((room) => room.roomId === items.room_id)
+                      ?.selectedOptionValue === "yes"
+                      ? "yes"
+                      : "no"
+                  }
+                  onChange={(event) => handleChangeValue(event, items.room_id)}
+                >
+                  <div className="d-flex gap-2">
+                    <div className="d-flex align-items-center">
+                      <Radio value="yes" />
+                      Yes
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <Radio value="no" />
+                      No
+                    </div>
+                  </div>
+                </RadioGroup>
+
+                {input.find((room) => room.roomId === items.room_id)
+                  ?.selectedOptionValue === "yes" && (
+                  <FormControl variant="outlined" className="mt-2 w-25">
+                    <InputLabel id="dropdown-label">Select Value</InputLabel>
+                    <Select
+                      labelId="dropdown-label"
+                      value={
+                        input.find((room) => room.roomId === items.room_id)
+                          ?.selectedPrice
+                      }
+                      onChange={(event) =>
+                        handleSelectionChange(event, items.room_id)
+                      }
+                      label="Select Value"
+                    >
+                      <MenuItem value={5000}>$5000</MenuItem>
+                      <MenuItem value={10000}>$10000</MenuItem>
+                      <MenuItem value={20000}>$20000</MenuItem>
+                      <MenuItem value={50000}>$50000</MenuItem>
+                      <MenuItem value="other">Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+                {input.find((room) => room.roomId === items.room_id)
+                  ?.selectedPrice === "other" && (
+                  <TextField
+                    variant="outlined"
+                    className="mt-2 w-25 ms-2"
+                    label="Enter Custom Value"
+                    value={
+                      input.find((room) => room.roomId === items.room_id)
+                        ?.customPrice
+                    }
+                    onChange={(event) =>
+                      setInput((prevState) =>
+                        prevState?.map((room) => {
+                          if (room.roomId === items.room_id) {
+                            return {
+                              ...room,
+                              customPrice: event.target.value,
+                            };
+                          }
+                          return room;
+                        })
+                      )
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              </div>
               <div className="mt-2 mb-2">
                 <FormLabel className="text-body">
                   Overall first impressions

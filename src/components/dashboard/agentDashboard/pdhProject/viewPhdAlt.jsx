@@ -363,6 +363,31 @@ const ViewPhdAlt = () => {
                               </div>
                             </div>
                           </div>
+                          <div className="d-flex align-items-center">
+                            <h5 className="mb-0">
+                              Has the basement been finished since last listing?
+                              -
+                            </h5>
+                            <h5 className="mb-0">
+                              {ele.selectedOptionValue
+                                ? ele.selectedOptionValue
+                                : "No"}
+                            </h5>
+                            {ele.selectedOptionValue === "yes" &&
+                            ele.selectedPrice !== "other" ? (
+                              <h5>
+                                {ele.selectedPrice
+                                  ? "$" + ele.selectedPrice
+                                  : "No"}
+                              </h5>
+                            ) : (
+                              <h5 className="mb-0 ms-1">
+                                (
+                                {ele.customPrice ? "$" + ele.customPrice : "No"}
+                                )
+                              </h5>
+                            )}
+                          </div>
                           {ele?.feature?.length !== 0 &&
                             ele?.feature[0]?.feature_name !== "" && (
                               <div
