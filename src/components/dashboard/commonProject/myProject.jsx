@@ -451,7 +451,7 @@ const MyProject = () => {
                       key={dataIndex}
                     >
                       <div className="grid-item rounded-4 p-0 border-0 mb-4">
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between project-btn">
                           <h4 className="text-start my-projects-head d-flex">
                             <div className="text-dark  me-1">
                               Project Name:{" "}
@@ -461,7 +461,7 @@ const MyProject = () => {
                           <div>
                             <button
                               type="submit"
-                              className="btn btn-danger"
+                              className="btn btn-danger room"
                               onClick={() =>
                                 addAnother(
                                   items.roominfo[0].room_id,
@@ -472,7 +472,8 @@ const MyProject = () => {
                               Add another room
                             </button>
                             <button
-                              className="btn btn-outline-danger m-1 btn-sm"
+                              className="btn btn-outline-danger dlt-project
+                               m-1 btn-sm"
                               onClick={() => {
                                 setprojectInfo(items);
                                 setShowModal(true);
@@ -483,7 +484,7 @@ const MyProject = () => {
                             </button>
                           </div>
                         </div>
-                        <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4">
+                        <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4 slidee">
                           {items?.roominfo?.map(
                             (roominfoItems, indexroomInfo) => {
                               return (
@@ -497,7 +498,7 @@ const MyProject = () => {
                                       (item, index) => (
                                         <div
                                           key={index}
-                                          className="col-4 border m-2 p-2"
+                                          className="col-4 border bath-box m-2 p-2"
                                           width="200px"
                                         >
                                           <div>
@@ -732,6 +733,7 @@ const MyProject = () => {
                           )}
                           <div className="progress-slidee bg-white shadow p-3 border rounded-4 d-flex flex-wrap">
                             <div
+                              class="reply-sec"
                               style={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -740,6 +742,7 @@ const MyProject = () => {
                               }}
                             >
                               <div
+                                class="pro-reply"
                                 style={{
                                   // fontWeight: "bold",
                                   fontSize: 30,
@@ -749,6 +752,7 @@ const MyProject = () => {
                                 Service Pro Replies:
                               </div>
                               <div
+                                class="replies"
                                 style={{
                                   fontWeight: "bold",
                                   fontSize: 20,
@@ -768,7 +772,7 @@ const MyProject = () => {
                               (opportunity, index) => (
                                 <div
                                   key={index}
-                                  className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2"
+                                  className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2 service-pro"
                                 >
                                   <div className="col-6">
                                     <div
