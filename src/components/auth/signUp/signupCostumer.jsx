@@ -12,6 +12,9 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import "./signUp.css";
+import PhoneInput from "react-phone-input-2";
+
+import "react-phone-input-2/lib/bootstrap.css";
 
 const schema = yup.object().shape({
   firstName: yup
@@ -49,7 +52,7 @@ const schema = yup.object().shape({
   zipCode: yup.string().required("Zip Code is required").trim(),
   number: yup
     .string()
-    .matches(/^[0-9]+$/, "Please enter a valid number")
+    .matches(/^[0-9]+$/, "Phone number is required")
     .required("Number is required")
     .trim(),
   // agreeToTerms: yup.string().required("Please agree to the terms"),
@@ -78,6 +81,7 @@ const SignupCostumer = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [checkbox, setcheckBox] = React.useState(false);
+  const [phone, setPhone] = React.useState("");
   const handleClickShowPassword = () => {
     setShowPassword((show) => !show);
   };
@@ -190,32 +194,43 @@ const SignupCostumer = () => {
                   )}
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
-                  <Controller
-                    name="number"
-                    control={control}
-                    render={({ field }) => (
-                      <>
-                        <input
-                          type="text"
-                          {...field}
-                          className={` width-input form-control ${
-                            errors.number ? "error" : ""
-                          }`}
-                          placeholder="Phone Number*"
-                          onKeyPress={(e) => {
-                            // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
-                            const isValidInput = /^[0-9\b]+$/.test(e.key);
-                            if (!isValidInput) {
-                              e.preventDefault();
-                            }
-                          }}
-                        />
-                        {errors.number && (
-                          <p className="text-danger">{errors.number.message}</p>
-                        )}
-                      </>
-                    )}
+                  <PhoneInput
+                    country={"us"}
+                    enableSearch={true}
+                    value={phone}
+                    onChange={(phone) => {
+                      setPhone(phone);
+                      setValue("number", phone, { shouldValidate: true });
+                    }}
+                    placeholder="+1 (545) 674-3543"
+                    inputStyle={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      width: "100%",
+                      border: 0,
+
+                      color: "black",
+                      background: "#fff",
+                      borderRadius: "6px",
+                      height: "40px",
+                    }}
+                    buttonStyle={{
+                      borderTopLeftRadius: "10px",
+                      borderBottomLeftRadius: "10px",
+                    }}
+                    containerStyle={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "6px",
+                    }}
+                    inputProps={{
+                      id: "mobile",
+                      name: "mobile",
+                      required: true,
+                    }}
                   />
+                  {errors?.number && (
+                    <p className="text-danger">{errors?.number?.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
                   <Controller

@@ -12,6 +12,9 @@ import {
 } from "../../../../store/dashboard/dashboardSlice";
 import { uploadImageAuth } from "../../../../store/auth/authSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PhoneInput from "react-phone-input-2";
+
+import "react-phone-input-2/lib/bootstrap.css";
 
 const defaultValues = {
   company_name: "",
@@ -56,7 +59,7 @@ const schema = yup.object().shape({
   insuranceCertificate: yup.string().trim(),
   phoneNumber: yup
     .string()
-    .matches(/^[0-9]+$/, "Please enter a valid number")
+    .matches(/^[0-9]+$/, "Phone number is required")
     .required("Number is required")
     .trim(),
   insuranceContactNumber: yup.string().trim(),
@@ -76,6 +79,8 @@ const CompanyProfile = () => {
 
   const [disable, setDisable] = React.useState(false);
   const [images, setImages] = useState([]);
+  const [phone, setPhone] = React.useState("");
+
   // console.log("images", images);
 
   useEffect(() => {
@@ -162,6 +167,7 @@ const CompanyProfile = () => {
     setValue("yearofbusiness", companydata?.years_in_business);
     setValue("phoneNumber", companydata?.phone);
     setValue("email", companydata?.email);
+    setPhone(companydata?.phone);
     setValue(
       "insuranceContactNumber",
       companydata?.insurance_contact_number ?? ""
@@ -402,30 +408,49 @@ const CompanyProfile = () => {
                 />
               </div>
               <div className={`form-row mb-3 col-md-6 `}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({ field }) => (
-                    <label className="bg-light p-3 rounded-4 w-100">
-                      Phone Number
-                      <input
-                        onKeyPress={(e) => {
-                          // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
-                          const isValidInput = /^[0-9\b]+$/.test(e.key);
-                          if (!isValidInput) {
-                            e.preventDefault();
-                          }
-                        }}
-                        {...field}
-                        disabled={!disable}
-                        className={` form-control  width-input${
-                          errors.lastName ? "error" : ""
-                        }`}
-                        placeholder="Phone Number"
-                      />
-                    </label>
+                <label className="bg-light p-3 rounded-4 w-100">
+                  Phone Number
+                  <PhoneInput
+                    disabled={!disable}
+                    country={"us"}
+                    enableSearch={true}
+                    value={phone}
+                    onChange={(phone) => {
+                      setPhone(phone);
+                      setValue("phoneNumber", phone, { shouldValidate: true });
+                    }}
+                    placeholder="+1 (545) 674-3543"
+                    inputStyle={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      width: "100%",
+                      border: 0,
+
+                      color: "black",
+                      background: disable ? "#fff" : "#e9ecef",
+                      borderRadius: "6px",
+                      height: "40px",
+                    }}
+                    buttonStyle={{
+                      borderTopLeftRadius: "10px",
+                      borderBottomLeftRadius: "10px",
+                    }}
+                    containerStyle={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "6px",
+                    }}
+                    inputProps={{
+                      id: "mobile",
+                      name: "mobile",
+                      required: true,
+                    }}
+                  />
+                  {errors?.phoneNumber && (
+                    <p className="text-danger">
+                      {errors?.phoneNumber?.message}
+                    </p>
                   )}
-                />
+                </label>
               </div>
               <div className={`form-row mb-3 col-md-6 `}>
                 <Controller

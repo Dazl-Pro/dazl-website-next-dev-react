@@ -10,6 +10,9 @@ import {
 } from "../../../../store/dashboard/dashboardSlice";
 import { useNavigate } from "react-router";
 import "./agentprofile.css";
+import PhoneInput from "react-phone-input-2";
+
+import "react-phone-input-2/lib/bootstrap.css";
 
 const defaultValues = {
   firstName: "",
@@ -46,7 +49,7 @@ const schema = yup.object().shape({
   zipCode: yup.string().trim(),
   number: yup
     .string()
-    .matches(/^[0-9]+$/, "Please enter a valid number")
+    .matches(/^[0-9]+$/, "Phone number is required")
     .required("Number is required")
     .trim(),
 });
@@ -57,6 +60,7 @@ const AgentProfile = () => {
   const userId = localStorage.getItem("userId");
   const Selector = useSelector((state) => state.dashboardSlice);
   const agentData = Selector.data.agentData;
+  const [phone, setPhone] = React.useState("");
   const [disable, setDisable] = React.useState(false);
   const {
     control,
@@ -86,6 +90,7 @@ const AgentProfile = () => {
     setValue("state", agentData.state ?? "");
     setValue("zipCode", agentData.zip_code ?? "");
     setValue("number", agentData.phone_number);
+    setPhone(agentData.phone_number);
     if (agentData.length === 0) {
       dispatch(getAgentProfiledata(userId));
     }
@@ -103,6 +108,7 @@ const AgentProfile = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="row">
                 <div className={`form-row mb-3 col-md-6`}>
+                  First Name:
                   <Controller
                     name="firstName"
                     control={control}
@@ -119,6 +125,7 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
+                  Last Name:
                   <Controller
                     name="lastName"
                     control={control}
@@ -135,6 +142,7 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
+                  Email:
                   <Controller
                     name="email"
                     control={control}
@@ -151,6 +159,7 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
+                  Agency Name:
                   <Controller
                     name="companyName"
                     control={control}
@@ -167,6 +176,7 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
+                  City:
                   <Controller
                     name="city"
                     control={control}
@@ -183,6 +193,7 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
+                  State:
                   <Controller
                     name="state"
                     control={control}
@@ -199,6 +210,7 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
+                  Zip Code:
                   <Controller
                     name="zipCode"
                     control={control}
@@ -221,31 +233,45 @@ const AgentProfile = () => {
                   />
                 </div>
                 <div className={`form-row mb-3 col-md-6`}>
-                  <Controller
-                    name="number"
-                    control={control}
-                    render={({ field }) => (
-                      <>
-                        <input
-                          type="text"
-                          {...field}
-                          disabled={disable ? false : true}
-                          className={`form-control width-input ${
-                            errors.number ? "error" : ""
-                          }`}
-                          onKeyPress={(e) => {
-                            // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
-                            const isValidInput = /^[0-9\b]+$/.test(e.key);
-                            if (!isValidInput) {
-                              e.preventDefault();
-                            }
-                          }}
-                          placeholder="Phone Number"
-                        />
-                        {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
-                      </>
-                    )}
+                  Number:
+                  <PhoneInput
+                    disabled={disable ? false : true}
+                    country={"us"}
+                    enableSearch={true}
+                    value={phone}
+                    onChange={(phone) => {
+                      setPhone(phone);
+                      setValue("number", phone, { shouldValidate: true });
+                    }}
+                    placeholder="+1 (545) 674-3543"
+                    inputStyle={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      width: "100%",
+                      border: 0,
+
+                      color: "black",
+                      background: disable ? "#fff" : "#e9ecef",
+                      borderRadius: "6px",
+                      height: "40px",
+                    }}
+                    buttonStyle={{
+                      borderTopLeftRadius: "10px",
+                      borderBottomLeftRadius: "10px",
+                    }}
+                    containerStyle={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "6px",
+                    }}
+                    inputProps={{
+                      id: "mobile",
+                      name: "mobile",
+                      required: true,
+                    }}
                   />
+                  {errors?.number && (
+                    <p className="text-danger">{errors?.number?.message}</p>
+                  )}
                 </div>
               </div>
               <div className="d-flex justify-content-center align-items-center flex-column">

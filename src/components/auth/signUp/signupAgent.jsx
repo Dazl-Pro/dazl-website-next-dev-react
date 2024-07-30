@@ -17,6 +17,9 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import "./signUp.css";
+import PhoneInput from "react-phone-input-2";
+
+import "react-phone-input-2/lib/bootstrap.css";
 
 const defaultValues = {
   firstName: "",
@@ -73,7 +76,7 @@ const schema = yup.object().shape({
   // location: yup.string().required("Location is required").trim(),
   number: yup
     .string()
-    .matches(/^\d+$/, "Number must be digits only")
+    .matches(/^\d+$/, "Phone number is required")
     .required("Phone number is required")
     .trim(),
 
@@ -109,6 +112,8 @@ const SignupAgent = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [key, setKey] = React.useState(0);
+  const [phone, setPhone] = React.useState("");
+
   const {
     control,
     reset,
@@ -247,31 +252,43 @@ const SignupAgent = () => {
                   )}
                 </div>
                 <div className={`form-row mb-3 col-md-6 `}>
-                  <Controller
-                    name="number"
-                    control={control}
-                    render={({ field }) => (
-                      <>
-                        <input
-                          type="text"
-                          {...field}
-                          className={`form-control width-input ${
-                            errors.number ? "error" : ""
-                          }`}
-                          onKeyPress={(e) => {
-                            const isValidInput = /^[0-9\b]+$/.test(e.key);
-                            if (!isValidInput) {
-                              e.preventDefault();
-                            }
-                          }}
-                          placeholder="Phone Number*"
-                        />
-                        {errors.number && (
-                          <p className="text-danger">{errors.number.message}</p>
-                        )}
-                      </>
-                    )}
+                  <PhoneInput
+                    country={"us"}
+                    enableSearch={true}
+                    value={phone}
+                    onChange={(phone) => {
+                      setPhone(phone);
+                      setValue("number", phone, { shouldValidate: true });
+                    }}
+                    placeholder="+1 (545) 674-3543"
+                    inputStyle={{
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      width: "100%",
+                      border: 0,
+
+                      color: "black",
+                      background: "#fff",
+                      borderRadius: "6px",
+                      height: "40px",
+                    }}
+                    buttonStyle={{
+                      borderTopLeftRadius: "10px",
+                      borderBottomLeftRadius: "10px",
+                    }}
+                    containerStyle={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "6px",
+                    }}
+                    inputProps={{
+                      id: "mobile",
+                      name: "mobile",
+                      required: true,
+                    }}
                   />
+                  {errors?.number && (
+                    <p className="text-danger">{errors?.number?.message}</p>
+                  )}
                 </div>
                 <div className={`form-row mb-3 col-md-6 position-relative`}>
                   <Controller
