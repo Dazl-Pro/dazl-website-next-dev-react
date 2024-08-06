@@ -112,8 +112,8 @@ const CreatePhd = () => {
   const [errorLow, setErrorLow] = useState("");
   const [errorHigh, setErrorHigh] = useState("");
 
-  const [lowValue, setLowValue] = useState("");
-  const [maxValue, setMaxValue] = useState("");
+  const [lowValue, setLowValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
   const [sliderValue, setSliderValue] = useState(300);
 
   const handleSelect = async (selectedAddress) => {
@@ -206,6 +206,11 @@ const CreatePhd = () => {
 
   const letStart = () => {
     navigate("/agent/createPhd/rooms");
+  };
+
+  const formatNumberWithCommas = (number) => {
+    if (number === "" || isNaN(number)) return "";
+    return new Intl.NumberFormat().format(number);
   };
 
   return (
@@ -424,13 +429,13 @@ const CreatePhd = () => {
                       <div className="position-relative cs-price-slider-main">
                         <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges">
                           <Typography gutterBottom className="start-n40px">
-                            $ {lowValue}
+                            $ {formatNumberWithCommas(lowValue)}
                           </Typography>
                           <Typography
                             gutterBottom
                             className="end-n40px text-black"
                           >
-                            $ {maxValue}
+                            $ {formatNumberWithCommas(maxValue)}
                           </Typography>
                         </div>
 
@@ -438,11 +443,15 @@ const CreatePhd = () => {
                           <Slider
                             value={sliderValue}
                             aria-label="Default"
-                            valueLabelDisplay="on"
+                            // valueLabelDisplay="on"
                             min={lowValue}
                             max={maxValue}
                             className="cs-price-slider"
                             onChange={handleChange}
+                            valueLabelDisplay="on"
+                            valueLabelFormat={(value) =>
+                              formatNumberWithCommas(value)
+                            }
                           />
                         </div>
                       </div>
@@ -455,6 +464,10 @@ const CreatePhd = () => {
                             type="number"
                             value={lowValue}
                             onChange={handleLowValueChange}
+                            valueLabelDisplay="on"
+                            valueLabelFormat={(value) =>
+                              formatNumberWithCommas(value)
+                            }
                           />
                           {errorLow && (
                             <div style={{ color: "red" }}>{errorLow}</div>
@@ -469,6 +482,10 @@ const CreatePhd = () => {
                             type="number"
                             value={maxValue}
                             onChange={handleMaxValueChange}
+                            valueLabelDisplay="on"
+                            valueLabelFormat={(value) =>
+                              formatNumberWithCommas(value)
+                            }
                           />
                           {errorHigh && (
                             <div style={{ color: "red" }}>{errorHigh}</div>
