@@ -31,12 +31,12 @@ const CreatePhd = () => {
     firstName: yup
       .string()
       .required("First Name is required")
-      .min(3, "First Name have atleast 3 character")
+      .min(1, "First Name have atleast 1 character")
       .trim(),
     lastName: yup
       .string()
       .required("Last Name is required")
-      .min(3, "Last Name have atleast 3 character")
+      .min(1, "Last Name have atleast 1 character")
 
       .trim(),
     email: yup
@@ -47,7 +47,7 @@ const CreatePhd = () => {
     location: yup
       .string()
       .required("Location is required")
-      .min(3, "Location have atleast 3 character")
+      .min(1, "Location have atleast 1 character")
       .trim(),
   });
 
@@ -142,33 +142,43 @@ const CreatePhd = () => {
     }
   };
 
+  const isValidValue = (value) => {
+    return value === "" || (!isNaN(value) && value >= 0 && value <= 1000);
+  };
+
   const handleLowValueChange = (e) => {
-    const newValue = parseInt(e.target.value, 10);
-    if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
-      if (newValue >= maxValue) {
+    const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
+
+    if (isValidValue(newValue)) {
+      if (newValue !== "" && maxValue !== "" && newValue >= maxValue) {
         setError("Please select a low value less than the high value.");
       } else {
         setError("");
         setLowValue(newValue);
-        if (sliderValue < newValue) {
+        if (newValue !== "" && sliderValue < newValue) {
           setSliderValue(newValue);
         }
       }
+    } else {
+      setError("Please enter a valid low value between 0 and 1000.");
     }
   };
 
   const handleMaxValueChange = (e) => {
-    const newValue = parseInt(e.target.value, 10);
-    if (!isNaN(newValue) && newValue >= 0 && newValue <= 1000) {
-      if (newValue <= lowValue) {
+    const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
+
+    if (isValidValue(newValue)) {
+      if (newValue !== "" && lowValue !== "" && newValue <= lowValue) {
         setError("Please select a high value greater than the low value.");
       } else {
         setError("");
         setMaxValue(newValue);
-        if (sliderValue > newValue) {
+        if (newValue !== "" && sliderValue > newValue) {
           setSliderValue(newValue);
         }
       }
+    } else {
+      setError("Please enter a valid high value between 0 and 1000.");
     }
   };
 
@@ -457,6 +467,9 @@ const CreatePhd = () => {
                       className="btn btn-primary mw-200px w-70 mt-4"
                       style={{ textTransform: "none" }}
                       onClick={letStart}
+                      disabled={
+                        error !== "" || maxValue === "" || lowValue === ""
+                      }
                     >
                       Let's get Started
                     </button>
