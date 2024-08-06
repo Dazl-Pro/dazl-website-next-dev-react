@@ -109,7 +109,9 @@ const CreatePhd = () => {
   const [loading, setLoading] = React.useState(false);
   const [select, setSelect] = React.useState(false);
   const [address, setAddress] = React.useState("");
-  const [error, setError] = useState("");
+  const [errorLow, setErrorLow] = useState("");
+  const [errorHigh, setErrorHigh] = useState("");
+
   const [lowValue, setLowValue] = useState(0);
   const [maxValue, setMaxValue] = useState(600);
   const [sliderValue, setSliderValue] = useState(300);
@@ -146,17 +148,18 @@ const CreatePhd = () => {
     const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 100000) {
       if (newValue !== "" && newValue >= maxValue) {
-        setError("Low value must be less than the high value.");
+        setErrorLow("Low value must be less than the high value.");
         setLowValue(newValue);
       } else {
-        setError("");
+        setErrorHigh("");
+        setErrorLow("");
         setLowValue(newValue);
       }
       if (newValue !== "" && sliderValue < newValue) {
         setSliderValue(newValue);
       }
     } else {
-      setError("Enter a valid low value between 0 and 100000.");
+      setErrorLow("Enter a valid low value between 0 and 100000.");
       setLowValue(newValue);
     }
   };
@@ -166,17 +169,18 @@ const CreatePhd = () => {
     const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 100000) {
       if (newValue !== "" && newValue <= lowValue) {
-        setError("High value must be greater than the low value.");
+        setErrorHigh("High value must be greater than the low value.");
         setMaxValue(newValue);
       } else {
-        setError("");
+        setErrorHigh("");
+        setErrorLow("");
         setMaxValue(newValue);
       }
       if (newValue !== "" && sliderValue > newValue) {
         setSliderValue(newValue);
       }
     } else {
-      setError("Enter a valid high value between 0 and 100000.");
+      setErrorHigh("Enter a valid high value between 0 and 100000.");
       setMaxValue(newValue);
     }
   };
@@ -433,7 +437,9 @@ const CreatePhd = () => {
                             value={lowValue}
                             onChange={handleLowValueChange}
                           />
-                          {error && <div style={{ color: "red" }}>{error}</div>}
+                          {errorLow && (
+                            <div style={{ color: "red" }}>{errorLow}</div>
+                          )}
                         </div>
 
                         <div>
@@ -443,12 +449,11 @@ const CreatePhd = () => {
                           <input
                             type="number"
                             value={maxValue}
-                            // onChange={(e) => {
-                            //   setMaxValue(e.target.value);
-                            // }}
                             onChange={handleMaxValueChange}
                           />
-                          {error && <div style={{ color: "red" }}>{error}</div>}
+                          {errorHigh && (
+                            <div style={{ color: "red" }}>{errorHigh}</div>
+                          )}
                         </div>
                       </div>
                     </Box>
@@ -467,7 +472,10 @@ const CreatePhd = () => {
                       style={{ textTransform: "none" }}
                       onClick={letStart}
                       disabled={
-                        error !== "" || maxValue === "" || lowValue === ""
+                        errorLow !== "" ||
+                        maxValue === "" ||
+                        lowValue === "" ||
+                        errorHigh !== ""
                       }
                     >
                       Let's get Started
