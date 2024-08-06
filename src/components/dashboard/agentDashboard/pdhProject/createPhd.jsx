@@ -112,8 +112,8 @@ const CreatePhd = () => {
   const [errorLow, setErrorLow] = useState("");
   const [errorHigh, setErrorHigh] = useState("");
 
-  const [lowValue, setLowValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(600);
+  const [lowValue, setLowValue] = useState("");
+  const [maxValue, setMaxValue] = useState("");
   const [sliderValue, setSliderValue] = useState(300);
 
   const handleSelect = async (selectedAddress) => {
@@ -145,8 +145,15 @@ const CreatePhd = () => {
   };
 
   const handleLowValueChange = (e) => {
+    if (maxValue === 0 || maxValue === "") {
+      setErrorHigh("Please set maximum value first.");
+    }
+
     const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
-    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100000) {
+    if (newValue === 0 || newValue === "") {
+      setErrorLow("Please set minimum value first.");
+    }
+    if (!isNaN(newValue) && newValue >= 0) {
       if (newValue !== "" && newValue >= maxValue) {
         setErrorLow("Low value must be less than the high value.");
         setLowValue(newValue);
@@ -155,19 +162,28 @@ const CreatePhd = () => {
         setErrorLow("");
         setLowValue(newValue);
       }
-      if (newValue !== "" && sliderValue < newValue) {
-        setSliderValue(newValue);
+      if (newValue !== "") {
+        setSliderValue((prev) => {
+          const midValue = Math.round((newValue + maxValue) / 2);
+          return midValue !== prev ? midValue : prev;
+        });
       }
     } else {
-      setErrorLow("Enter a valid low value between 0 and 100000.");
+      setErrorLow("Enter a valid non negative number");
       setLowValue(newValue);
     }
   };
 
   // Validates high value input
   const handleMaxValueChange = (e) => {
+    if (lowValue === 0 || lowValue === "") {
+      setErrorLow("Please set minimum value first.");
+    }
     const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
-    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100000) {
+    if (newValue === 0 || newValue === "") {
+      setErrorHigh("Please set maximum value first.");
+    }
+    if (!isNaN(newValue) && newValue >= 0) {
       if (newValue !== "" && newValue <= lowValue) {
         setErrorHigh("High value must be greater than the low value.");
         setMaxValue(newValue);
@@ -176,11 +192,14 @@ const CreatePhd = () => {
         setErrorLow("");
         setMaxValue(newValue);
       }
-      if (newValue !== "" && sliderValue > newValue) {
-        setSliderValue(newValue);
+      if (newValue !== "") {
+        setSliderValue((prev) => {
+          const midValue = Math.round((lowValue + newValue) / 2);
+          return midValue !== prev ? midValue : prev;
+        });
       }
     } else {
-      setErrorHigh("Enter a valid high value between 0 and 100000.");
+      setErrorHigh("Enter a valid non negative number");
       setMaxValue(newValue);
     }
   };
@@ -473,6 +492,8 @@ const CreatePhd = () => {
                       onClick={letStart}
                       disabled={
                         errorLow !== "" ||
+                        maxValue === 0 ||
+                        lowValue === 0 ||
                         maxValue === "" ||
                         lowValue === "" ||
                         errorHigh !== ""
