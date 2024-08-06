@@ -142,43 +142,42 @@ const CreatePhd = () => {
     }
   };
 
-  const isValidValue = (value) => {
-    return value === "" || (!isNaN(value) && value >= 0 && value <= 1000);
-  };
-
   const handleLowValueChange = (e) => {
     const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
-
-    if (isValidValue(newValue)) {
-      if (newValue !== "" && maxValue !== "" && newValue >= maxValue) {
-        setError("Please select a low value less than the high value.");
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100000) {
+      if (newValue !== "" && newValue >= maxValue) {
+        setError("Low value must be less than the high value.");
+        setLowValue(newValue);
       } else {
         setError("");
         setLowValue(newValue);
-        if (newValue !== "" && sliderValue < newValue) {
-          setSliderValue(newValue);
-        }
+      }
+      if (newValue !== "" && sliderValue < newValue) {
+        setSliderValue(newValue);
       }
     } else {
-      setError("Please enter a valid low value between 0 and 1000.");
+      setError("Enter a valid low value between 0 and 100000.");
+      setLowValue(newValue);
     }
   };
 
+  // Validates high value input
   const handleMaxValueChange = (e) => {
     const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
-
-    if (isValidValue(newValue)) {
-      if (newValue !== "" && lowValue !== "" && newValue <= lowValue) {
-        setError("Please select a high value greater than the low value.");
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100000) {
+      if (newValue !== "" && newValue <= lowValue) {
+        setError("High value must be greater than the low value.");
+        setMaxValue(newValue);
       } else {
         setError("");
         setMaxValue(newValue);
-        if (newValue !== "" && sliderValue > newValue) {
-          setSliderValue(newValue);
-        }
+      }
+      if (newValue !== "" && sliderValue > newValue) {
+        setSliderValue(newValue);
       }
     } else {
-      setError("Please enter a valid high value between 0 and 1000.");
+      setError("Enter a valid high value between 0 and 100000.");
+      setMaxValue(newValue);
     }
   };
 
