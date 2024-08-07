@@ -149,7 +149,11 @@ const CreatePhd = () => {
       setErrorHigh("Please set maximum value first.");
     }
 
-    const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
+    const newValue =
+      e.target.value === ""
+        ? ""
+        : parseInt(e.target.value.replace(/,/g, ""), 10);
+
     if (newValue === 0 || newValue === "") {
       setErrorLow("Please set minimum value first.");
     }
@@ -179,7 +183,10 @@ const CreatePhd = () => {
     if (lowValue === 0 || lowValue === "") {
       setErrorLow("Please set minimum value first.");
     }
-    const newValue = e.target.value === "" ? "" : parseInt(e.target.value, 10);
+    const newValue =
+      e.target.value === ""
+        ? ""
+        : parseInt(e.target.value.replace(/,/g, ""), 10);
     if (newValue === 0 || newValue === "") {
       setErrorHigh("Please set maximum value first.");
     }
@@ -461,8 +468,8 @@ const CreatePhd = () => {
                             Set Low Value:{"$ "}
                           </Typography>
                           <input
-                            type="number"
-                            value={lowValue}
+                            type="text"
+                            value={formatNumberWithCommas(lowValue)}
                             onChange={handleLowValueChange}
                             valueLabelDisplay="on"
                             valueLabelFormat={(value) =>
@@ -479,8 +486,8 @@ const CreatePhd = () => {
                             Set high Value: {"$ "}
                           </Typography>
                           <input
-                            type="number"
-                            value={maxValue}
+                            type="text"
+                            value={formatNumberWithCommas(maxValue)}
                             onChange={handleMaxValueChange}
                             valueLabelDisplay="on"
                             valueLabelFormat={(value) =>
