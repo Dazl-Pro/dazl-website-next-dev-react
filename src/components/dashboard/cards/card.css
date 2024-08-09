@@ -1,30 +1,38 @@
 .custom-height-card {
-    height: 250px;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-
-  .btn-purple-moon {
-    background: #4e54c8;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #8f94fb, #4e54c8);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #8f94fb, #4e54c8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    color: #fff;
-    border: 3px solid #eee;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-         
-         
-         
-         
+.btn-purple-moon {
+  background: #4e54c8; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #8f94fb,
+    #4e54c8
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #8f94fb,
+    #4e54c8
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  border: 3px solid #eee;
+}
+
 .btn-grad {
-  background-image: linear-gradient(to right, #780206 0%, #061161  51%, #780206  100%);
+  background-image: linear-gradient(
+    to right,
+    #780206 0%,
+    #061161 51%,
+    #780206 100%
+  );
   margin: 10px;
   padding: 15px 45px;
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
   background-size: 200% auto;
-  color: white;            
+  color: white;
   box-shadow: 0 0 20px #eee;
   border-radius: 10px;
   display: block;
@@ -35,8 +43,6 @@
   color: #fff;
   text-decoration: none;
 }
-
-
 
 /* CSS */
 .button-85 {
@@ -60,7 +66,6 @@
     45deg,
     #ff0000,
     #ff7300,
-    
     #48ff00,
     #00ffd5,
     #002bff,
@@ -105,4 +110,3 @@
   top: 0;
   border-radius: 10px;
 }
-
