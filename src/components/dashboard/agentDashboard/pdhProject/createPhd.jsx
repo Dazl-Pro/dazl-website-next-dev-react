@@ -464,10 +464,6 @@ const CreatePhd = () => {
                             type="number"
                             value={lowValue}
                             onChange={handleLowValueChange}
-                            valueLabelDisplay="on"
-                            valueLabelFormat={(value) =>
-                              formatNumberWithCommas(value)
-                            }
                           />
                           {errorLow && (
                             <div style={{ color: "red" }}>{errorLow}</div>
@@ -482,10 +478,6 @@ const CreatePhd = () => {
                             type="number"
                             value={maxValue}
                             onChange={handleMaxValueChange}
-                            valueLabelDisplay="on"
-                            valueLabelFormat={(value) =>
-                              formatNumberWithCommas(value)
-                            }
                           />
                           {errorHigh && (
                             <div style={{ color: "red" }}>{errorHigh}</div>

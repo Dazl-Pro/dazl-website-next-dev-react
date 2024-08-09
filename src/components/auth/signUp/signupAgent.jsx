@@ -89,11 +89,8 @@ const schema = yup.object().shape({
     .required("Location is required")
     .trim()
     .min(3, "City have atleast 3 characters"),
-  state: yup
-    .string()
-    .required("state is required")
-    .trim()
-    .min(3, "State have atleast 3 characters"),
+  state: yup.string().required("state is required").trim(),
+
   zip: yup
     .string()
     .required("Zip Code is required")

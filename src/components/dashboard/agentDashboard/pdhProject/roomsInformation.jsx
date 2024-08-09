@@ -116,7 +116,7 @@ const RoomsInformation = (props) => {
   const [recording, setRecording] = useState(false);
   const [audioStream, setAudioStream] = useState(null);
   const mediaRecorderRef = useRef(null);
-  const [selectedOptionValue, setSelectedOptionValue] = useState("");
+  const [selectedOptionValue, setSelectedOptionValue] = useState("yes");
   const [selectedPrice, setSelectedPrice] = useState("");
   const [customPrice, setCustomPrice] = useState("");
 
