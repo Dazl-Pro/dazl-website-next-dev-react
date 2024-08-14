@@ -43,7 +43,6 @@ const ViewPhdAlt = () => {
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selector?.data?.viewPhdAlt;
-  console.log(viewPhdData?.[0]?.projectOpportunityReplies);
 
   useEffect(() => {
     dispatch(viewPhdAlt({ id: itemId, value: "open" }));
@@ -253,7 +252,7 @@ const ViewPhdAlt = () => {
       sendEmailButton.style.display = visible ? "block" : "none";
   };
 
-  console.log(viewPhdData);
+  console.log(viewPhdData[0].roominfo[0].room_id);
 
   return (
     <div className="center-content p-3">
@@ -363,31 +362,30 @@ const ViewPhdAlt = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="d-flex align-items-center">
-                            <h5 className="mb-0">
-                              Has the basement been finished since last listing?
-                              -
-                            </h5>
-                            <h5 className="mb-0">
-                              {ele.selectedOptionValue
-                                ? ele.selectedOptionValue
-                                : "No"}
-                            </h5>
-                            {ele.selectedOptionValue === "yes" &&
-                            ele.selectedPrice !== "other" ? (
-                              <h5>
-                                {ele.selectedPrice
-                                  ? "$" + ele.selectedPrice
+                          {viewPhdData[0].roominfo[0].room_id === 7 && (
+                            <div className="d-flex align-items-center">
+                              <h5 className="mb-0">
+                                Has the basement been finished since last
+                                listing? -
+                              </h5>
+                              <h5 className="mb-0">
+                                {ele.selectedOptionValue === "yes"
+                                  ? "Yes"
                                   : "No"}
                               </h5>
-                            ) : (
-                              <h5 className="mb-0 ms-1">
-                                (
-                                {ele.customPrice ? "$" + ele.customPrice : "No"}
-                                )
-                              </h5>
-                            )}
-                          </div>
+                              {ele.selectedOptionValue === "yes" &&
+                              ele.selectedPrice !== "other" ? (
+                                <h5>
+                                  {ele.selectedPrice && "$" + ele.selectedPrice}
+                                </h5>
+                              ) : (
+                                <h5 className="mb-0 ms-1">
+                                  {ele.customPrice &&
+                                    "($" + ele.customPrice + ")"}
+                                </h5>
+                              )}
+                            </div>
+                          )}
                           {ele?.feature?.length !== 0 &&
                             ele?.feature[0]?.feature_name !== "" && (
                               <div
