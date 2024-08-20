@@ -756,7 +756,6 @@ const EditPhd = (props) => {
                   </button>
                 </div>
               </div>
-
               {roomData[index]?.data?.roomtype?.length > 0 ? (
                 <>
                   <Grid container spacing={2}>
@@ -796,7 +795,6 @@ const EditPhd = (props) => {
               ) : (
                 ""
               )}
-
               {roomData[index]?.data?.addValueData?.length > 0 ? (
                 <>
                   <p component="legend" className="mt-3 mb-1">
@@ -844,89 +842,93 @@ const EditPhd = (props) => {
                 </>
               ) : (
                 ""
-              )}
-              <div className="mt-2 mb-2">
-                <FormLabel className="text-body">
-                  {roomData[index]?.data?.addValueData?.length > 0
-                    ? "4. "
-                    : "3. "}{" "}
-                  Has the basement been finished since last listing?
-                </FormLabel>
-                <RadioGroup
-                  value={
-                    input.find((room) => room.roomId === items.room_id)
-                      ?.selectedOptionValue === "yes"
-                      ? "yes"
-                      : "no"
-                  }
-                  onChange={(event) => handleChangeValue(event, items.room_id)}
-                >
-                  <div className="d-flex gap-2">
-                    <div className="d-flex align-items-center">
-                      <Radio value="yes" />
-                      Yes
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <Radio value="no" />
-                      No
-                    </div>
-                  </div>
-                </RadioGroup>
-
-                {input.find((room) => room.roomId === items.room_id)
-                  ?.selectedOptionValue === "yes" && (
-                  <FormControl variant="outlined" className="mt-2 w-25">
-                    <InputLabel id="dropdown-label">Select Value</InputLabel>
-                    <Select
-                      labelId="dropdown-label"
-                      value={
-                        input.find((room) => room.roomId === items.room_id)
-                          ?.selectedPrice
-                      }
-                      onChange={(event) =>
-                        handleSelectionChange(event, items.room_id)
-                      }
-                      label="Select Value"
-                    >
-                      <MenuItem value={5000}>$5000</MenuItem>
-                      <MenuItem value={10000}>$10000</MenuItem>
-                      <MenuItem value={20000}>$20000</MenuItem>
-                      <MenuItem value={50000}>$50000</MenuItem>
-                      <MenuItem value="other">Other</MenuItem>
-                    </Select>
-                  </FormControl>
-                )}
-                {input.find((room) => room.roomId === items.room_id)
-                  ?.selectedPrice === "other" && (
-                  <TextField
-                    variant="outlined"
-                    className="mt-2 w-25 ms-2"
-                    label="Enter Custom Value"
+              )}{" "}
+              {selector?.data?.roomtype[0]?.room_id === 7 && (
+                <div className="mt-2 mb-2">
+                  <FormLabel className="text-body">
+                    {roomData[index]?.data?.addValueData?.length > 0
+                      ? "4. "
+                      : "3. "}{" "}
+                    Has the basement been finished since last listing?
+                  </FormLabel>
+                  <RadioGroup
                     value={
                       input.find((room) => room.roomId === items.room_id)
-                        ?.customPrice
+                        ?.selectedOptionValue === "yes"
+                        ? "yes"
+                        : "no"
                     }
                     onChange={(event) =>
-                      setInput((prevState) =>
-                        prevState?.map((room) => {
-                          if (room.roomId === items.room_id) {
-                            return {
-                              ...room,
-                              customPrice: event.target.value,
-                            };
-                          }
-                          return room;
-                        })
-                      )
+                      handleChangeValue(event, items.room_id)
                     }
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">$</InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              </div>
+                  >
+                    <div className="d-flex gap-2">
+                      <div className="d-flex align-items-center">
+                        <Radio value="yes" />
+                        Yes
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <Radio value="no" />
+                        No
+                      </div>
+                    </div>
+                  </RadioGroup>
+
+                  {input.find((room) => room.roomId === items.room_id)
+                    ?.selectedOptionValue === "yes" && (
+                    <FormControl variant="outlined" className="mt-2 w-25">
+                      <InputLabel id="dropdown-label">Select Value</InputLabel>
+                      <Select
+                        labelId="dropdown-label"
+                        value={
+                          input.find((room) => room.roomId === items.room_id)
+                            ?.selectedPrice
+                        }
+                        onChange={(event) =>
+                          handleSelectionChange(event, items.room_id)
+                        }
+                        label="Select Value"
+                      >
+                        <MenuItem value={5000}>$5000</MenuItem>
+                        <MenuItem value={10000}>$10000</MenuItem>
+                        <MenuItem value={20000}>$20000</MenuItem>
+                        <MenuItem value={50000}>$50000</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                  {input.find((room) => room.roomId === items.room_id)
+                    ?.selectedPrice === "other" && (
+                    <TextField
+                      variant="outlined"
+                      className="mt-2 w-25 ms-2"
+                      label="Enter Custom Value"
+                      value={
+                        input.find((room) => room.roomId === items.room_id)
+                          ?.customPrice
+                      }
+                      onChange={(event) =>
+                        setInput((prevState) =>
+                          prevState?.map((room) => {
+                            if (room.roomId === items.room_id) {
+                              return {
+                                ...room,
+                                customPrice: event.target.value,
+                              };
+                            }
+                            return room;
+                          })
+                        )
+                      }
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                </div>
+              )}
               <div className="mt-2 mb-2">
                 <FormLabel className="text-body">
                   Overall first impressions
