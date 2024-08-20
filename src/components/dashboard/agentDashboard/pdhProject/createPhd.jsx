@@ -469,8 +469,13 @@ const CreatePhd = () => {
                           </Typography>
                           <input
                             type="text"
-                            value={formatNumberWithCommas(lowValue)}
+                            // value={formatNumberWithCommas(lowValue)}
+                            // value={lowValue}
                             onChange={handleLowValueChange}
+                            valueLabelDisplay="on"
+                            valueLabelFormat={(value) =>
+                              formatNumberWithCommas(value)
+                            }
                           />
                           {errorLow && (
                             <div style={{ color: "red" }}>{errorLow}</div>
@@ -483,8 +488,12 @@ const CreatePhd = () => {
                           </Typography>
                           <input
                             type="text"
-                            value={formatNumberWithCommas(maxValue)}
+                            // value={formatNumberWithCommas(maxValue)}
                             onChange={handleMaxValueChange}
+                            valueLabelDisplay="on"
+                            valueLabelFormat={(value) =>
+                              formatNumberWithCommas(value)
+                            }
                           />
                           {errorHigh && (
                             <div style={{ color: "red" }}>{errorHigh}</div>

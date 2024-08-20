@@ -68,10 +68,10 @@ const ViewPhdAlt = () => {
       const initialProgressBars = {};
 
       // Iterate over each room
-      viewPhdData[0].roominfo.forEach((room) => {
+      viewPhdData[0]?.roominfo?.forEach((room) => {
         // Iterate over each feature in the room
         room.feature.forEach((feature) => {
-          initialProgressBars[feature.feature_id] = feature.phd_price;
+          initialProgressBars[feature?.feature_id] = feature?.phd_price;
         });
       });
 
@@ -252,7 +252,7 @@ const ViewPhdAlt = () => {
       sendEmailButton.style.display = visible ? "block" : "none";
   };
 
-  console.log(viewPhdData[0].roominfo[0].room_id);
+  // console.log(viewPhdData[0]?.roominfo[0]?.room_id);
 
   return (
     <div className="center-content p-3">
@@ -300,7 +300,7 @@ const ViewPhdAlt = () => {
                   </p>
                   <div className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
                     <h3>Dazl Value:</h3>
-                    <h3 className="w-50">${viewPhdData[0].phd_price}</h3>
+                    <h3 className="w-50">${viewPhdData[0]?.phd_price}</h3>
                   </div>
                 </div>
               </div>
@@ -315,7 +315,7 @@ const ViewPhdAlt = () => {
                   {items?.roominfo.map((ele, index) => {
                     const roomId = ele?.room_id;
                     const imagesGroup = items?.images?.filter(
-                      (image) => image.room_id === roomId
+                      (image) => image?.room_id === roomId
                     );
                     return (
                       <div key={index} className="mb-4 col-sm-12">
@@ -332,7 +332,7 @@ const ViewPhdAlt = () => {
                           <div>
                             {
                               items.images.filter(
-                                (image) => image.room_id === roomId
+                                (image) => image?.room_id === roomId
                               )[0]?.description
                             }
                           </div>
@@ -362,7 +362,7 @@ const ViewPhdAlt = () => {
                               </div>
                             </div>
                           </div>
-                          {viewPhdData[0].roominfo[0].room_id === 7 && (
+                          {viewPhdData[0]?.roominfo[0]?.room_id === 7 && (
                             <div className="d-flex align-items-center">
                               <h5 className="mb-0">
                                 Has the basement been finished since last

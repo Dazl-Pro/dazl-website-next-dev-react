@@ -26,10 +26,12 @@ const CompleteProject = () => {
   }, []);
 
   const viewPhdAltHandler = (itemId) => {
+    console.log("--------", itemId);
     navigate(`/agent/viewPhdAlt/${itemId}`);
   };
 
   const editPhdAltHandler = (itemId) => {
+    console.log("--------", itemId);
     dispatch(viewPhdAlt({ id: itemId, value: "open" }))
       .unwrap()
       .then(() => navigate(`/agent/editPhd/rooms/${itemId}`));

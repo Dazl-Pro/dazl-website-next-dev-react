@@ -843,7 +843,7 @@ const EditPhd = (props) => {
               ) : (
                 ""
               )}{" "}
-              {selector?.data?.roomtype[0]?.room_id === 7 && (
+              {selector?.data?.roomtype?.[0]?.room_id === 7 && (
                 <div className="mt-2 mb-2">
                   <FormLabel className="text-body">
                     {roomData[index]?.data?.addValueData?.length > 0
@@ -874,18 +874,18 @@ const EditPhd = (props) => {
                     </div>
                   </RadioGroup>
 
-                  {input.find((room) => room.roomId === items.room_id)
+                  {input.find((room) => room?.roomId === items?.room_id)
                     ?.selectedOptionValue === "yes" && (
                     <FormControl variant="outlined" className="mt-2 w-25">
                       <InputLabel id="dropdown-label">Select Value</InputLabel>
                       <Select
                         labelId="dropdown-label"
                         value={
-                          input.find((room) => room.roomId === items.room_id)
+                          input.find((room) => room?.roomId === items?.room_id)
                             ?.selectedPrice
                         }
                         onChange={(event) =>
-                          handleSelectionChange(event, items.room_id)
+                          handleSelectionChange(event, items?.room_id)
                         }
                         label="Select Value"
                       >
@@ -897,20 +897,20 @@ const EditPhd = (props) => {
                       </Select>
                     </FormControl>
                   )}
-                  {input.find((room) => room.roomId === items.room_id)
+                  {input.find((room) => room?.roomId === items?.room_id)
                     ?.selectedPrice === "other" && (
                     <TextField
                       variant="outlined"
                       className="mt-2 w-25 ms-2"
                       label="Enter Custom Value"
                       value={
-                        input.find((room) => room.roomId === items.room_id)
+                        input.find((room) => room?.roomId === items?.room_id)
                           ?.customPrice
                       }
                       onChange={(event) =>
                         setInput((prevState) =>
                           prevState?.map((room) => {
-                            if (room.roomId === items.room_id) {
+                            if (room?.roomId === items?.room_id) {
                               return {
                                 ...room,
                                 customPrice: event.target.value,
@@ -937,10 +937,10 @@ const EditPhd = (props) => {
                   aria-label={`${items.room_id}`}
                   name={`${items.room_id}`}
                   value={
-                    input.find((room) => room.roomId === items.room_id)
+                    input.find((room) => room?.roomId === items?.room_id)
                       ?.status || ""
                   }
-                  onChange={(e) => onChange(e, items.room_id, "status")}
+                  onChange={(e) => onChange(e, items?.room_id, "status")}
                   required
                 >
                   <div className="row">
@@ -1008,9 +1008,9 @@ const EditPhd = (props) => {
                         : data.name;
                     const valueId = data?.id;
                     const matchingRoadBlockIndex = input
-                      .find((room) => room.roomId === items.room_id)
+                      .find((room) => room?.roomId === items?.room_id)
                       ?.roadBlocks.findIndex(
-                        (item) => item?.id === valueId && item.isChecked
+                        (item) => item?.id === valueId && item?.isChecked
                       );
                     return (
                       <div key={roadBlockIndex} className="form-row">
@@ -1018,14 +1018,14 @@ const EditPhd = (props) => {
                           control={
                             <Checkbox
                               checked={input
-                                .find((room) => room.roomId === items.room_id)
+                                .find((room) => room?.roomId === items?.room_id)
                                 ?.roadBlocks.some(
                                   (item) =>
-                                    item?.id === valueId && item.isChecked
+                                    item?.id === valueId && item?.isChecked
                                 )}
                               onChange={(e) =>
                                 handleValueChange(
-                                  items.room_id,
+                                  items?.room_id,
                                   valueId,
                                   e.target.checked,
                                   "roadBlocks",
@@ -1042,7 +1042,7 @@ const EditPhd = (props) => {
                         {input
                           .find((room) => room.roomId === items.room_id)
                           ?.roadBlocks.some(
-                            (item) => item?.id === valueId && item.isChecked
+                            (item) => item?.id === valueId && item?.isChecked
                           ) && (
                           <>
                             <TextField
