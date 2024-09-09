@@ -321,7 +321,7 @@ const SignupPros = () => {
           <h6 className="text-center underline-red">
             <span>DAZL IS FOR</span>
           </h6>
-          <h2>Real estate agents and homeowners</h2>
+          <h2>Builders.Remodelers and Service Providers</h2>
           <p>
             Dazl is an online tool that enables service pros to streamline their
             project requests and to evaluate opportunities more selectively.
@@ -803,10 +803,11 @@ const SignupPros = () => {
                       control={control}
                       render={({ field }) => (
                         <>
-                          <input
+                          <PhoneInput
+                            country={"us"}
                             type="text"
                             {...field}
-                            className={`form-control ${
+                            className={` ${
                               errors.insuranceNumber ? "error" : ""
                             }`}
                             placeholder="Contact Number "
@@ -817,7 +818,31 @@ const SignupPros = () => {
                                 e.preventDefault();
                               }
                             }}
+                            inputStyle={{
+                              paddingTop: 8,
+                              paddingBottom: 8,
+                              width: "100%",
+                              border: 0,
+                              color: "black",
+                              background: "#fff",
+                              borderRadius: "6px",
+                              height: "40px",
+                            }}
+                            buttonStyle={{
+                              borderTopLeftRadius: "10px",
+                              borderBottomLeftRadius: "10px",
+                            }}
+                            containerStyle={{
+                              border: "1px solid #e5e7eb",
+                              borderRadius: "6px",
+                            }}
+                            inputProps={{
+                              id: "mobile",
+                              name: "mobile",
+                              required: true,
+                            }}
                           />
+
                           {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
                         </>
                       )}

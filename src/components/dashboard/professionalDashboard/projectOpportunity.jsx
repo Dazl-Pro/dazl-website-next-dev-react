@@ -171,10 +171,10 @@ const ProjectOpportunity = () => {
                   </div>
                   <div>
                     {/* {
-                          items?.images?.filter(
-                            (image) => image.room_id === roomId
-                          )[0]?.description
-                        } */}
+                      room?.images?.filter(
+                        (image) => image.room_id === roomId
+                      )[0]?.description
+                    } */}
                   </div>
                   <div className="ps-0 mb-4 mt-2">
                     <div key={index}>
@@ -221,7 +221,7 @@ const ProjectOpportunity = () => {
                                 {eleInner.feature_name}:
                               </h3>
                               <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
-                                <div>{eleInner?.inspectionNotes}</div>
+                                <div>{eleInner?.imageDesc}</div>
                               </div>
                               <div className="ps-0 mb-3">
                                 <div className="d-flex gap-1">
