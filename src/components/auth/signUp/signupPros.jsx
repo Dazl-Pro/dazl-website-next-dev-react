@@ -879,7 +879,9 @@ const SignupPros = () => {
                 </div>
               </div>
               <div className="">
-                <h6 className="my-3">Upload Photos</h6>
+                <h6 className="my-3">
+                  Upload photos that represent your business.
+                </h6>
                 <div className="row">
                   {fields.map((field, index) => (
                     <div key={index} className="col-lg-3 col-md-6 mb-3 mb-lg-0">
@@ -966,7 +968,7 @@ const SignupPros = () => {
                           label="$50 per month"
                           className="col-md-4 col-sm-6 mb-3 mx-0"
                         />
-                        <FormControlLabel
+                        {/* <FormControlLabel
                           value="yearly"
                           control={
                             <Radio
@@ -977,7 +979,7 @@ const SignupPros = () => {
                           }
                           label="$550 per year"
                           className="col-md-4 col-sm-6 mb-3 mx-0"
-                        />
+                        /> */}
                       </RadioGroup>
                     )}
                   />
