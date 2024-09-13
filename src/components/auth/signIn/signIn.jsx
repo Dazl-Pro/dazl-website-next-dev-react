@@ -32,7 +32,7 @@ const cardData = [
     subTitle: "homeowners",
     login: "Log-In",
     pTitle: "HOMEOWNERS",
-    p1: "Working in concert with sellers' agents, Dazl is an online tool designed to connect homeowners with licensed and approved* Missouri and Kansas service professionals for their home improvement or home repair needs. Based on project-specific details captured during the walk-thru, including photos and reports that itemize specific needs, Dazl identifies affiliate service pros that have demonstrated experience in the needed service areas and that have a geographic reach that coincides with the property's general location.",
+    p1: "Working in concert with sellers' agents, Dazl is an online tool designed to connect homeowners with licensed and approved* Service professionals for their home improvement or home repair needs. Based on project-specific details captured during the walk-thru, including photos and reports that itemize specific needs, Dazl identifies affiliate service pros that have demonstrated experience in the needed service areas and that have a geographic reach that coincides with the property's general location.",
   },
 ];
 

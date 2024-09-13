@@ -1047,6 +1047,7 @@ const EditPhd = (props) => {
                           <>
                             <TextField
                               multiline
+                              placeholder="Tell us what you would like to Dazl Up?"
                               rows={4}
                               variant="outlined"
                               fullWidth
