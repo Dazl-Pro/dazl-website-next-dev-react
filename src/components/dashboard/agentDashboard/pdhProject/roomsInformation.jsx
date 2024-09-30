@@ -892,6 +892,7 @@ const RoomsInformation = (props) => {
                   {watch(`checkboxes[${index}]`) && (
                     <>
                       <TextField
+                        placeholder="Tell us what you would like to Dazl Up?"
                         // label={`Text Area for ${_.name}`}
                         multiline
                         rows={4}

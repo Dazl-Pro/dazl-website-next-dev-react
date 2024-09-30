@@ -593,7 +593,7 @@ const Commonproject = ({
                   <>
                     {/* Textarea */}
                     <TextField
-                      // label={` ${_.name}`}
+                      placeholder="Tell us what you would like to Dazl Up?"
                       className={`text-areamt w-100 fs-3 form-control ${
                         errorBorder ? "error" : ""
                       }`}

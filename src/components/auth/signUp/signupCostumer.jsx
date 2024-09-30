@@ -21,12 +21,12 @@ const schema = yup.object().shape({
     .string()
     .required("First Name is required")
     .trim()
-    .min(3, "First Name have atleast 3 characters"),
+    .min(1, "First Name have atleast 1 characters"),
   lastName: yup
     .string()
     .required("Last Name is required")
     .trim()
-    .min(3, "Last Name have atleast 3 characters"),
+    .min(2, "Last Name have atleast 2 characters"),
   email: yup
     .string()
     .email("Please enter valid email address")

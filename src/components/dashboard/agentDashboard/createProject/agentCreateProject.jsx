@@ -18,16 +18,16 @@ const AgentCreateProject = () => {
           Project creation
         </h2>
         <div className="col-12">
-          <label htmlFor="projectName" className="mt-2">
+          {/* <label htmlFor="projectName" className="mt-2">
             Project Name:
-          </label>
-          <input
+          </label> */}
+          {/* <input
             type="text"
             placeholder="Enter project name"
             required
             onChange={(e) => setName(e.target.value)}
             className="form-control mt-2"
-          />
+          /> */}
           <div className="customer-create-project">
             <Commonproject
               show={show}

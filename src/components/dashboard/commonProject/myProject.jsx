@@ -454,9 +454,9 @@ const MyProject = () => {
                         <div className="d-flex justify-content-between project-btn">
                           <h4 className="text-start my-projects-head d-flex">
                             <div className="text-dark  me-1">
-                              Project Name:{" "}
+                              {/* Project Name: */}{" "}
                             </div>{" "}
-                            {items?.project_name}
+                            {/* {items?.project_name} */}
                           </h4>
                           <div>
                             <button
