@@ -372,7 +372,9 @@ const RoomsInformation = (props) => {
               msg: "Your item is saved now you can add more ",
             });
           } else {
-            navigate(`/agent/viewPhdAlt/${response.id}`);
+            console.log(response);
+            console.log(response?.id);
+            navigate(`/agent/viewPhdAlt/${response?.id}`);
             localStorage.removeItem("midValue");
             localStorage.removeItem("roomId");
             localStorage.removeItem("maxValue");
@@ -380,6 +382,7 @@ const RoomsInformation = (props) => {
             localStorage.removeItem("phdValue");
             localStorage.removeItem("roomselect");
             localStorage.removeItem("saved1");
+            localStorage.removeItem("phdUserDetail");
           }
         });
     }
@@ -638,7 +641,7 @@ const RoomsInformation = (props) => {
                           ? "error"
                           : ""
                       }`}
-                      accept="image/*"
+                      accept=".png, .jpg, .jpeg"
                       onChange={(e) => handleImage(index, e)}
                     />
 
@@ -920,7 +923,7 @@ const RoomsInformation = (props) => {
                                         ? "error"
                                         : ""
                                     }`}
-                                    accept="image/*"
+                                    accept=".png, .jpg, .jpeg"
                                     onChange={(e) =>
                                       handleCheckboxImage(
                                         _,

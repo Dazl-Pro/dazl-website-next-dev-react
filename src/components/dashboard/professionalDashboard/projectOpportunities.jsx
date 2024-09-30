@@ -19,10 +19,40 @@ const ProjectOpportunities = () => {
     dispatch(projectOpportunities())
       .unwrap()
       .then((res) => {
-        console.log("-----------", res.data.final);
-        setFilteredData(res.data.final);
+        const updatedData = res.data.final.map((item) => {
+          let formattedDate = item.created_at;
+
+          if (item.created_at) {
+            const date = new Date(item.created_at);
+
+            if (!isNaN(date.getTime())) {
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
+
+              formattedDate = `${year}-${month}-${day}`;
+            }
+          }
+
+          return { ...item, created_at: formattedDate };
+        });
+
+        console.log("Updated Data: ", updatedData);
+        setFilteredData(updatedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
       });
   }, []);
+
+  // useEffect(() => {
+  //   dispatch(projectOpportunities())
+  //     .unwrap()
+  //     .then((res) => {
+  //       console.log("-----------", res.data.final);
+  //       setFilteredData(res.data.final);
+  //     });
+  // }, []);
 
   const Selector = useSelector((state) => state.dashboardSlice);
   const projectOpportunitiesData = Selector.data.projectOpportunities;

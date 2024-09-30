@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./style.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import Masonry from "@mui/lab/Masonry";
 import SaveIcon from "@mui/icons-material/Save";
@@ -23,6 +23,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { Toastify } from "../../../../services/toastify/toastContainer";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+// import { useParams, useNavigate } from "react-router-dom";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -40,12 +41,28 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const ViewPhdAlt = () => {
   const componentRef = useRef();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selector?.data?.viewPhdAlt;
 
+  // useEffect(() => {
+  //   const handleBackNavigation = (e) => {
+  //     e.preventDefault(); // Prevent default back navigation
+  //     navigate("/agent/createPhd"); // Redirect to the desired page
+  //   };
+
+  //   window.addEventListener("popstate", handleBackNavigation); // Listen for back navigation
+
+  //   return () => {
+  //     window.removeEventListener("popstate", handleBackNavigation); // Cleanup event listener
+  //   };
+  // }, [navigate]);
+
   useEffect(() => {
     dispatch(viewPhdAlt({ id: itemId, value: "open" }));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemId]);
 

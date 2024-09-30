@@ -626,7 +626,7 @@ const Commonproject = ({
                                       ? "error"
                                       : ""
                                   }`}
-                                  accept="image/*"
+                                  accept=".png, .jpg, .jpeg"
                                   onChange={(e) => handleImage(_, imgIndex, e)}
                                 />
                                 {errors.file && (

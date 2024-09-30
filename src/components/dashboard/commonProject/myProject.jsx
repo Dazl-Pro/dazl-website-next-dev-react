@@ -643,7 +643,7 @@ const MyProject = () => {
                                                       <input
                                                         className="w-100"
                                                         type="file"
-                                                        accept="image/*"
+                                                        accept=".png, .jpg, .jpeg"
                                                         onChange={(e) => {
                                                           const file =
                                                             e.target.files[0];

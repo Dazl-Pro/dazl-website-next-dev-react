@@ -375,7 +375,7 @@ const CompanyProfile = () => {
                               ? "error"
                               : ""
                           }`}
-                          accept="image/*"
+                          accept=".png, .jpg, .jpeg"
                           onChange={(e) => {
                             uploadImage(e, index);
                           }}
