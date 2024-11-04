@@ -1,8 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/jsx-key */
+import Tooltip from "@mui/material/Tooltip";
 import React, { useEffect, useState, useRef } from "react";
+import Slider from "@mui/material/Slider";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -58,6 +56,41 @@ const schema = yup.object().shape({
     .array()
     .of(yup.boolean().oneOf([true], "Please check at least one checkbox")),
 });
+
+const marks = [
+  {
+    value: 1,
+    toolTip: "They walk in and first impression is Hell Naw! Walk Away...!",
+  },
+  {
+    value: 2,
+    toolTip: "Ok we can work with this...",
+  },
+  {
+    value: 3,
+    toolTip: "I've seen worst...",
+  },
+  {
+    value: 4,
+    toolTip: "Market Ready!",
+  },
+  {
+    value: 5,
+    toolTip: "This is Nice!",
+  },
+  {
+    value: 6,
+    toolTip: "Oh yeah... This looks good!",
+  },
+  {
+    value: 7,
+    toolTip: "Wow this has it all!",
+  },
+  {
+    value: 8,
+    toolTip: "I have to have this for myself!",
+  },
+];
 
 const RoomsInformation = (props) => {
   const { setShow, setSelectvalue } = props;
@@ -574,6 +607,32 @@ const RoomsInformation = (props) => {
   //   return lastImageField;
   // };
 
+  const [val, setVal] = React.useState(1);
+  const handleChangee = (_, newValue) => {
+    setVal(newValue);
+  };
+
+  function ValueLabelComponent(props) {
+    console.log(props);
+    const { children, value } = props;
+
+    const selectedValue = props.ownerState.marks.find(
+      (mark) => mark.value === value
+    );
+
+    console.log(selectedValue);
+
+    return (
+      <Tooltip
+        enterTouchDelay={0}
+        placement="top"
+        title={<div className="py-20">{selectedValue.toolTip}</div>}
+      >
+        {children}
+      </Tooltip>
+    );
+  }
+
   return (
     <div>
       <h4 className="mb-4 text-danger">{roomselect ?? ""}</h4>
@@ -724,7 +783,7 @@ const RoomsInformation = (props) => {
           ""
         )}
 
-        {addValueData?.length > 0 ? (
+        {/* {addValueData?.length > 0 ? (
           <>
             <p component="legend" className="mt-3 mb-1">
               {" "}
@@ -755,7 +814,7 @@ const RoomsInformation = (props) => {
           </>
         ) : (
           ""
-        )}
+        )} */}
         {selector?.data?.roomtype[0]?.room_id === 7 && (
           <div className="mt-2 mb-2">
             <FormLabel className="text-body">
@@ -813,6 +872,43 @@ const RoomsInformation = (props) => {
         )}
         <div className="mt-2 mb-2">
           <FormLabel className="text-body">Overall first impressions</FormLabel>
+          <Box sx={{ width: "full", padding: 4 }}>
+            <Slider
+              marks={marks}
+              slots={{
+                valueLabel: ValueLabelComponent,
+              }}
+              step={1}
+              value={val}
+              valueLabelDisplay="on"
+              min={1}
+              max={8}
+              onChange={handleChangee}
+            />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                variant="body2"
+                onClick={() => setVal(1)}
+                sx={{ cursor: "pointer" }}
+              >
+                NEEDS DAZL
+              </Typography>
+              <Typography
+                variant="body2"
+                onClick={() => setVal(4.5)}
+                sx={{ cursor: "pointer" }}
+              >
+                MARKET READY
+              </Typography>
+              <Typography
+                variant="body2"
+                onClick={() => setVal(8)}
+                sx={{ cursor: "pointer" }}
+              >
+                DAZLING
+              </Typography>
+            </Box>
+          </Box>
           <RadioGroup
             aria-label="options"
             name="options"
