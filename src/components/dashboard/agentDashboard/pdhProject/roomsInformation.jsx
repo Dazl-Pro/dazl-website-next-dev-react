@@ -626,7 +626,11 @@ const RoomsInformation = (props) => {
       <Tooltip
         enterTouchDelay={0}
         placement="top"
-        title={<div className="py-20">{selectedValue.toolTip}</div>}
+        title={
+          <div className="cs-tooltip-new bg-primary">
+            {selectedValue.toolTip}
+          </div>
+        }
       >
         {children}
       </Tooltip>

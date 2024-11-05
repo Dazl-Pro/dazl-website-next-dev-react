@@ -243,6 +243,13 @@ body .btn-light {
 ::-webkit-scrollbar-thumb {
   background: #dc3545;
 }
+.cs-tooltip-new {
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 @media only screen and (max-width: 768px) {
   .project-btn {
     flex-wrap: wrap !important;
