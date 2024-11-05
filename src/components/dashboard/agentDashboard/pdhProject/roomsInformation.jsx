@@ -122,6 +122,7 @@ const RoomsInformation = (props) => {
   const [input, setInput] = React.useState({
     phd_description: "",
     options: "",
+    level: "",
   });
 
   const defaultValues = {
@@ -249,18 +250,18 @@ const RoomsInformation = (props) => {
   const save = (e, value) => {
     e.preventDefault();
 
-    const selectedOption = input.options;
+    // const selectedOption = input.options;
 
-    // Calculate price based on the selected option
-    let updatedPrice = price; // Initialize with the default price
+    // // Calculate price based on the selected option
+    // let updatedPrice = price; // Initialize with the default price
 
-    if (selectedOption === "NEEDS DAZL") {
-      // Reduce price by 15% for 'NEEDS DAZL'
-      updatedPrice = price * 0.85;
-    } else if (selectedOption === "DAZLING") {
-      // Increase price by 15% for 'DAZLING'
-      updatedPrice = price * 1.15;
-    }
+    // if (selectedOption === "NEEDS DAZL") {
+    //   // Reduce price by 15% for 'NEEDS DAZL'
+    //   updatedPrice = price * 0.85;
+    // } else if (selectedOption === "DAZLING") {
+    //   // Increase price by 15% for 'DAZLING'
+    //   updatedPrice = price * 1.15;
+    // }
 
     // Get the values of the checkboxes
     const checkboxes = watch("checkboxes") || [];
@@ -281,7 +282,7 @@ const RoomsInformation = (props) => {
     //   return;
     // }
 
-    if (input.options === "") {
+    if (input.level === "") {
       setErrorborder1(true);
       return;
     }
@@ -303,7 +304,7 @@ const RoomsInformation = (props) => {
       return;
     }
 
-    if (input.phd_description && input.options) {
+    if (input.phd_description && input.level) {
       let formData = new FormData();
       formData.append("score", 100);
       formData.append("address", phdUserDetail?.location);
@@ -330,7 +331,9 @@ const RoomsInformation = (props) => {
       formData.append("left", `calc(-50% - "4px")`);
       formData.append("mid_price", midValue);
       formData.append("highest_price", maxValue);
-      formData.append("dazlValue", updatedPrice);
+      // formData.append("dazlValue", updatedPrice);
+      // formData.append("dazlValue", input.level);
+
       saved1 !== null ? "" : formData.append("true", true);
       formData.append("room_id", roomId);
       formData.append("phd_description", input?.phd_description);
@@ -367,7 +370,7 @@ const RoomsInformation = (props) => {
             formData.append(imageKey, image);
           });
         });
-      formData.append(`rooms[${roomId}][status]`, input.options);
+      formData.append(`rooms[${roomId}][level]`, input.level);
       formData.append("zip_code", agentData.zip_code ?? "123456");
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
@@ -405,8 +408,6 @@ const RoomsInformation = (props) => {
               msg: "Your item is saved now you can add more ",
             });
           } else {
-            console.log(response);
-            console.log(response?.id);
             navigate(`/agent/viewPhdAlt/${response?.id}`);
             localStorage.removeItem("midValue");
             localStorage.removeItem("roomId");
@@ -610,17 +611,16 @@ const RoomsInformation = (props) => {
   const [val, setVal] = React.useState(1);
   const handleChangee = (_, newValue) => {
     setVal(newValue);
+    setInput({ ...input, ["level"]: newValue });
+    setErrorborder1(false);
   };
 
   function ValueLabelComponent(props) {
-    console.log(props);
     const { children, value } = props;
 
     const selectedValue = props.ownerState.marks.find(
       (mark) => mark.value === value
     );
-
-    console.log(selectedValue);
 
     return (
       <Tooltip
@@ -875,8 +875,10 @@ const RoomsInformation = (props) => {
           </div>
         )}
         <div className="mt-2 mb-2">
-          <FormLabel className="text-body">Overall first impressions</FormLabel>
-          <Box sx={{ width: "full", padding: 4 }}>
+          <FormLabel className="text-body">
+            Overall first impressions:
+          </FormLabel>
+          <Box sx={{ width: "full", padding: 2 }}>
             <Slider
               marks={marks}
               slots={{
@@ -912,8 +914,13 @@ const RoomsInformation = (props) => {
                 DAZLING
               </Typography>
             </Box>
+            {errorBorder1 && (
+              <div className="text-primary">
+                Please Select Impressions Value*
+              </div>
+            )}
           </Box>
-          <RadioGroup
+          {/* <RadioGroup
             aria-label="options"
             name="options"
             value={input.options}
@@ -930,9 +937,6 @@ const RoomsInformation = (props) => {
                   }
                   label="DAZLING"
                 />
-                {/* <div className="fst-italic text-danger text-decoration-underline">
-                  80% room value
-                </div> */}
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
@@ -943,9 +947,6 @@ const RoomsInformation = (props) => {
                   }
                   label="MARKET READY"
                 />
-                {/* <div className="fst-italic text-danger text-decoration-underline">
-                  50% room value
-                </div> */}
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <FormControlLabel
@@ -956,12 +957,9 @@ const RoomsInformation = (props) => {
                   }
                   label="NEEDS DAZL"
                 />
-                {/* <div className="fst-italic text-danger text-decoration-underline">
-                  30% room value
-                </div> */}
               </div>
             </div>
-          </RadioGroup>
+          </RadioGroup> */}
           {errors.selectedOption && (
             <span className="text-danger">{errors.selectedOption.message}</span>
           )}
