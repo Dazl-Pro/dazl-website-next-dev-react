@@ -3,6 +3,7 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from "react";
+import Slider from "@mui/material/Slider";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -14,6 +15,7 @@ import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import Tooltip from "@mui/material/Tooltip";
 import {
   updatePhd,
   uploadImage,
@@ -21,11 +23,13 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./style.css";
 import {
+  Box,
   Grid,
   TextField,
   MenuItem,
   FormLabel,
   InputAdornment,
+  Typography,
 } from "@mui/material";
 import {
   viewPhdAlt,
@@ -33,6 +37,41 @@ import {
 } from "../../../../store/dashboard/dashboardSlice";
 import { Toastify } from "../../../../services/toastify/toastContainer";
 import { useNavigate, useParams } from "react-router-dom";
+
+const marks = [
+  {
+    value: 1,
+    toolTip: "They walk in and first impression is Hell Naw! Walk Away...!",
+  },
+  {
+    value: 2,
+    toolTip: "Ok we can work with this...",
+  },
+  {
+    value: 3,
+    toolTip: "I've seen worst...",
+  },
+  {
+    value: 4,
+    toolTip: "Market Ready!",
+  },
+  {
+    value: 5,
+    toolTip: "This is Nice!",
+  },
+  {
+    value: 6,
+    toolTip: "Oh yeah... This looks good!",
+  },
+  {
+    value: 7,
+    toolTip: "Wow this has it all!",
+  },
+  {
+    value: 8,
+    toolTip: "I have to have this for myself!",
+  },
+];
 
 const EditPhd = (props) => {
   const { setShow, setSelectvalue } = props;
@@ -298,21 +337,21 @@ const EditPhd = (props) => {
 
     setDescriptionError(requiresDescription);
 
-    const selectedOption = input.options;
-    let updatedPrice = price;
+    // const selectedOption = input.options;
+    // let updatedPrice = price;
 
-    if (selectedOption === "NEEDS DAZL") {
-      updatedPrice = price * 0.85;
-    } else if (selectedOption === "DAZLING") {
-      updatedPrice = price * 1.15;
-    }
+    // if (selectedOption === "NEEDS DAZL") {
+    //   updatedPrice = price * 0.85;
+    // } else if (selectedOption === "DAZLING") {
+    //   updatedPrice = price * 1.15;
+    // }
 
     if (input) {
       let formData = new FormData();
       formData.append("lowest_price", lowestValue);
       formData.append("mid_price", midValue);
       formData.append("highest_price", maxValue);
-      formData.append("dazlValue", updatedPrice);
+      // formData.append("dazlValue", updatedPrice);
       saved1 !== null ? "" : formData.append("true", true);
 
       formData.append("final", value === "save" ? 0 : 1);
@@ -636,6 +675,41 @@ const EditPhd = (props) => {
     });
   };
 
+  const handleChangee = (e, roomId, name) => {
+    const value = e.target.value;
+    const roomIndex = input.findIndex((room) => room.roomId === roomId);
+    setInput((prevState) => {
+      const updatedRooms = [...prevState];
+      updatedRooms[roomIndex] = {
+        ...updatedRooms[roomIndex],
+        [name]: value,
+      };
+      return updatedRooms;
+    });
+  };
+
+  function ValueLabelComponent(props) {
+    const { children, value } = props;
+
+    const selectedValue = props.ownerState.marks.find(
+      (mark) => mark.value === value
+    );
+
+    return (
+      <Tooltip
+        enterTouchDelay={0}
+        placement="top"
+        title={
+          <div className="cs-tooltip-new bg-primary">
+            {selectedValue.toolTip}
+          </div>
+        }
+      >
+        {children}
+      </Tooltip>
+    );
+  }
+
   return (
     <div>
       {viewPhdData?.[0]?.roominfo?.map((items, index) => {
@@ -795,7 +869,7 @@ const EditPhd = (props) => {
               ) : (
                 ""
               )}
-              {roomData[index]?.data?.addValueData?.length > 0 ? (
+              {/* {roomData[index]?.data?.addValueData?.length > 0 ? (
                 <>
                   <p component="legend" className="mt-3 mb-1">
                     {" "}
@@ -842,13 +916,13 @@ const EditPhd = (props) => {
                 </>
               ) : (
                 ""
-              )}{" "}
+              )} */}
               {selector?.data?.roomtype?.[0]?.room_id === 7 && (
                 <div className="mt-2 mb-2">
                   <FormLabel className="text-body">
                     {roomData[index]?.data?.addValueData?.length > 0
                       ? "4. "
-                      : "3. "}{" "}
+                      : "3. "}
                     Has the basement been finished since last listing?
                   </FormLabel>
                   <RadioGroup
@@ -933,7 +1007,37 @@ const EditPhd = (props) => {
                 <FormLabel className="text-body">
                   Overall first impressions
                 </FormLabel>
-                <RadioGroup
+                <Box sx={{ width: "full", padding: 2 }}>
+                  <Slider
+                    marks={marks}
+                    slots={{
+                      valueLabel: ValueLabelComponent,
+                    }}
+                    step={1}
+                    value={
+                      input.find((room) => room?.roomId === items?.room_id)
+                        ?.status || ""
+                    }
+                    valueLabelDisplay="on"
+                    min={1}
+                    max={8}
+                    onChange={(e) => handleChangee(e, items.room_id, "status")}
+                  />
+                  <Box
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Typography variant="body2" sx={{ cursor: "pointer" }}>
+                      NEEDS DAZL
+                    </Typography>
+                    <Typography variant="body2" sx={{ cursor: "pointer" }}>
+                      MARKET READY
+                    </Typography>
+                    <Typography variant="body2" sx={{ cursor: "pointer" }}>
+                      DAZLING
+                    </Typography>
+                  </Box>
+                </Box>
+                {/* <RadioGroup
                   aria-label={`${items.room_id}`}
                   name={`${items.room_id}`}
                   value={
@@ -990,7 +1094,7 @@ const EditPhd = (props) => {
                       </div>
                     </div>
                   </div>
-                </RadioGroup>
+                </RadioGroup> */}
               </div>
               <p className="mb-1">Buyer Road Blocks or Recommendations?</p>
               <div className="bg-light rounded-2 py-2 px-3">

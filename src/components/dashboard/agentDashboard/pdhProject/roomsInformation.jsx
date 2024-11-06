@@ -370,7 +370,7 @@ const RoomsInformation = (props) => {
             formData.append(imageKey, image);
           });
         });
-      formData.append(`rooms[${roomId}][level]`, input.level);
+      formData.append(`rooms[${roomId}][status]`, input.level);
       formData.append("zip_code", agentData.zip_code ?? "123456");
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");

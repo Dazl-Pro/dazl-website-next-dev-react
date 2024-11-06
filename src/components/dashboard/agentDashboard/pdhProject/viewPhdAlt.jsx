@@ -39,6 +39,40 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 const ViewPhdAlt = () => {
+  const marks = [
+    {
+      value: 1,
+      toolTip: "They walk in and first impression is Hell Naw! Walk Away...!",
+    },
+    {
+      value: 2,
+      toolTip: "Ok we can work with this...",
+    },
+    {
+      value: 3,
+      toolTip: "I've seen worst...",
+    },
+    {
+      value: 4,
+      toolTip: "Market Ready!",
+    },
+    {
+      value: 5,
+      toolTip: "This is Nice!",
+    },
+    {
+      value: 6,
+      toolTip: "Oh yeah... This looks good!",
+    },
+    {
+      value: 7,
+      toolTip: "Wow this has it all!",
+    },
+    {
+      value: 8,
+      toolTip: "I have to have this for myself!",
+    },
+  ];
   const componentRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -343,7 +377,9 @@ const ViewPhdAlt = () => {
                             </h3>
 
                             <h5 className="text-danger mb-0 me-md-4 me-2 font-16">
-                              {ele?.status}
+                              {marks.find(
+                                (mark) => mark.value === parseInt(ele?.status)
+                              )?.toolTip || "No tooltip available"}
                             </h5>
                           </div>
                           <div>
