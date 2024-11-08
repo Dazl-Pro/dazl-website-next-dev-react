@@ -105,7 +105,7 @@ const RoomsInformation = (props) => {
   const agentData = selector.data.agentData;
   const phdUserDetail = JSON.parse(localStorage.getItem("phdUserDetail"));
   const roomselect = JSON.parse(localStorage.getItem("roomselect"));
-  const midValue = localStorage.getItem("midValue");
+  const sliderValue = localStorage.getItem("sliderValue");
   const roomId = localStorage.getItem("roomId");
   const maxValue = localStorage.getItem("maxValue");
   const lowestValue = localStorage.getItem("lowestValue");
@@ -329,7 +329,7 @@ const RoomsInformation = (props) => {
       formData.append("sale_date", phdvalue?.sale_date);
       formData.append("lowest_price", lowestValue);
       formData.append("left", `calc(-50% - "4px")`);
-      formData.append("mid_price", midValue);
+      formData.append("slider_value", sliderValue);
       formData.append("highest_price", maxValue);
       // formData.append("dazlValue", updatedPrice);
       // formData.append("dazlValue", input.level);
@@ -409,7 +409,7 @@ const RoomsInformation = (props) => {
             });
           } else {
             navigate(`/agent/viewPhdAlt/${response?.id}`);
-            localStorage.removeItem("midValue");
+            localStorage.removeItem("sliderValue");
             localStorage.removeItem("roomId");
             localStorage.removeItem("maxValue");
             localStorage.removeItem("lowestValue");

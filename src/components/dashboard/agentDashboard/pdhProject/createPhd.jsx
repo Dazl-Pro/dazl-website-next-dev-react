@@ -212,6 +212,9 @@ const CreatePhd = () => {
   };
 
   const letStart = () => {
+    localStorage.setItem("sliderValue", sliderValue);
+    localStorage.setItem("maxValue", maxValue);
+    localStorage.setItem("lowestValue", lowValue);
     navigate("/agent/createPhd/rooms");
   };
 
