@@ -615,27 +615,27 @@ const RoomsInformation = (props) => {
     setErrorborder1(false);
   };
 
-  function ValueLabelComponent(props) {
-    const { children, value } = props;
+  // function ValueLabelComponent(props) {
+  //   const { children, value } = props;
 
-    const selectedValue = props.ownerState.marks.find(
-      (mark) => mark.value === value
-    );
+  //   const selectedValue = props.ownerState.marks.find(
+  //     (mark) => mark.value === value
+  //   );
 
-    return (
-      <Tooltip
-        enterTouchDelay={0}
-        placement="top"
-        title={
-          <div className="cs-tooltip-new bg-primary">
-            {selectedValue.toolTip}
-          </div>
-        }
-      >
-        {children}
-      </Tooltip>
-    );
-  }
+  //   return (
+  //     <Tooltip
+  //       enterTouchDelay={0}
+  //       placement="top"
+  //       title={
+  //         <div className="cs-tooltip-new bg-primary">
+  //           {selectedValue.toolTip}
+  //         </div>
+  //       }
+  //     >
+  //       {children}
+  //     </Tooltip>
+  //   );
+  // }
 
   return (
     <div>
@@ -878,8 +878,31 @@ const RoomsInformation = (props) => {
           <FormLabel className="text-body">
             Overall first impressions:
           </FormLabel>
-          <Box sx={{ width: "full", padding: 2 }}>
-            <Slider
+          <Box sx={{ width: "full", padding: 3 }}>
+            <div className="slider-container position-relative">
+              <Slider
+                marks={marks}
+                // slots={{
+                //   valueLabel: ValueLabelComponent,
+                // }}
+                step={1}
+                value={val}
+                valueLabelDisplay="on"
+                min={0}
+                max={110}
+                onChange={handleChangee}
+                // value={sliderValue}
+                // aria-label="Default"
+                // valueLabelDisplay="on"
+                // min={lowValue}
+                // max={maxValue}
+                className="cs-price-slider"
+                // onChange={handleChange}
+
+                // valueLabelFormat={(value) => formatNumberWithCommas(value)}
+              />
+            </div>
+            {/* <Slider
               marks={marks}
               slots={{
                 valueLabel: ValueLabelComponent,
@@ -890,7 +913,7 @@ const RoomsInformation = (props) => {
               min={1}
               max={8}
               onChange={handleChangee}
-            />
+            /> */}
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography
                 variant="body2"
@@ -901,17 +924,24 @@ const RoomsInformation = (props) => {
               </Typography>
               <Typography
                 variant="body2"
-                onClick={() => setVal(4.5)}
+                onClick={() => setVal(35)}
                 sx={{ cursor: "pointer" }}
               >
                 MARKET READY
               </Typography>
               <Typography
                 variant="body2"
-                onClick={() => setVal(8)}
+                onClick={() => setVal(35)}
                 sx={{ cursor: "pointer" }}
               >
                 DAZLING
+              </Typography>
+              <Typography
+                variant="body2"
+                onClick={() => setVal(110)}
+                sx={{ cursor: "pointer" }}
+              >
+                DAZL PLUS
               </Typography>
             </Box>
             {errorBorder1 && (
