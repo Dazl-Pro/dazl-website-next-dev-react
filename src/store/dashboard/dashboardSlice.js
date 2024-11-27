@@ -478,9 +478,9 @@ export const updateReportFeatures = createAsyncThunk(
         data
       );
       if (response.status === 200) {
-        dispatch(
-          getCustomerProject({ pageNo: pageNo, numberofdata: numberofdata })
-        );
+        // dispatch(
+        //   getCustomerProject({ pageNo: pageNo, numberofdata: numberofdata })
+        // );
         return response.data;
       }
     } catch (error) {
@@ -496,15 +496,15 @@ export const updateAgentFeatures = createAsyncThunk(
   "dashboard/updateAgentFeatures",
   async ({ data, project_id, pageNo, project, numberofdata }, { dispatch }) => {
     try {
-      const response = await http.patch(`/update-report/${project_id}`, data);
+      const response = await http.post(`/update-report/${project_id}`, data);
       if (response.status === 200) {
-        dispatch(
-          getAgentProject({
-            pageNo: pageNo,
-            numberofdata: numberofdata,
-            project: project,
-          })
-        );
+        // dispatch(
+        //   getAgentProject({
+        //     pageNo: pageNo,
+        //     numberofdata: numberofdata,
+        //     project: project,
+        //   })
+        // );
         return response.data;
       }
     } catch (error) {
@@ -515,6 +515,30 @@ export const updateAgentFeatures = createAsyncThunk(
     }
   }
 );
+
+// export const updateAgentFeatures = createAsyncThunk(
+//   "dashboard/updateAgentFeatures",
+//   async ({ data, project_id, pageNo, project, numberofdata }, { dispatch }) => {
+//     try {
+//       const response = await http.post(`/update-report/${project_id}`, data);
+//       if (response.status === 200) {
+//         dispatch(
+//           getAgentProject({
+//             pageNo: pageNo,
+//             numberofdata: numberofdata,
+//             project: project,
+//           })
+//         );
+//         return response.data;
+//       }
+//     } catch (error) {
+//       return (
+//         error.response.data,
+//         Toastify({ data: "error", msg: error.response.data.message })
+//       );
+//     }
+//   }
+// );
 
 export const deleteProjectFeatures = createAsyncThunk(
   "dashboard/deleteProjectFeatures",

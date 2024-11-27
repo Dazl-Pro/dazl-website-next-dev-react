@@ -210,9 +210,7 @@ const MyProject = () => {
         })
       )
         .unwrap()
-        .then(() =>
-          dispatch(getCustomerProject({ pageNo: 1, numberofdata: 5 }))
-        );
+        .then(() => dispatch(getAgentProject({ pageNo: 1, numberofdata: 5 })));
       // setEditItem(null);
     }
     setImagesUpload([]);
