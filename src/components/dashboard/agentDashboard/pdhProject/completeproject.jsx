@@ -46,7 +46,7 @@ const CompleteProject = () => {
           <div className="">
             <div className="container-full">
               <h3 className="text-uppercase  mb-4  pb-4 border-bottom">
-                PHD Project
+                PHD Projectwwwwwwwwww
               </h3>
               <div className="">
                 {filterData.length > 0 ? (
