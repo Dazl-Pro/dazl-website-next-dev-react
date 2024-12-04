@@ -131,7 +131,7 @@ const schema = yup.object().shape({
     .min(3, "Zip Name have atleast 3 characters"),
   number: yup
     .string()
-    .matches(/^[0-9]+$/, "Please enter a valid number")
+    .matches(/^[0-9-]+$/, "Please enter a valid number")
     .required(" company Number is required")
     .trim(),
   mobilenumber: yup
@@ -579,7 +579,7 @@ const SignupPros = () => {
                     control={control}
                     render={({ field }) => (
                       <>
-                        <input
+                        {/* <input
                           type="text"
                           {...field}
                           className={` width-input form-control ${
@@ -593,7 +593,35 @@ const SignupPros = () => {
                               e.preventDefault();
                             }
                           }}
+                        /> */}
+                        <input
+                          type="text"
+                          {...field}
+                          className={`width-input form-control ${
+                            errors.number ? "error" : ""
+                          }`}
+                          placeholder="Company Number*"
+                          value={field.value} // Ensure the input reflects the current value
+                          onChange={(e) => {
+                            // Allow only numbers and dashes
+                            const formattedValue = e.target.value
+                              .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
+                              .replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"); // Example format: XXX-XXX-XXXX
+
+                            // Update the input value
+                            field.onChange({
+                              target: { value: formattedValue },
+                            });
+                          }}
+                          onKeyPress={(e) => {
+                            // Allow only numeric values and dashes
+                            const isValidInput = /^[0-9\b-]+$/.test(e.key);
+                            if (!isValidInput) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
+
                         {errors.number && (
                           <p className="text-danger">{errors.number.message}</p>
                         )}

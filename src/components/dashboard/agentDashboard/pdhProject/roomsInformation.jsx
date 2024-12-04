@@ -878,8 +878,14 @@ const RoomsInformation = (props) => {
           <FormLabel className="text-body">
             Overall first impressions:
           </FormLabel>
+
           <Box sx={{ width: "full", padding: 3 }}>
             <div className="slider-container position-relative">
+              <div className="d-flex justify-content-between w-100">
+                <p>0pts</p>
+                <p>110pts</p>
+              </div>
+
               <Slider
                 marks={marks}
                 // slots={{
@@ -891,29 +897,13 @@ const RoomsInformation = (props) => {
                 min={0}
                 max={110}
                 onChange={handleChangee}
-                // value={sliderValue}
-                // aria-label="Default"
-                // valueLabelDisplay="on"
-                // min={lowValue}
-                // max={maxValue}
-                className="cs-price-slider"
+                className="cs-price-slider "
                 // onChange={handleChange}
 
                 // valueLabelFormat={(value) => formatNumberWithCommas(value)}
               />
             </div>
-            {/* <Slider
-              marks={marks}
-              slots={{
-                valueLabel: ValueLabelComponent,
-              }}
-              step={1}
-              value={val}
-              valueLabelDisplay="on"
-              min={1}
-              max={8}
-              onChange={handleChangee}
-            /> */}
+
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Typography
                 variant="body2"
