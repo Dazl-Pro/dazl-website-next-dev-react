@@ -24,6 +24,7 @@ import { Toastify } from "../../../../services/toastify/toastContainer";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Box, Typography } from "@mui/material";
+import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 // import { useParams, useNavigate } from "react-router-dom";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -40,40 +41,40 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 const ViewPhdAlt = () => {
-  const marks = [
-    {
-      value: 1,
-      toolTip: "They walk in and first impression is Hell Naw! Walk Away...!",
-    },
-    {
-      value: 2,
-      toolTip: "Ok we can work with this...",
-    },
-    {
-      value: 3,
-      toolTip: "I've seen worst...",
-    },
-    {
-      value: 4,
-      toolTip: "Market Ready!",
-    },
-    {
-      value: 5,
-      toolTip: "This is Nice!",
-    },
-    {
-      value: 6,
-      toolTip: "Oh yeah... This looks good!",
-    },
-    {
-      value: 7,
-      toolTip: "Wow this has it all!",
-    },
-    {
-      value: 8,
-      toolTip: "I have to have this for myself!",
-    },
-  ];
+  // const marks = [
+  //   {
+  //     value: 1,
+  //     toolTip: "They walk in and first impression is Hell Naw! Walk Away...!",
+  //   },
+  //   {
+  //     value: 2,
+  //     toolTip: "Ok we can work with this...",
+  //   },
+  //   {
+  //     value: 3,
+  //     toolTip: "I've seen worst...",
+  //   },
+  //   {
+  //     value: 4,
+  //     toolTip: "Market Ready!",
+  //   },
+  //   {
+  //     value: 5,
+  //     toolTip: "This is Nice!",
+  //   },
+  //   {
+  //     value: 6,
+  //     toolTip: "Oh yeah... This looks good!",
+  //   },
+  //   {
+  //     value: 7,
+  //     toolTip: "Wow this has it all!",
+  //   },
+  //   {
+  //     value: 8,
+  //     toolTip: "I have to have this for myself!",
+  //   },
+  // ];
   const componentRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -87,13 +88,16 @@ const ViewPhdAlt = () => {
     options: "",
     level: "",
   });
-  const [val, setVal] = React.useState(1);
+  console.log(viewPhdData);
+  console.log(viewPhdData?.[0]?.roominfo?.[0]?.status);
+  const [val, setVal] = useState(viewPhdData?.[0]?.roominfo?.[0].status);
 
-  const handleChangee = (_, newValue) => {
-    setVal(newValue);
-    setInput({ ...input, ["level"]: newValue });
-    setErrorborder1(false);
-  };
+  // const handleChangee = (_, newValue) => {
+  //   setVal(newValue);
+  //   setInput({ ...input, ["level"]: newValue });
+  //   setErrorborder1(false);
+  // };
+
   // useEffect(() => {
   //   const handleBackNavigation = (e) => {
   //     e.preventDefault(); // Prevent default back navigation
@@ -112,7 +116,15 @@ const ViewPhdAlt = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemId]);
-
+  // useEffect(() => {
+  //   if (viewPhdData?.[0]?.roominfo) {
+  //     // Map through the roominfo array and extract the status
+  //     const initialValues = viewPhdData[0].roominfo.map(
+  //       (room) => room.status || 0
+  //     );
+  //     val(initialValues);
+  //   }
+  // }, [viewPhdData]);
   const [progressBar, setProgressBar] = React.useState(
     viewPhdData?.[0]?.phd_price
   );
@@ -143,7 +155,54 @@ const ViewPhdAlt = () => {
     }
   }, [viewPhdData]);
 
+  const handleChangee = (newValue) => {
+    setVal(newValue); // Update the slider's local value
+    // If you're also tracking progressBars, you might want to update it as well
+    // console.log("Progressssssssssssss", progressBars);
+    // const updatedProgressBars = { ...progressBars };
+    // updatedProgressBars[feature_id] = newValue;
+    // setProgressBars(updatedProgressBars);
+  };
+
   const mainPrice = viewPhdData?.[0]?.phd_price;
+  // console.log(mainPrice);
+  // const onchangeStatus = (status, room, feature_id) => {
+  //   dispatch(
+  //     bidStatusUpdate({
+  //       id: viewPhdData[0]?.project_id,
+  //       status: status,
+  //       room: room,
+  //       feature_id: feature_id,
+  //     })
+  //   )
+  //     .unwrap()
+  //     .then(() => {
+  //       dispatch(viewPhdAlt({ id: itemId, value: "open" }))
+  //         .unwrap()
+  //         .then(() => {
+  //           const updatedProgressBars = { ...progressBars };
+
+  //           viewPhdData[0].roominfo.forEach((room) => {
+  //             room.feature.forEach((feature) => {
+  //               if (feature.feature_id === feature_id) {
+  //                 if (status === "Bid") {
+  //                   updatedProgressBars[feature_id] = Number(mainPrice) + 100;
+  //
+  //                 } else if (status === "Pass") {
+  //                   updatedProgressBars[feature_id] =
+  //                     Number(mainPrice) - 100000;
+  //                 } else if (status === "D.I.Y") {
+  //                   updatedProgressBars[feature_id] = Number(mainPrice);
+  //
+  //                 }
+  //               }
+  //             });
+  //           });
+  //           setProgressBars(updatedProgressBars);
+  //         });
+  //     });
+  // };
+
   const onchangeStatus = (status, room, feature_id) => {
     dispatch(
       bidStatusUpdate({
@@ -158,27 +217,36 @@ const ViewPhdAlt = () => {
         dispatch(viewPhdAlt({ id: itemId, value: "open" }))
           .unwrap()
           .then(() => {
-            const updatedProgressBars = { ...progressBars };
+            // let updatedValue = val[feature_id] || 0;
+            console.log(val);
+            console.log(val);
+            let updatedValue = val;
+            console.log("Before update:", updatedValue);
 
-            viewPhdData[0].roominfo.forEach((room) => {
-              room.feature.forEach((feature) => {
-                if (feature.feature_id === feature_id) {
-                  if (status === "Bid") {
-                    updatedProgressBars[feature_id] = Number(mainPrice) + 100;
-                  } else if (status === "Pass") {
-                    updatedProgressBars[feature_id] =
-                      Number(mainPrice) - 100000;
-                  } else if (status === "D.I.Y") {
-                    updatedProgressBars[feature_id] = Number(mainPrice);
-                  }
-                }
-              });
-            });
-            setProgressBars(updatedProgressBars);
+            if (status === "Bid") {
+              updatedValue += 25;
+            } else if (status === "D.I.Y") {
+              updatedValue += 1;
+            } else if (status === "Pass") {
+              console.log("Pass: No change");
+            }
+
+            updatedValue = Number(updatedValue);
+            if (isNaN(updatedValue)) updatedValue = 0;
+
+            // setVal((prevValues) => ({
+            //   ...prevValues,
+            //   [feature_id]: updatedValue, /
+            // }));
+            setVal(updatedValue);
+            console.log("After update:", updatedValue);
           });
       });
   };
-
+  // const initialValues = ele?.feature.reduce((acc, feature) => {
+  //   acc[feature.feature_id] = 0; // Or set initial value based on existing state
+  //   return acc;
+  // }, {});
   const convertToPdf = async () => {
     if (!componentRef.current) return;
 
@@ -390,11 +458,11 @@ const ViewPhdAlt = () => {
                                 {ele?.room_name}
                               </h3>
                               {/* {index + 1}.) */}
-                              <h5 className="text-danger mb-0 me-md-4 me-2 font-16">
+                              {/* <h5 className="text-danger mb-0 me-md-4 me-2 font-16">
                                 {marks.find(
                                   (mark) => mark.value === parseInt(ele?.status)
                                 )?.toolTip || "No tooltip available"}
-                              </h5>
+                              </h5> */}
                             </div>
 
                             <div>
@@ -468,8 +536,8 @@ const ViewPhdAlt = () => {
                                   }}
                                 >
                                   <div className="slider-container position-relative p-3">
-                                    <Slider
-                                      marks={marks}
+                                    {/* <Slider
+                                      // marks={marks}
                                       // slots={{
                                       //   valueLabel: ValueLabelComponent,
                                       // }}
@@ -479,6 +547,28 @@ const ViewPhdAlt = () => {
                                       min={0}
                                       max={110}
                                       onChange={handleChangee}
+                                      className="cs-price-slider"
+                                    /> */}
+                                    {/* <Formik
+                                      initialValues={initialValues}
+                                      onSubmit={async (values) => {
+                                        await new Promise((r) =>
+                                          setTimeout(r, 500)
+                                        );
+                                        alert(JSON.stringify(values, null, 2));
+                                      }}
+                                    ></Formik> */}
+
+                                    <Slider
+                                      // step={1}
+                                      // value={val[feature_id] || 0}
+                                      value={val}
+                                      valueLabelDisplay="on"
+                                      min={0}
+                                      max={110}
+                                      onChange={(e, newValue) =>
+                                        handleChangee(newValue)
+                                      }
                                       className="cs-price-slider"
                                     />
                                   </div>
@@ -490,28 +580,40 @@ const ViewPhdAlt = () => {
                                   >
                                     <Typography
                                       variant="body2"
-                                      onClick={() => setVal(1)}
+                                      // onClick={() => setVal(1)}
+                                      onClick={() =>
+                                        handleChangee(1, feature_id)
+                                      }
                                       sx={{ cursor: "pointer" }}
                                     >
                                       NEEDS DAZL
                                     </Typography>
                                     <Typography
                                       variant="body2"
-                                      onClick={() => setVal(35)}
+                                      // onClick={() => setVal(35)}
+                                      onClick={() =>
+                                        handleChangee(35, feature_id)
+                                      }
                                       sx={{ cursor: "pointer" }}
                                     >
                                       MARKET READY
                                     </Typography>
                                     <Typography
                                       variant="body2"
-                                      onClick={() => setVal(35)}
+                                      // onClick={() => setVal(35)}
+                                      onClick={() =>
+                                        handleChangee(35, feature_id)
+                                      }
                                       sx={{ cursor: "pointer" }}
                                     >
                                       DAZLING
                                     </Typography>
                                     <Typography
                                       variant="body2"
-                                      onClick={() => setVal(110)}
+                                      // onClick={() => setVal(110)}
+                                      onClick={() =>
+                                        handleChangee(35, feature_id)
+                                      }
                                       sx={{ cursor: "pointer" }}
                                     >
                                       DAZL PLUS
@@ -541,14 +643,15 @@ const ViewPhdAlt = () => {
                                           className="col-md-4 border-0 border-end"
                                           key={eleindex}
                                         >
-                                          <h5 className=" mb-2 ms-2">
+                                          <h5 className="mb-2 ms-2">
                                             {eleInner.feature_name}:
                                           </h5>
-                                          <div className="border d-flex align-items-center ps-2 py-3 mb-3 ">
+                                          <div className="border d-flex align-items-center ps-2 py-3 mb-3">
                                             <div>{eleInner?.imageDesc}</div>
                                           </div>
+
                                           <div className="ps-0 mb-3">
-                                            <div className="d-flex gap-1  flex-wrap">
+                                            <div className="d-flex gap-1 flex-wrap">
                                               {eleInner?.images?.map(
                                                 (image, imageIndex) => (
                                                   <div key={imageIndex}>
@@ -570,6 +673,8 @@ const ViewPhdAlt = () => {
                                               )}
                                             </div>
                                           </div>
+
+                                          {/* Status radio buttons */}
                                           <div
                                             style={{
                                               display: "flex",
@@ -599,38 +704,30 @@ const ViewPhdAlt = () => {
                                                     setCurrentStatus(status);
                                                   }}
                                                 />
-                                                <span className=" ">
-                                                  {status}
-                                                </span>
+                                                <span>{status}</span>
                                               </label>
                                             ))}
                                           </div>
-                                          {currentStatus !== "Pass" && (
-                                            <div className="pb-3">
-                                              <div className="d-flex justify-content-between mt-3 mb-2">
-                                                <p className="mb-0">$200k</p>
-                                                <p className="mb-0">
-                                                  $
-                                                  {progressBar
-                                                    ? (
-                                                        progressBar / 1000
-                                                      ).toFixed(1) + "k"
-                                                    : "2M"}
-                                                </p>
-                                                <p className="mb-0">$2M</p>
-                                              </div>
-                                              <BorderLinearProgress
-                                                variant="determinate"
-                                                value={
-                                                  (progressBars[
-                                                    eleInner.feature_id
-                                                  ] /
-                                                    1800) *
-                                                  100
-                                                }
-                                              />
-                                            </div>
-                                          )}
+
+                                          {/* Slider
+                                          <div className="slider-container position-relative p-3">
+                                            <Slider
+                                              step={1}
+                                              value={
+                                                val[eleInner.feature_id] || 0
+                                              } // Get the value for this feature_id
+                                              valueLabelDisplay="on"
+                                              min={0}
+                                              max={110}
+                                              onChange={(e, newValue) =>
+                                                handleChangee(
+                                                  newValue,
+                                                  eleInner.feature_id
+                                                )
+                                              }
+                                              className="cs-price-slider"
+                                            />
+                                          </div> */}
                                         </div>
                                       );
                                     })}
