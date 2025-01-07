@@ -312,6 +312,7 @@ export const uploadImage = createAsyncThunk(
 export const createPhd = createAsyncThunk(
   "dashboard/createPhd",
   async (data) => {
+    console.log(data);
     try {
       const response = await http.post(`/home-diagnostic-reports`, data, {
         headers: {

@@ -40,7 +40,13 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-const ViewPhdAlt = () => {
+const ViewPhdAlt = ({
+  ele,
+  index,
+  // allStatus,
+  // onchangeStatus,
+  // setCurrentStatus,
+}) => {
   // const marks = [
   //   {
   //     value: 1,
@@ -88,9 +94,27 @@ const ViewPhdAlt = () => {
     options: "",
     level: "",
   });
-  console.log(viewPhdData);
-  console.log(viewPhdData?.[0]?.roominfo?.[0]?.status);
-  const [val, setVal] = useState(viewPhdData?.[0]?.roominfo?.[0].status);
+  // console.log(viewPhdData);
+  // console.log(viewPhdData?.[0]?.roominfo?.[0]?.status);
+  const initialStatus = viewPhdData?.[0]?.roominfo?.[0]?.status;
+  // const roomStatuses = viewPhdData?.[0]?.roominfo?.map((room) => ({
+  //   status: room.status,
+  // }));
+
+  // console.log(roomStatuses);
+  // const [val, setVal] = useState(() => {
+  //   // Assuming viewPhdData?.[0]?.roominfo contains the necessary data for initial values
+  //   const initialValues = {};
+  //   viewPhdData?.[0]?.roominfo?.forEach((room) => {
+  //     // room.feature.forEach((f) => {
+  //     initialValues[f.feature_id] = f.status; // Initial value from the database
+  //     // });
+  //   });
+  //   console.log(initialValues);
+  //   return initialValues;
+  // });
+
+  const [val, setVal] = useState(1);
 
   // const handleChangee = (_, newValue) => {
   //   setVal(newValue);
@@ -117,13 +141,13 @@ const ViewPhdAlt = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemId]);
   // useEffect(() => {
-  //   if (viewPhdData?.[0]?.roominfo) {
-  //     // Map through the roominfo array and extract the status
-  //     const initialValues = viewPhdData[0].roominfo.map(
-  //       (room) => room.status || 0
-  //     );
-  //     val(initialValues);
-  //   }
+  // if (viewPhdData?.[0]?.roominfo) {
+  //   // Map through the roominfo array and extract the status
+  //   const initialValues = viewPhdData[0].roominfo.map(
+  //     (room) => room.status || 0
+  //   );
+  //   val(initialValues);
+  // }
   // }, [viewPhdData]);
   const [progressBar, setProgressBar] = React.useState(
     viewPhdData?.[0]?.phd_price
@@ -163,7 +187,27 @@ const ViewPhdAlt = () => {
     // updatedProgressBars[feature_id] = newValue;
     // setProgressBars(updatedProgressBars);
   };
+  console.log(viewPhdData);
+  const temp =
+    viewPhdData &&
+    viewPhdData[0] &&
+    viewPhdData[0].roominfo &&
+    viewPhdData[0].roominfo.map((item) => item.status).flat();
 
+  // const value = viewPhdData[0]?.roominfo.map((item) => item.feature).flat();
+  // console.log(value);
+  // const value1 = value.map((item) => item.bid_status).flat();
+  // console.log(value1);
+
+  const initialValues = {
+    sliders: temp,
+    // bidder: value1,
+  };
+  console.log(initialValues);
+  console.log("initail values", initialValues);
+  const handleSliderChange = (setFieldValue, index, newValue) => {
+    setFieldValue(`sliders.${index}`, newValue);
+  };
   const mainPrice = viewPhdData?.[0]?.phd_price;
   // console.log(mainPrice);
   // const onchangeStatus = (status, room, feature_id) => {
@@ -203,7 +247,14 @@ const ViewPhdAlt = () => {
   //     });
   // };
 
-  const onchangeStatus = (status, room, feature_id) => {
+  const onchangeStatus = (
+    status,
+    room,
+    feature_id,
+    index,
+    currentValue,
+    setValue
+  ) => {
     dispatch(
       bidStatusUpdate({
         id: viewPhdData[0]?.project_id,
@@ -217,11 +268,13 @@ const ViewPhdAlt = () => {
         dispatch(viewPhdAlt({ id: itemId, value: "open" }))
           .unwrap()
           .then(() => {
-            // let updatedValue = val[feature_id] || 0;
-            console.log(val);
-            console.log(val);
-            let updatedValue = val;
-            console.log("Before update:", updatedValue);
+            console.log(typeof currentValue);
+            console.log(temp);
+            let updatedValue = temp[index];
+            console.log(updatedValue, "upodated value");
+            if (typeof updatedValue === "string") {
+              updatedValue = parseInt(updatedValue);
+            }
 
             if (status === "Bid") {
               updatedValue += 25;
@@ -230,19 +283,22 @@ const ViewPhdAlt = () => {
             } else if (status === "Pass") {
               console.log("Pass: No change");
             }
+            setValue(`sliders.${index}`, updatedValue);
 
-            updatedValue = Number(updatedValue);
-            if (isNaN(updatedValue)) updatedValue = 0;
+            // updatedValue = Number(updatedValue);
+            // if (isNaN(updatedValue)) updatedValue = 0;
 
             // setVal((prevValues) => ({
             //   ...prevValues,
-            //   [feature_id]: updatedValue, /
+            //   [feature_id]: updatedValue,
             // }));
-            setVal(updatedValue);
+
             console.log("After update:", updatedValue);
+            setVal(updatedValue);
           });
       });
   };
+
   // const initialValues = ele?.feature.reduce((acc, feature) => {
   //   acc[feature.feature_id] = 0; // Or set initial value based on existing state
   //   return acc;
@@ -453,16 +509,10 @@ const ViewPhdAlt = () => {
                       <div key={index} className="mb-4 col-sm-12">
                         <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4">
                           <div className="border border-rounded p-2">
-                            <div className="d-flex  align-items-center justify-content-between">
+                            <div className="d-flex align-items-center justify-content-between">
                               <h3 className="fw-semibold font-18">
                                 {ele?.room_name}
                               </h3>
-                              {/* {index + 1}.) */}
-                              {/* <h5 className="text-danger mb-0 me-md-4 me-2 font-16">
-                                {marks.find(
-                                  (mark) => mark.value === parseInt(ele?.status)
-                                )?.toolTip || "No tooltip available"}
-                              </h5> */}
                             </div>
 
                             <div>
@@ -472,6 +522,7 @@ const ViewPhdAlt = () => {
                                 )[0]?.description
                               }
                             </div>
+
                             <div className="ps-0 mb-4 mt-2">
                               <div key={index}>
                                 <div className="d-flex gap-1 flex-wrap">
@@ -492,248 +543,226 @@ const ViewPhdAlt = () => {
                                             height={"100px"}
                                           />
                                         </a>
-                                      )}{" "}
+                                      )}
                                     </div>
                                   ))}
                                 </div>
                               </div>
                             </div>
-                            {viewPhdData[0]?.roominfo[0]?.room_id === 7 && (
-                              <div className="d-flex align-items-center">
-                                <h5 className="mb-0">
-                                  Has the basement been finished since last
-                                  listing? -
-                                </h5>
-                                <h5 className="mb-0">
-                                  {ele.selectedOptionValue === "yes"
-                                    ? "Yes"
-                                    : "No"}
-                                </h5>
-                                {ele.selectedOptionValue === "yes" &&
-                                ele.selectedPrice !== "other" ? (
-                                  <h5>
-                                    {ele.selectedPrice &&
-                                      "$" + ele.selectedPrice}
-                                  </h5>
-                                ) : (
-                                  <h5 className="mb-0 ms-1">
-                                    {ele.customPrice &&
-                                      "($" + ele.customPrice + ")"}
-                                  </h5>
-                                )}
-                              </div>
-                            )}
-                            {ele?.feature?.length !== 0 &&
-                              ele?.feature[0]?.feature_name !== "" && (
-                                <div
-                                  key={index}
-                                  className="p-3 mt-3 bg-white"
-                                  style={{
-                                    // border: "1px solid",
-                                    // borderColor: "#666",
-                                    // borderRadius: "10px",
-                                    margin: "10px",
-                                  }}
-                                >
-                                  <div className="slider-container position-relative p-3">
-                                    {/* <Slider
-                                      // marks={marks}
-                                      // slots={{
-                                      //   valueLabel: ValueLabelComponent,
-                                      // }}
-                                      step={1}
-                                      value={val}
-                                      valueLabelDisplay="on"
-                                      min={0}
-                                      max={110}
-                                      onChange={handleChangee}
-                                      className="cs-price-slider"
-                                    /> */}
-                                    {/* <Formik
-                                      initialValues={initialValues}
-                                      onSubmit={async (values) => {
-                                        await new Promise((r) =>
-                                          setTimeout(r, 500)
-                                        );
-                                        alert(JSON.stringify(values, null, 2));
-                                      }}
-                                    ></Formik> */}
 
-                                    <Slider
-                                      // step={1}
-                                      // value={val[feature_id] || 0}
-                                      value={val}
-                                      valueLabelDisplay="on"
-                                      min={0}
-                                      max={110}
-                                      onChange={(e, newValue) =>
-                                        handleChangee(newValue)
-                                      }
-                                      className="cs-price-slider"
-                                    />
-                                  </div>
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body2"
-                                      // onClick={() => setVal(1)}
-                                      onClick={() =>
-                                        handleChangee(1, feature_id)
-                                      }
-                                      sx={{ cursor: "pointer" }}
-                                    >
-                                      NEEDS DAZL
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      // onClick={() => setVal(35)}
-                                      onClick={() =>
-                                        handleChangee(35, feature_id)
-                                      }
-                                      sx={{ cursor: "pointer" }}
-                                    >
-                                      MARKET READY
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      // onClick={() => setVal(35)}
-                                      onClick={() =>
-                                        handleChangee(35, feature_id)
-                                      }
-                                      sx={{ cursor: "pointer" }}
-                                    >
-                                      DAZLING
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      // onClick={() => setVal(110)}
-                                      onClick={() =>
-                                        handleChangee(35, feature_id)
-                                      }
-                                      sx={{ cursor: "pointer" }}
-                                    >
-                                      DAZL PLUS
-                                    </Typography>
-                                  </Box>
-                                  {errorBorder1 && (
-                                    <div className="text-primary">
-                                      Please Select Impressions Value*
-                                    </div>
-                                  )}
-                                  <h3 className="text-center d-flex mb-3 mt-1">
-                                    Buyer Road Blocks:
-                                  </h3>
-                                  <div className="row flex-wrap justify-space-between abvc">
-                                    {/* <div className="d-flex align-items-center justify-content-between mb-3">
-                                  <div className="d-flex gap-1 align-items-center">
-                                    Area:
-                                    <div className="fw-bolder">
-                                      {e?.room_name}
-                                    </div>
-                                  </div>
-                                  <div className="text-danger">{e?.status}</div>
-                                </div> */}
-                                    {ele?.feature?.map((eleInner, eleindex) => {
-                                      return (
+                            <Formik initialValues={initialValues}>
+                              {({ values, setFieldValue, errors }) => {
+                                console.log(
+                                  values.sliders,
+                                  values.sliders[index]
+                                );
+                                return (
+                                  <Form>
+                                    {ele?.feature?.length !== 0 &&
+                                      ele?.feature[0]?.feature_name !== "" && (
                                         <div
-                                          className="col-md-4 border-0 border-end"
-                                          key={eleindex}
+                                          className="p-3 mt-3 bg-white"
+                                          style={{ margin: "10px" }}
                                         >
-                                          <h5 className="mb-2 ms-2">
-                                            {eleInner.feature_name}:
-                                          </h5>
-                                          <div className="border d-flex align-items-center ps-2 py-3 mb-3">
-                                            <div>{eleInner?.imageDesc}</div>
-                                          </div>
-
-                                          <div className="ps-0 mb-3">
-                                            <div className="d-flex gap-1 flex-wrap">
-                                              {eleInner?.images?.map(
-                                                (image, imageIndex) => (
-                                                  <div key={imageIndex}>
-                                                    <a
-                                                      href={image}
-                                                      target="_blank"
-                                                      rel="noopener noreferrer"
-                                                    >
-                                                      <img
-                                                        alt="img"
-                                                        src={image}
-                                                        className="object-fit-cover border"
-                                                        width={"100px"}
-                                                        height={"100px"}
-                                                      />
-                                                    </a>
-                                                  </div>
-                                                )
+                                          <div className="slider-container position-relative p-3">
+                                            <Field name={`sliders.${index}`}>
+                                              {({ field }) => (
+                                                <Slider
+                                                  {...field}
+                                                  value={values.sliders[index]}
+                                                  onChange={
+                                                    (e, value) => {}
+                                                    //   setFieldValue(
+                                                    //     `sliders.${index}`,
+                                                    //     value
+                                                    //   )
+                                                  }
+                                                  valueLabelDisplay="auto"
+                                                  valueLabelFormat={(value) =>
+                                                    `${value}`
+                                                  }
+                                                  min={0}
+                                                  max={100}
+                                                  // value={
+                                                  //   values.sliders?.[
+                                                  //     ele.feature_id
+                                                  //   ] || 0
+                                                  // } // Bind value to Formik state, defaulting to 0
+                                                  // valueLabelDisplay="on"
+                                                  // min={0}
+                                                  // max={110}
+                                                  // onChange={(e, newValue) =>
+                                                  //   handleSliderChange(
+                                                  //     setFieldValue,
+                                                  //     ele.feature_id,
+                                                  //     newValue
+                                                  //   )
+                                                  // }
+                                                  className="cs-price-slider"
+                                                />
                                               )}
-                                            </div>
+                                            </Field>
                                           </div>
-
-                                          {/* Status radio buttons */}
-                                          <div
-                                            style={{
+                                          <Box
+                                            sx={{
                                               display: "flex",
-                                              gap: "10px",
-                                              paddingBottom: "10px",
-                                              marginBottom: "10px",
+                                              justifyContent: "space-between",
                                             }}
                                           >
-                                            {allStatus.map((status) => (
-                                              <label
-                                                key={status}
-                                                className="custom-radio-label"
-                                              >
-                                                <input
-                                                  type="radio"
-                                                  name={`status-${index}-${eleindex}-${status}`}
-                                                  checked={
-                                                    eleInner.bid_status ===
-                                                    status
-                                                  }
-                                                  onChange={() => {
-                                                    onchangeStatus(
-                                                      status,
-                                                      ele.room_id,
-                                                      eleInner.feature_id
-                                                    );
-                                                    setCurrentStatus(status);
-                                                  }}
-                                                />
-                                                <span>{status}</span>
-                                              </label>
-                                            ))}
-                                          </div>
+                                            <Typography
+                                              variant="body2"
+                                              // onClick={() =>
+                                              //   handleSliderChange(
+                                              //     setFieldValue,
+                                              //     index,
+                                              //     1
+                                              //   )
+                                              // }
+                                              sx={{ cursor: "pointer" }}
+                                            >
+                                              NEEDS DAZL
+                                            </Typography>
+                                            <Typography
+                                              variant="body2"
+                                              // onClick={() =>
+                                              //   handleSliderChange(
+                                              //     setFieldValue,
+                                              //     index,
+                                              //     35
+                                              //   )
+                                              // }
+                                              sx={{ cursor: "pointer" }}
+                                            >
+                                              MARKET READY
+                                            </Typography>
+                                            <Typography
+                                              variant="body2"
+                                              // onClick={() =>
+                                              //   handleSliderChange(
+                                              //     setFieldValue,
+                                              //     index,
+                                              //     35
+                                              //   )
+                                              // }
+                                              sx={{ cursor: "pointer" }}
+                                            >
+                                              DAZLING
+                                            </Typography>
+                                            <Typography
+                                              variant="body2"
+                                              // onClick={() =>
+                                              //   handleSliderChange(
+                                              //     setFieldValue,
+                                              //     index,
+                                              //     110
+                                              //   )
+                                              // }
+                                              sx={{ cursor: "pointer" }}
+                                            >
+                                              DAZL PLUS
+                                            </Typography>
+                                          </Box>
+                                          {errors.sliders && (
+                                            <div className="text-primary">
+                                              Please Select Impressions Value*
+                                            </div>
+                                          )}
+                                          <h3 className="text-center d-flex mb-3 mt-1">
+                                            Buyer Road Blocks:
+                                          </h3>
+                                          <div className="row flex-wrap justify-space-between abvc">
+                                            {ele?.feature?.map(
+                                              (eleInner, eleindex) => (
+                                                <div
+                                                  className="col-md-4 border-0 border-end"
+                                                  key={eleindex}
+                                                >
+                                                  <h5 className="mb-2 ms-2">
+                                                    {eleInner.feature_name}:
+                                                  </h5>
+                                                  <div className="border d-flex align-items-center ps-2 py-3 mb-3">
+                                                    <div>
+                                                      {eleInner?.imageDesc}
+                                                    </div>
+                                                  </div>
+                                                  <div className="ps-0 mb-3">
+                                                    <div className="d-flex gap-1 flex-wrap">
+                                                      {eleInner?.images?.map(
+                                                        (image, imageIndex) => (
+                                                          <div key={imageIndex}>
+                                                            <a
+                                                              href={image}
+                                                              target="_blank"
+                                                              rel="noopener noreferrer"
+                                                            >
+                                                              <img
+                                                                alt="img"
+                                                                src={image}
+                                                                className="object-fit-cover border"
+                                                                width="100px"
+                                                                height="100px"
+                                                              />
+                                                            </a>
+                                                          </div>
+                                                        )
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                  {/* Status radio buttons */}
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      gap: "10px",
+                                                      paddingBottom: "10px",
+                                                      marginBottom: "10px",
+                                                    }}
+                                                  >
+                                                    {allStatus.map((status) => (
+                                                      <label
+                                                        key={status}
+                                                        className="custom-radio-label"
+                                                      >
+                                                        <input
+                                                          type="radio"
+                                                          name={`status-${index}-${eleindex}-${status}`}
+                                                          checked={
+                                                            eleInner.bid_status ===
+                                                            status
+                                                          }
+                                                          onChange={() => {
+                                                            onchangeStatus(
+                                                              status,
+                                                              ele.room_id,
+                                                              eleInner.feature_id,
+                                                              index,
+                                                              values.sliders[
+                                                                index
+                                                              ],
+                                                              setFieldValue
+                                                            );
+                                                            // setFieldValue(
+                                                            //   `sliders.${index}`,
 
-                                          {/* Slider
-                                          <div className="slider-container position-relative p-3">
-                                            <Slider
-                                              step={1}
-                                              value={
-                                                val[eleInner.feature_id] || 0
-                                              } // Get the value for this feature_id
-                                              valueLabelDisplay="on"
-                                              min={0}
-                                              max={110}
-                                              onChange={(e, newValue) =>
-                                                handleChangee(
-                                                  newValue,
-                                                  eleInner.feature_id
-                                                )
-                                              }
-                                              className="cs-price-slider"
-                                            />
-                                          </div> */}
+                                                            // );
+                                                            setCurrentStatus(
+                                                              status
+                                                            );
+                                                          }}
+                                                        />
+                                                        <span>{status}</span>
+                                                      </label>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              )
+                                            )}
+                                          </div>
                                         </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
+                                      )}
+                                  </Form>
+                                );
+                              }}
+                            </Formik>
                           </div>
                         </div>
                       </div>

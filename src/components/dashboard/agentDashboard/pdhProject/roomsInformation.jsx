@@ -96,8 +96,9 @@ const RoomsInformation = (props) => {
   const { setShow, setSelectvalue } = props;
   const navigate = useNavigate();
   const selector = useSelector((state) => state.dashboardSlice);
+  // console.log(selector);
   const phdRooms = selector.data.phdRoomsData;
-
+  // console.log(phdRooms);
   const roomtype = selector.data.roomtype;
   const addValueData = selector.data.addValueData;
   const price = selector.data.price;
@@ -106,6 +107,7 @@ const RoomsInformation = (props) => {
   const phdUserDetail = JSON.parse(localStorage.getItem("phdUserDetail"));
   const roomselect = JSON.parse(localStorage.getItem("roomselect"));
   const sliderValue = localStorage.getItem("sliderValue");
+  const blocksliderValue = localStorage.getItem("blocksliderValue");
   const roomId = localStorage.getItem("roomId");
   const maxValue = localStorage.getItem("maxValue");
   const lowestValue = localStorage.getItem("lowestValue");
@@ -215,6 +217,16 @@ const RoomsInformation = (props) => {
       }
     });
   }, []);
+  useEffect(() => {
+    // Initialize sliderValue to 0 in localStorage if not already set
+    if (!localStorage.getItem("blocksliderValue")) {
+      localStorage.setItem("blocksliderValue", "0"); // Set initial value to 0
+    }
+    // Set the initial value to the state from localStorage
+    const initialSliderValue =
+      parseFloat(localStorage.getItem("blocksliderValue")) || 0;
+    setVal(initialSliderValue); // Update state
+  }, []);
 
   const handleChange = (event, index, id) => {
     setChecked((prevChecked) =>
@@ -228,23 +240,59 @@ const RoomsInformation = (props) => {
     setAddvalueCheckbox((prevCheckbox) => [...prevCheckbox, value]);
   };
 
+  // const handleCheckboxArrayChange = (id, index) => {
+  //   setPhdCheckbox((prev) => {
+  //     const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
+  //     if (existingIndex !== -1) {
+  //       // If the id is already present, remove it
+  //       const updatedCheckbox = [...prev];
+  //       updatedCheckbox.splice(existingIndex, 1);
+  //       return updatedCheckbox;
+  //     }
+  //  else {
+  // If the id is not present, add it
+  // return [...prev, { checkbox: id.id }];
+  // //     }
+  //   });
+
+  // const checkboxes = watch("checkboxes") || [];
+  // checkboxes[index] = !checkboxes[index];
+  // setValue("checkboxes", checkboxes);
+  // };
+
   const handleCheckboxArrayChange = (id, index) => {
     setPhdCheckbox((prev) => {
       const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
+      let updatedCheckbox = [...prev];
+
+      const currentSliderValue =
+        parseFloat(localStorage.getItem("blocksliderValue")) || 0;
+      console.log(currentSliderValue);
       if (existingIndex !== -1) {
         // If the id is already present, remove it
-        const updatedCheckbox = [...prev];
         updatedCheckbox.splice(existingIndex, 1);
-        return updatedCheckbox;
-      } else {
-        // If the id is not present, add it
-        return [...prev, { checkbox: id.id }];
-      }
-    });
+        const newValue = currentSliderValue - phdRooms[index]?.points || 0;
+        setVal(newValue); // Update state
 
-    const checkboxes = watch("checkboxes") || [];
-    checkboxes[index] = !checkboxes[index];
-    setValue("checkboxes", checkboxes);
+        localStorage.setItem("blocksliderValue", newValue); // Update localStorage
+        console.log(newValue);
+      } else if (!prev.some((item) => item.checkbox === id.id)) {
+        // If the id is not present, add it
+        updatedCheckbox = [...prev, { checkbox: id.id }];
+        const newValue = currentSliderValue + phdRooms[index]?.points || 0;
+        setVal(newValue); // Update state
+
+        console.log(newValue);
+        localStorage.setItem("blocksliderValue", newValue); // Update localStorage
+      }
+
+      // Update React Hook Form's watch and setValue logic
+      const checkboxes = watch("checkboxes") || [];
+      checkboxes[index] = !checkboxes[index]; // Toggle checkbox state
+      setValue("checkboxes", checkboxes);
+
+      return updatedCheckbox;
+    });
   };
 
   const save = (e, value) => {
@@ -267,7 +315,10 @@ const RoomsInformation = (props) => {
     const checkboxes = watch("checkboxes") || [];
 
     // Filter out unchecked checkboxes
-    const checkedCheckboxesData = phdCheckbox.filter(
+    // const checkedCheckboxesData = phdCheckbox.filter(
+    //   (checkbox, index) => checkboxes[index]
+    // );
+    const checkedCheckboxesData = (phdCheckbox || []).filter(
       (checkbox, index) => checkboxes[index]
     );
 
@@ -282,10 +333,10 @@ const RoomsInformation = (props) => {
     //   return;
     // }
 
-    if (input.level === "") {
-      setErrorborder1(true);
-      return;
-    }
+    // if (input.level === "") {
+    //   setErrorborder1(true);
+    //   return;
+    // }
 
     // Check if road block descriptions are provided for all selected checkboxes
     const roadBlocksDescriptions = fields.map(
@@ -303,8 +354,8 @@ const RoomsInformation = (props) => {
       });
       return;
     }
-
-    if (input.phd_description && input.level) {
+    // && input.level
+    if (input.phd_description) {
       let formData = new FormData();
       formData.append("score", 100);
       formData.append("address", phdUserDetail?.location);
@@ -330,6 +381,7 @@ const RoomsInformation = (props) => {
       formData.append("lowest_price", lowestValue);
       formData.append("left", `calc(-50% - "4px")`);
       formData.append("slider_value", sliderValue);
+      formData.append("block_slider_value", blocksliderValue);
       formData.append("highest_price", maxValue);
       // formData.append("dazlValue", updatedPrice);
       // formData.append("dazlValue", input.level);
@@ -410,6 +462,7 @@ const RoomsInformation = (props) => {
           } else {
             navigate(`/agent/viewPhdAlt/${response?.id}`);
             localStorage.removeItem("sliderValue");
+            localStorage.removeItem("blocksliderValue");
             localStorage.removeItem("roomId");
             localStorage.removeItem("maxValue");
             localStorage.removeItem("lowestValue");
@@ -608,7 +661,7 @@ const RoomsInformation = (props) => {
   //   return lastImageField;
   // };
 
-  const [val, setVal] = React.useState(1);
+  const [val, setVal] = React.useState(0);
   const handleChangee = (_, newValue) => {
     setVal(newValue);
     setInput({ ...input, ["level"]: newValue });
@@ -875,8 +928,9 @@ const RoomsInformation = (props) => {
           </div>
         )}
         <div className="mt-2 mb-2">
-          <FormLabel className="text-body">
-            Overall first impressions:
+          <FormLabel className="text-body mt-4">
+            {/* Overall first impressions: */}
+            <h4>Overall first impressions:</h4>
           </FormLabel>
 
           <Box sx={{ width: "full", padding: 3 }}>
@@ -896,7 +950,8 @@ const RoomsInformation = (props) => {
                 valueLabelDisplay="on"
                 min={0}
                 max={110}
-                onChange={handleChangee}
+                // onChange={handleChangee}
+                disabled={true}
                 className="cs-price-slider "
                 // onChange={handleChange}
 
@@ -1009,7 +1064,6 @@ const RoomsInformation = (props) => {
                     }
                     label={`${displayName}`}
                   />
-
                   {watch(`checkboxes[${index}]`) && (
                     <>
                       <TextField
