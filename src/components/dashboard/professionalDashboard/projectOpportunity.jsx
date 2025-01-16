@@ -128,11 +128,13 @@ const ProjectOpportunity = () => {
   //     return;
   //   }
   // };
-  const deleteProject = (ids) => {
+  const deleteProject = (ids, project_id) => {
     console.log("-----------", ids);
+    console.log("##############################", project_id);
     dispatch(
       deleteProfessionalProjects({
         roomId: ids,
+        project_id: project_id,
       })
     );
     navigate("/company/projectOpportunities");
@@ -430,7 +432,7 @@ const ProjectOpportunity = () => {
                           <Button
                             variant="primary"
                             onClick={() => {
-                              deleteProject(room.room_id);
+                              deleteProject(room.room_id, data.project_id);
                               setShowModal(false);
                             }}
                             checked={isModalOptionSelected}

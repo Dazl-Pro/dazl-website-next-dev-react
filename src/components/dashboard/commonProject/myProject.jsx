@@ -725,11 +725,590 @@ const MyProject = () => {
                                       )
                                     )}
                                   </div>
+                                  <div className="progress-slidee bg-white shadow p-3 border rounded-4 d-flex flex-wrap">
+                                    <div
+                                      class="reply-sec"
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        width: "100%",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <div
+                                        class="pro-reply"
+                                        style={{
+                                          // fontWeight: "bold",
+                                          fontSize: 30,
+                                          color: "#dc3545",
+                                        }}
+                                      >
+                                        Service Pro Replies:
+                                      </div>
+                                      <div
+                                        class="replies"
+                                        style={{
+                                          fontWeight: "bold",
+                                          fontSize: 20,
+                                        }}
+                                      >
+                                        You have{" "}
+                                        {
+                                          projectData.data?.[dataIndex]
+                                            ?.projectOpportunityReplies.length
+                                        }{" "}
+                                        replies
+                                      </div>
+                                    </div>
+                                    {/* {projectData.data?.[
+                                      dataIndex
+                                    ]?.projectOpportunityReplies.map(
+                                      (opportunity, index) => {
+                                        // Find the matching room in roominfo
+                                        const room = projectData.data?.[
+                                          dataIndex
+                                        ]?.roominfo.find(
+                                          (roomItem) =>
+                                            roomItem.room_id ===
+                                            opportunity.room_id
+                                        );
+
+                                        return (
+                                          <div
+                                            key={index}
+                                            className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2 service-pro"
+                                          >
+                                            <div className="col-6">
+                                              <div
+                                                style={{
+                                                  fontWeight: "bold",
+                                                  textTransform: "uppercase",
+                                                }}
+                                              >
+                                                {
+                                                  opportunity?.professional
+                                                    ?.first_name
+                                                }{" "}
+                                                {
+                                                  opportunity?.professional
+                                                    ?.last_name
+                                                }
+                                              </div>
+                                              <div>
+                                                {
+                                                  opportunity?.professional
+                                                    ?.company_street_address
+                                                }
+                                                ,{" "}
+                                                {
+                                                  opportunity?.professional
+                                                    ?.company_city
+                                                }
+                                                ,{" "}
+                                                {
+                                                  opportunity?.professional
+                                                    ?.state
+                                                }
+                                                ,{" "}
+                                                {
+                                                  opportunity?.professional
+                                                    ?.zip_code
+                                                }
+                                              </div>
+                                              <div>
+                                                {
+                                                  opportunity?.professional
+                                                    ?.email
+                                                }
+                                              </div>
+                                              <div>
+                                                {
+                                                  opportunity?.professional
+                                                    ?.phone_number
+                                                }
+                                              </div>
+                                              <div>
+                                                <a
+                                                  href={`/profile/${opportunity?.professional_id}`}
+                                                  style={{
+                                                    textDecoration: "underline",
+                                                  }}
+                                                >
+                                                  View Profile
+                                                </a>
+                                              </div>
+                                            </div>
+
+                                            <div className="col-6">
+                                              <div
+                                                style={{
+                                                  fontWeight: "bold",
+                                                  textTransform: "uppercase",
+                                                  color: "#dc3545",
+                                                }}
+                                              >
+                                                Re:{" "}
+                                                {room?.room_name ||
+                                                  "No room info available"}
+                                              </div>
+
+                                              {room &&
+                                                room.feature.map(
+                                                  (feature, featureIndex) => (
+                                                    <div
+                                                      key={featureIndex}
+                                                      className="mt-1"
+                                                    >
+                                                      <div className="fw-bold fs-6">
+                                                        {feature.feature_name}
+                                                      </div>
+                                                      {feature.inspectionNotes && (
+                                                        <div>
+                                                          Inspection Notes:{" "}
+                                                          {
+                                                            feature.inspectionNotes
+                                                          }
+                                                        </div>
+                                                      )}
+                                                      {feature.images.length >
+                                                        0 && (
+                                                        <div>
+                                                          {feature.images.map(
+                                                            (img, imgIndex) => (
+                                                              <img
+                                                                key={imgIndex}
+                                                                src={img}
+                                                                alt={
+                                                                  feature.feature_name
+                                                                }
+                                                                style={{
+                                                                  width:
+                                                                    "100px",
+                                                                  margin: "5px",
+                                                                }}
+                                                              />
+                                                            )
+                                                          )}
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  )
+                                                )}
+
+                                              <div className="mt-1 gap-4">
+                                                <div className="d-flex gap-1">
+                                                  <div>
+                                                    <input
+                                                      type="checkbox"
+                                                      id="checkbox"
+                                                      checked={
+                                                        opportunity.is_interested ===
+                                                        1
+                                                      }
+                                                    />
+                                                  </div>
+                                                  <span className="fw-bold fs-6">
+                                                    {" "}
+                                                    YES
+                                                  </span>
+                                                  , I'm interested.
+                                                </div>
+                                                <div className="d-flex gap-1">
+                                                  <div>
+                                                    <input
+                                                      type="checkbox"
+                                                      id="checkbox"
+                                                      checked={
+                                                        opportunity.is_interested !==
+                                                        1
+                                                      }
+                                                    />
+                                                  </div>
+                                                  <span className="fw-bold fs-6">
+                                                    {" "}
+                                                    NO
+                                                  </span>
+                                                  , I'm not interested.
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        );
+                                      }
+                                    )} */}
+                                    {/* {projectData.data?.[
+                                      dataIndex
+                                    ]?.projectOpportunityReplies.map(
+                                      (opportunity, index) => (
+                                        <div
+                                          key={index}
+                                          className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2 service-pro"
+                                        >
+                                          <div className="col-6">
+                                            <div
+                                              style={{
+                                                fontWeight: "bold",
+                                                textTransform: "uppercase",
+                                              }}
+                                            >
+                                              {
+                                                opportunity?.professional
+                                                  ?.first_name
+                                              }{" "}
+                                              {
+                                                opportunity?.professional
+                                                  ?.last_name
+                                              }
+                                            </div>
+                                            <div>
+                                              {
+                                                opportunity?.professional
+                                                  ?.company_street_address
+                                              }
+                                              ,{" "}
+                                              {
+                                                opportunity?.professional
+                                                  ?.company_city
+                                              }
+                                              ,{" "}
+                                              {opportunity?.professional?.state}
+                                              ,{" "}
+                                              {
+                                                opportunity?.professional
+                                                  ?.zip_code
+                                              }
+                                            </div>
+                                            <div>
+                                              {opportunity?.professional?.email}
+                                            </div>
+                                            <div>
+                                              {
+                                                opportunity?.professional
+                                                  ?.phone_number
+                                              }
+                                            </div>
+                                            <div>
+                                              <a
+                                                href={`/profile/${opportunity?.professional_id}`}
+                                                style={{
+                                                  textDecoration: "underline",
+                                                }}
+                                              >
+                                                View Profile
+                                              </a>
+                                            </div>
+                                          </div>
+                                          <div className="col-6">
+                                            <div
+                                              style={{
+                                                fontWeight: "bold",
+                                                textTransform: "uppercase",
+                                                color: "#dc3545",
+                                              }}
+                                            >
+                                              Re: Address
+                                            </div>
+                                            <div className="mt-1 gap-4">
+                                              <div className="d-flex gap-1">
+                                                <div>
+                                                  <input
+                                                    type="checkbox"
+                                                    id="checkbox"
+                                                    checked={
+                                                      opportunity.is_interested ===
+                                                      1
+                                                    }
+                                                  />
+                                                </div>
+                                                <span className="fw-bold fs-6">
+                                                  {" "}
+                                                  YES{" "}
+                                                </span>
+                                                , I'm interseted.
+                                              </div>
+                                              <div className="d-flex gap-1">
+                                                <div>
+                                                  <input
+                                                    type="checkbox"
+                                                    id="checkbox"
+                                                    checked={
+                                                      opportunity.is_interested !==
+                                                      1
+                                                    }
+                                                  />
+                                                </div>
+                                                <span className="fw-bold fs-6">
+                                                  {" "}
+                                                  NO{" "}
+                                                </span>
+                                                , I'm not interseted.{" "}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )
+                                    )} */}
+                                    {projectData.data?.[
+                                      dataIndex
+                                    ]?.projectOpportunityReplies.map(
+                                      (opportunity, index) => {
+                                        // Check if the room_id of the opportunity matches any room_id in roominfo
+                                        const matchingRoom = projectData.data?.[
+                                          dataIndex
+                                        ]?.roominfo.find(
+                                          (room) =>
+                                            room.room_id === opportunity.room_id
+                                        );
+
+                                        // If a matching room is found, render the replies
+                                        if (matchingRoom) {
+                                          return (
+                                            <div
+                                              key={index}
+                                              className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2 service-pro"
+                                            >
+                                              <div className="col-6">
+                                                <div
+                                                  style={{
+                                                    fontWeight: "bold",
+                                                    textTransform: "uppercase",
+                                                  }}
+                                                >
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.first_name
+                                                  }{" "}
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.last_name
+                                                  }
+                                                </div>
+                                                <div>
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.company_street_address
+                                                  }
+                                                  ,{" "}
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.company_city
+                                                  }
+                                                  ,{" "}
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.state
+                                                  }
+                                                  ,{" "}
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.zip_code
+                                                  }
+                                                </div>
+                                                <div>
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.email
+                                                  }
+                                                </div>
+                                                <div>
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.phone_number
+                                                  }
+                                                </div>
+                                                <div>
+                                                  <a
+                                                    href={`/profile/${opportunity?.professional_id}`}
+                                                    style={{
+                                                      textDecoration:
+                                                        "underline",
+                                                    }}
+                                                  >
+                                                    View Profile
+                                                  </a>
+                                                </div>
+                                              </div>
+                                              <div className="col-6">
+                                                <div
+                                                  style={{
+                                                    fontWeight: "bold",
+                                                    textTransform: "uppercase",
+                                                    color: "#dc3545",
+                                                  }}
+                                                >
+                                                  Re: Address
+                                                </div>
+                                                <div className="mt-1 gap-4">
+                                                  <div className="d-flex gap-1">
+                                                    <div>
+                                                      <input
+                                                        type="checkbox"
+                                                        id="checkbox"
+                                                        checked={
+                                                          opportunity.is_interested ===
+                                                          1
+                                                        }
+                                                      />
+                                                    </div>
+                                                    <span className="fw-bold fs-6">
+                                                      {" "}
+                                                      YES{" "}
+                                                    </span>
+                                                    , I'm interested.
+                                                  </div>
+                                                  <div className="d-flex gap-1">
+                                                    <div>
+                                                      <input
+                                                        type="checkbox"
+                                                        id="checkbox"
+                                                        checked={
+                                                          opportunity.is_interested !==
+                                                          1
+                                                        }
+                                                      />
+                                                    </div>
+                                                    <span className="fw-bold fs-6">
+                                                      {" "}
+                                                      NO{" "}
+                                                    </span>
+                                                    , I'm not interested.
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          );
+                                        }
+
+                                        // If no matching room is found, return null (no render)
+                                        return null;
+                                      }
+                                    )}
+
+                                    {/* {projectData.data?.[
+                                      dataIndex
+                                    ]?.projectOpportunityReplies.map(
+                                      (opportunity, index) => (
+                                         const room = projectData.data?.[
+                                          dataIndex
+                                        ]?.roominfo.find(
+                                          (roomItem) =>
+                                            roomItem.room_id ===
+                                            opportunity.room_id
+                                        );
+                                        <div
+                                          key={index}
+                                          className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2 service-pro"
+                                        >
+                                          <div className="col-6">
+                                            <div
+                                              style={{
+                                                fontWeight: "bold",
+                                                textTransform: "uppercase",
+                                              }}
+                                            >
+                                              {
+                                                opportunity?.professional
+                                                  ?.first_name
+                                              }{" "}
+                                              {
+                                                opportunity?.professional
+                                                  ?.last_name
+                                              }
+                                            </div>
+                                            <div>
+                                              {
+                                                opportunity?.professional
+                                                  ?.company_street_address
+                                              }
+                                              ,{" "}
+                                              {
+                                                opportunity?.professional
+                                                  ?.company_city
+                                              }
+                                              ,{" "}
+                                              {opportunity?.professional?.state}
+                                              ,{" "}
+                                              {
+                                                opportunity?.professional
+                                                  ?.zip_code
+                                              }
+                                            </div>
+                                            <div>
+                                              {opportunity?.professional?.email}
+                                            </div>
+                                            <div>
+                                              {
+                                                opportunity?.professional
+                                                  ?.phone_number
+                                              }
+                                            </div>
+                                            <div>
+                                              <a
+                                                href={`/profile/${opportunity?.professional_id}`}
+                                                style={{
+                                                  textDecoration: "underline",
+                                                }}
+                                              >
+                                                View Profile
+                                              </a>
+                                            </div>
+                                          </div>
+                                          <div className="col-6">
+                                            <div
+                                              style={{
+                                                fontWeight: "bold",
+                                                textTransform: "uppercase",
+                                                color: "#dc3545",
+                                              }}
+                                            >
+                                              Re: Address
+                                            </div>
+                                            <div className="mt-1 gap-4">
+                                              <div className="d-flex gap-1">
+                                                <div>
+                                                  <input
+                                                    type="checkbox"
+                                                    id="checkbox"
+                                                    checked={
+                                                      opportunity.is_interested ===
+                                                      1
+                                                    }
+                                                  />
+                                                </div>
+                                                <span className="fw-bold fs-6">
+                                                  {" "}
+                                                  YES{" "}
+                                                </span>
+                                                , I'm interseted.
+                                              </div>
+                                              <div className="d-flex gap-1">
+                                                <div>
+                                                  <input
+                                                    type="checkbox"
+                                                    id="checkbox"
+                                                    checked={
+                                                      opportunity.is_interested !==
+                                                      1
+                                                    }
+                                                  />
+                                                </div>
+                                                <span className="fw-bold fs-6">
+                                                  {" "}
+                                                  NO{" "}
+                                                </span>
+                                                , I'm not interseted.{" "}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )
+                                    )} */}
+                                  </div>
                                 </div>
                               );
                             }
                           )}
-                          <div className="progress-slidee bg-white shadow p-3 border rounded-4 d-flex flex-wrap">
+                          {/* <div className="progress-slidee bg-white shadow p-3 border rounded-4 d-flex flex-wrap">
                             <div
                               class="reply-sec"
                               style={{
@@ -867,7 +1446,7 @@ const MyProject = () => {
                                 </div>
                               )
                             )}
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>

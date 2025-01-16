@@ -581,9 +581,11 @@ export const deleteAgentFeatures = createAsyncThunk(
 );
 export const deleteProfessionalProjects = createAsyncThunk(
   "dashboard/deleteProfessionalProjects",
-  async ({ roomId }, { dispatch }) => {
+  async ({ roomId, project_id }, { dispatch }) => {
     try {
-      const response = await http.delete(`/professional/project/${roomId}`);
+      const response = await http.delete(
+        `/professional/project/${project_id}/${roomId}`
+      );
       if (response.status === 200) {
         // dispatch(
         //   getAgentProject({ pageNo: pageNo, numberofdata: numberofdata })
