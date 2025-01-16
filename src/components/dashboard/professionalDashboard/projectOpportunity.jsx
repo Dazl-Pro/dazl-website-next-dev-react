@@ -18,9 +18,11 @@ import ModalImage from "react-modal-image";
 const ProjectOpportunity = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  // console.log(id);
 
   const [data, setData] = useState(null);
-  const [message, setMessage] = useState("");
+  // const [roomIds, setRoomIds] = useState([]);
+  // const [message, setMessage] = useState("");
   const [interested, setInterested] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isModalOptionSelected, setIsModalOptionSelected] = useState(false);
@@ -31,9 +33,10 @@ const ProjectOpportunity = () => {
 
   const [showModal2, setShowModal2] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+  const [selectedRoomIds, setSelectedRoomIds] = useState(null);
 
   const navigate = useNavigate();
-  console.log(message);
+  // console.log(message);
 
   const openModal = (image) => {
     setSelectedImage(image);
@@ -53,35 +56,83 @@ const ProjectOpportunity = () => {
       .unwrap()
       .then((res) => {
         console.log(res.reports.original.final);
+        console.log(res.reports.original.final.roominfo[0].room_id);
+        // const roomIdsArray = res.reports.original.final.roominfo
+        //   .map((item) => item.room_id)
+        //   .flat();
+        // console.log(roomIdsArray);
+        // setRoomIds(roomIdsArray);
         setData(res.reports.original.final);
       });
   }, [id]);
 
-  const handleSendMail = () => {
-    dispatch(
-      sendMailHomeOwner({
-        projectId: id,
-        message,
-        isInterested: interested,
-        homeOwnerMail: data.customer.email,
-        homeOwnerName: data.customer.first_name + " " + data.customer.last_name,
-      })
-    );
-    if (dispatch) {
+  // const handleSendMail = () => {
+  //   if (selectedRoomIds.length === 0) {
+  //     console.log("No rooms selected.");
+  //     return; // Prevent dispatch if no rooms are selected
+  //   }
+  //   dispatch(
+  //     sendMailHomeOwner({
+  //       projectId: selectedRoomIds,
+  //       // message,
+  //       isInterested: interested,
+  //       homeOwnerMail: data.customer.email,
+  //       homeOwnerName: data.customer.first_name + " " + data.customer.last_name,
+  //     })
+  //   );
+  //   if (dispatch) {
+  //     Toastify({
+  //       data: "success",
+  //       msg: "Response Sent  successfully",
+  //     });
+  //     return;
+  //   }
+  //   // navigate("/company/projectOpportunities");
+  // };
+
+  const handleSendMail = (ids) => {
+    // console.log(ids);
+    if (ids) {
+      dispatch(
+        sendMailHomeOwner({
+          projectId: id, // Use selected room id
+          roomId: ids,
+          isInterested: true,
+          homeOwnerMail: data.customer.email,
+          homeOwnerName:
+            data.customer.first_name + " " + data.customer.last_name,
+        })
+      );
       Toastify({
         data: "success",
-        msg: "Response Sent  successfully",
+        msg: "Response Sent successfully",
       });
-      return;
+    } else {
+      console.log("No room selected or room IDs are missing");
     }
-    // navigate("/company/projectOpportunities");
   };
 
-  const deleteProject = (project_id) => {
-    console.log("-----------", project_id);
+  // const deleteProject = (project_id) => {
+  //   console.log("-----------", project_id);
+  //   dispatch(
+  //     deleteProfessionalProjects({
+  //       project_id: project_id,
+  //     })
+  //   );
+  //   navigate("/company/projectOpportunities");
+  //   if (dispatch) {
+  //     Toastify({
+  //       data: "success",
+  //       msg: "Project delete  successfully",
+  //     });
+  //     return;
+  //   }
+  // };
+  const deleteProject = (ids) => {
+    console.log("-----------", ids);
     dispatch(
       deleteProfessionalProjects({
-        project_id: project_id,
+        roomId: ids,
       })
     );
     navigate("/company/projectOpportunities");
@@ -93,23 +144,35 @@ const ProjectOpportunity = () => {
       return;
     }
   };
-
-  const handleAnotherClick = () => {
+  const handleAnotherClick = (ids) => {
     if (isModalOptionSelected) {
-      handleSendMail();
+      handleSendMail(ids);
     }
     setShowModal(true);
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (ids, interested) => {
+    console.log("Button clicked, interested:", interested);
+    // Call the appropriate function based on the value of 'interested'
     if (interested === true) {
-      handleSendMail();
+      handleSendMail(ids);
     } else if (interested === false) {
       setShowModal(true);
-      handleAnotherClick();
+      handleAnotherClick(ids);
     }
   };
-
+  // const handleButtonClick = (roomId, isInterested = true) => {
+  //   setSelectedRoomIds((prevSelectedRoomIds) => {
+  //     if (isInterested) {
+  //       // Add the roomId if it's not already in the list
+  //       handleSendMail();
+  //       return [...prevSelectedRoomIds, roomId];
+  //     } else {
+  //       // Remove the roomId from the list if it's already there
+  //       return prevSelectedRoomIds.filter((id) => id !== roomId);
+  //     }
+  //   });
+  // };
   console.log(data);
 
   const formatDate = (timestamp) => {
@@ -139,10 +202,10 @@ const ProjectOpportunity = () => {
                   {data?.customer?.first_name + " " + data?.customer?.last_name}
                 </span>
               </p>
-              <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
+              {/* <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
                 <span className="fw-semibold">Email Address:</span>{" "}
                 <span className="w-50">{data?.customer?.email}</span>
-              </p>
+              </p> */}
               {data?.customer?.house?.address && (
                 <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
                   <span className="fw-semibold">Property Address: </span>
@@ -159,9 +222,9 @@ const ProjectOpportunity = () => {
           </div>
           <div className="pt-3 flex w-full">
             {data?.roominfo.map((room, index) => (
-              <div key={index} className="mb-4 col-md-6">
-                <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4">
-                  <div className="d-flex  align-items-center justify-content-between">
+              <div key={index} className="mb-4 col-lg-12">
+                <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4 ">
+                  <div className="d-flex  align-items-center justify-content-between ">
                     <h3 className="fw-semibold font-18">
                       {index + 1}.) {room?.room_name}
                     </h3>
@@ -169,6 +232,7 @@ const ProjectOpportunity = () => {
                       {room?.status}
                     </h5>
                   </div>
+
                   <div>
                     {/* {
                       room?.images?.filter(
@@ -272,6 +336,129 @@ const ProjectOpportunity = () => {
                         })}
                       </div>
                     )}
+                  <div className="row ">
+                    {/* <div className="col-md-3">
+                      <div className="inner-text">
+                        <label htmlFor="checkbox" className="fw-bold fs-3">
+                          Your Response
+                        </label>
+                      </div>
+                    </div> */}
+                    <div className="col-md-6">
+                      <div className="inner-text pt-3 flex gap-4">
+                        <div>
+                          <div className="gap-2">
+                            <input
+                              type="checkbox"
+                              id="checkbox"
+                              // checked={interested === true}
+                              // checked={selectedRoomIds(room.room_id)}
+                              // onChange={() => {
+                              //   // setInterested(true);
+                              //   handleButtonClick();
+                              // }}
+                              // onChange={() => handleCheckboxChange(room.room_id)}
+                              // onClick={() => setShowModal(false)}
+                              onChange={() => {
+                                setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
+                                handleButtonClick(room.room_id, true);
+                              }}
+                            />
+                            <span className="fw-bold fs-6"> YES </span>, I'm
+                            interseted.
+                            <input
+                              type="checkbox"
+                              id="checkbox"
+                              // checked={interested === false}
+                              // onChange={() => setInterested(false)}
+
+                              // onClick={() => setShowModal(true)}
+                              // checked={isModalOptionSelected}
+                              // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
+                              onChange={() => {
+                                setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
+                                handleButtonClick(room.room_id, false);
+                              }}
+                            />
+                            <span className="fw-bold fs-6"> NO </span>, I'm not
+                            interseted.{" "}
+                          </div>
+                        </div>
+                        {/* <div>
+                          <input
+                            type="checkbox"
+                            id="checkbox"
+                            // checked={interested === false}
+                            // onChange={() => setInterested(false)}
+
+                            // onClick={() => setShowModal(true)}
+                            // checked={isModalOptionSelected}
+                            // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
+                            onChange={() => {
+                              setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
+                              handleButtonClick(room.room_id, false);
+                            }}
+                          />
+                          <span className="fw-bold fs-6"> NO </span>, I'm not
+                          interseted.{" "}
+                        </div> */}
+                      </div>
+                    </div>
+                    <div className="col-md-3 text-end">
+                      {/* <button
+                        className="inner-text send-message d-flex align-items-center gap-2"
+                        // onClick={handleSendMail}
+                        onClick={handleButtonClick}
+                      >
+                        Send
+                        <SendIcon />
+                      </button> */}
+                      <Modal
+                        show={showModal}
+                        onHide={() => setShowModal(false)}
+                        centered
+                      >
+                        <Modal.Header closeButton>
+                          <Modal.Title>Delete Project</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <div className="text-center fs-5">
+                            Are you sure you want to delete this project?
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              deleteProject(room.room_id);
+                              setShowModal(false);
+                            }}
+                            checked={isModalOptionSelected}
+                            onChange={(e) =>
+                              setIsModalOptionSelected(e.target.checked)
+                            }
+                            className="px-4"
+                          >
+                            Yes
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => {
+                              handleSendMail();
+                              setShowModal(false);
+                            }}
+                            checked={isModalOptionSelected}
+                            onChange={(e) =>
+                              setIsModalOptionSelected(e.target.checked)
+                            }
+                            className="px-4"
+                          >
+                            No
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -287,21 +474,21 @@ const ProjectOpportunity = () => {
             <p className="pt-3  text-end">Lorem ipsum dolor sit amet.</p>
           </div> */}
         </div>
-        <div
+        {/* <div
           className=" border-top p-3 mt-4 w-100 bg-lightgrey rounded message-box"
           id="MessageBox"
-        >
-          <div className="row ">
+        > */}
+        {/* <div className="row ">
             <div className="col-md-3">
               <div className="inner-text">
                 <label htmlFor="checkbox" className="fw-bold fs-3">
                   Your Response
                 </label>
               </div>
-            </div>
-            <div className="col-md-6">
-              <div className="inner-text pt-3 flex gap-4">
-                <div>
+            </div> */}
+        {/* <div className="col-md-6">
+              <div className="inner-text pt-3 flex gap-4"> */}
+        {/* <div>
                   <input
                     type="checkbox"
                     id="checkbox"
@@ -310,8 +497,8 @@ const ProjectOpportunity = () => {
                     // onClick={() => setShowModal(false)}
                   />
                   <span className="fw-bold fs-6"> YES </span>, I'm interseted.
-                </div>
-                <div>
+                </div> */}
+        {/* <div>
                   <input
                     type="checkbox"
                     id="checkbox"
@@ -324,10 +511,10 @@ const ProjectOpportunity = () => {
                   />
                   <span className="fw-bold fs-6"> NO </span>, I'm not
                   interseted.{" "}
-                </div>
-              </div>
-            </div>
-            <div className="col-md-3 text-end">
+                </div> */}
+        {/* </div>
+            </div> */}
+        {/* <div className="col-md-3 text-end">
               <button
                 className="inner-text send-message d-flex align-items-center gap-2"
                 // onClick={handleSendMail}
@@ -376,9 +563,12 @@ const ProjectOpportunity = () => {
                   </Button>
                 </Modal.Footer>
               </Modal>
-            </div>
-          </div>
-          <div className="message-box pt-4 " id="messageBox">
+            </div> */}
+        {/* </div> */}
+
+        {/* </div> */}
+      </div>
+      {/* <div className="message-box pt-4 " id="messageBox">
             <label htmlFor="message ">
               <span className="fw-bold fs-5">Message:</span>
             </label>
@@ -387,10 +577,7 @@ const ProjectOpportunity = () => {
               id="message"
               onChange={(e) => setMessage(e.target.value)}
             />
-          </div>
-        </div>
-      </div>
-
+          </div> */}
       <Modal show={showModal2} onHide={() => setShowModal2(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Show Image</Modal.Title>
