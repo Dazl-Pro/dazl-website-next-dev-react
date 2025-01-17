@@ -348,8 +348,8 @@ const ProjectOpportunity = () => {
                     </div> */}
                     <div className="col-md-6">
                       <div className="inner-text pt-3 flex gap-4">
-                        <div>
-                          <div className="gap-2">
+                        <div className="ms-2">
+                          <div>
                             <input
                               type="checkbox"
                               id="checkbox"
@@ -366,8 +366,12 @@ const ProjectOpportunity = () => {
                                 handleButtonClick(room.room_id, true);
                               }}
                             />
-                            <span className="fw-bold fs-6"> YES </span>, I'm
-                            interseted.
+                            <span className="fw-bold fs-6 ms-2"> YES </span>,
+                            I'm interseted.
+                          </div>
+
+                          <div>
+                            {" "}
                             <input
                               type="checkbox"
                               id="checkbox"
@@ -382,8 +386,8 @@ const ProjectOpportunity = () => {
                                 handleButtonClick(room.room_id, false);
                               }}
                             />
-                            <span className="fw-bold fs-6"> NO </span>, I'm not
-                            interseted.{" "}
+                            <span className="fw-bold fs-6 ms-2"> NO </span>, I'm
+                            not interseted.{" "}
                           </div>
                         </div>
                         {/* <div>
