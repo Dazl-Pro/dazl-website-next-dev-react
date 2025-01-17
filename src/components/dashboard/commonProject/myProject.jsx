@@ -160,7 +160,7 @@ const MyProject = () => {
     );
 
     if (project) {
-      console.log(project);
+      // console.log(project);
       const room = project?.roominfo?.find(
         (room) => room?.room_id === roominfoItems.room_id
       );
@@ -182,9 +182,9 @@ const MyProject = () => {
       inspectionNotes: formData.title,
       images,
     };
-    console.log("-------------------", imagesUpload);
-    console.log("------------------dcddvdvdvd--", images);
-    console.log(project);
+    // console.log("-------------------", imagesUpload);
+    // console.log("------------------dcddvdvdvd--", images);
+    // console.log(project);
     if (location.pathname === "/homeOwner/my-project") {
       dispatch(
         updateReportFeatures({
@@ -301,7 +301,7 @@ const MyProject = () => {
         });
       } else {
         // If no checkboxes are selected, just dispatch the room ID
-        console.log("called");
+        // console.log("called");
         dispatch(addAnotherRoom({ roomId, project_id }))
           .unwrap()
           .then((response) => {
@@ -416,7 +416,7 @@ const MyProject = () => {
         // Handle error state or display error message to user
       });
   };
-  console.log("projectData------------", projectData);
+  // console.log("projectData------------", projectData);
   // const uploadImage = (e, imgIdx) => {
   //   const file = e.target.files[0];
   //   const isImage = file && file.type.startsWith("image/");
@@ -485,10 +485,16 @@ const MyProject = () => {
                         <div className="d-flex flex-column gap-4 rounded-4 p-4 border mb-4 slidee">
                           {items?.roominfo?.map(
                             (roominfoItems, indexroomInfo) => {
+                              const replies =
+                                items.projectOpportunityReplies.filter(
+                                  (reply) =>
+                                    reply.room_id == roominfoItems.room_id
+                                );
+
                               return (
                                 <div key={indexroomInfo}>
                                   <h4 className="text-start my-projects-head d-flex">
-                                    {roominfoItems?.room_name}
+                                    {roominfoItems?.room_name}jj
                                   </h4>
 
                                   <div className="d-flex flex-row flex-wrap rounded-4 mb-4">
@@ -743,7 +749,7 @@ const MyProject = () => {
                                           color: "#dc3545",
                                         }}
                                       >
-                                        Service Pro Replies:
+                                        Interested Professionals:
                                       </div>
                                       <div
                                         class="replies"
@@ -752,15 +758,18 @@ const MyProject = () => {
                                           fontSize: 20,
                                         }}
                                       >
-                                        You have{" "}
+                                        {" "}
                                         {
-                                          projectData.data?.[dataIndex]
-                                            ?.projectOpportunityReplies.length
+                                          // projectData.data?.[dataIndex]
+                                          //   ?.projectOpportunityReplies.length
+                                          replies.length
                                         }{" "}
-                                        replies
+                                        Professionals Engaged
                                       </div>
                                     </div>
-                                    {/* {projectData.data?.[
+                                    <div>
+                                      {" "}
+                                      {/* {projectData.data?.[
                                       dataIndex
                                     ]?.projectOpportunityReplies.map(
                                       (opportunity, index) => {
@@ -936,7 +945,7 @@ const MyProject = () => {
                                         );
                                       }
                                     )} */}
-                                    {/* {projectData.data?.[
+                                      {/* {projectData.data?.[
                                       dataIndex
                                     ]?.projectOpportunityReplies.map(
                                       (opportunity, index) => (
@@ -1048,25 +1057,24 @@ const MyProject = () => {
                                         </div>
                                       )
                                     )} */}
+                                    </div>
                                     {projectData.data?.[
                                       dataIndex
                                     ]?.projectOpportunityReplies.map(
                                       (opportunity, index) => {
-                                        // Check if the room_id of the opportunity matches any room_id in roominfo
-                                        const matchingRoom = projectData.data?.[
-                                          dataIndex
-                                        ]?.roominfo.find(
-                                          (room) =>
-                                            room.room_id === opportunity.room_id
-                                        );
+                                        // console.log(roominfoItems.room_id);
 
-                                        // If a matching room is found, render the replies
-                                        if (matchingRoom) {
+                                        if (
+                                          roominfoItems.room_id ==
+                                          opportunity.room_id
+                                        )
                                           return (
                                             <div
                                               key={index}
                                               className="mb-3 col-12 mt-2 d-flex border-top border-secondary flex-grow-1 px-3 py-2 service-pro"
                                             >
+                                              {/* {JSON.stringify(matchingRoom)} */}
+                                              {/* <div> */}
                                               <div className="col-6">
                                                 <div
                                                   style={{
@@ -1105,18 +1113,6 @@ const MyProject = () => {
                                                   }
                                                 </div>
                                                 <div>
-                                                  {
-                                                    opportunity?.professional
-                                                      ?.email
-                                                  }
-                                                </div>
-                                                <div>
-                                                  {
-                                                    opportunity?.professional
-                                                      ?.phone_number
-                                                  }
-                                                </div>
-                                                <div>
                                                   <a
                                                     href={`/profile/${opportunity?.professional_id}`}
                                                     style={{
@@ -1128,7 +1124,24 @@ const MyProject = () => {
                                                   </a>
                                                 </div>
                                               </div>
+
                                               <div className="col-6">
+                                                {" "}
+                                                <div>
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.email
+                                                  }
+                                                </div>
+                                                <div>
+                                                  {
+                                                    opportunity?.professional
+                                                      ?.phone_number
+                                                  }
+                                                </div>
+                                                {/* </div> */}
+                                              </div>
+                                              {/* <div className="col-6">
                                                 <div
                                                   style={{
                                                     fontWeight: "bold",
@@ -1162,7 +1175,7 @@ const MyProject = () => {
                                                         type="checkbox"
                                                         id="checkbox"
                                                         checked={
-                                                          opportunity.is_interested !==
+                                                          opportunity.is_interested ==
                                                           1
                                                         }
                                                       />
@@ -1174,13 +1187,12 @@ const MyProject = () => {
                                                     , I'm not interested.
                                                   </div>
                                                 </div>
-                                              </div>
+                                              </div> */}
                                             </div>
                                           );
-                                        }
+                                        // }
 
-                                        // If no matching room is found, return null (no render)
-                                        return null;
+                                        // return null;
                                       }
                                     )}
 
