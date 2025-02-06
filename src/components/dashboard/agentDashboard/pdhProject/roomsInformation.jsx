@@ -267,7 +267,7 @@ const RoomsInformation = (props) => {
 
       const currentSliderValue =
         parseFloat(localStorage.getItem("blocksliderValue")) || 0;
-      console.log(currentSliderValue);
+      // console.log(currentSliderValue);
       if (existingIndex !== -1) {
         // If the id is already present, remove it
         updatedCheckbox.splice(existingIndex, 1);
@@ -282,7 +282,7 @@ const RoomsInformation = (props) => {
         const newValue = currentSliderValue + phdRooms[index]?.points || 0;
         setVal(newValue); // Update state
 
-        console.log(newValue);
+        // console.log(newValue);
         localStorage.setItem("blocksliderValue", newValue); // Update localStorage
       }
 
@@ -294,10 +294,26 @@ const RoomsInformation = (props) => {
       return updatedCheckbox;
     });
   };
-
+  
+  let packageType = "";
+  
+  if (blocksliderValue >= 0 && blocksliderValue <= 49) {
+      packageType = "NEEDS DAZL";
+  } else if (blocksliderValue >= 50 && blocksliderValue <= 74) {
+      packageType = "MARKET READY";
+  } else if (blocksliderValue >= 75 && blocksliderValue <= 109) {
+      packageType = "DAZLING";
+  } else if (blocksliderValue > 109) {
+      packageType = "DAZL PLUS";
+  }
   const save = (e, value) => {
     e.preventDefault();
-
+    
+    // phdCheckbox.forEach((item , index)=>{
+    //   item["description"] = state.textArea[index]
+    // })
+    // console.log(phdCheckbox ,"hereeee");
+    
     // const selectedOption = input.options;
 
     // // Calculate price based on the selected option
@@ -318,7 +334,7 @@ const RoomsInformation = (props) => {
     // const checkedCheckboxesData = phdCheckbox.filter(
     //   (checkbox, index) => checkboxes[index]
     // );
-    const checkedCheckboxesData = (phdCheckbox || []).filter(
+    const checkedCheckboxesData = (phdCheckbox ).filter(
       (checkbox, index) => checkboxes[index]
     );
 
@@ -382,6 +398,7 @@ const RoomsInformation = (props) => {
       formData.append("left", `calc(-50% - "4px")`);
       formData.append("slider_value", sliderValue);
       formData.append("block_slider_value", blocksliderValue);
+      // formData.append("package_type", packageType);
       formData.append("highest_price", maxValue);
       // formData.append("dazlValue", updatedPrice);
       // formData.append("dazlValue", input.level);
@@ -397,6 +414,7 @@ const RoomsInformation = (props) => {
         selectedValues?.map((item, index) => {
           return formData.append(`${item.data}`, item.selectedValue);
         });
+        // console.log(addValueData)
       if (
         addValueData.length > 0 &&
         Array.isArray(addValueCheckbox) &&
@@ -408,21 +426,27 @@ const RoomsInformation = (props) => {
       }
 
       phdCheckbox.length > 0 &&
-        phdCheckbox?.forEach((item) => {
-          const checkboxKey = `rooms[${roomId}][feature_status][${
-            item.checkbox ?? "description"
-          }]`;
+        phdCheckbox?.forEach((item ,index) => {  
+// console.log(item)
+          // const checkboxKey = `rooms[${roomId}][feature_status][${
+          //   item.checkbox ?? "description"
+          // }]`;
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
+          // console.log(descriptionKey)
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-          formData.append(checkboxKey, "NEEDS DAZL");
-          formData.append(descriptionKey, item.description);
+          // formData.append(checkboxKey, "NEEDS DAZL");
+     
+          formData.append(descriptionKey,item?.description);
+          
           item?.images?.forEach((image, imgIndex) => {
             const imageKey = `${imagesKey}[${imgIndex}]`;
             formData.append(imageKey, image);
           });
         });
-      formData.append(`rooms[${roomId}][status]`, input.level);
+      
+        
+      formData.append(`rooms[${roomId}][status]`, packageType);
       formData.append("zip_code", agentData.zip_code ?? "123456");
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
@@ -431,23 +455,25 @@ const RoomsInformation = (props) => {
         saved1 !== null ? saved1.customer : undefined
       );
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
-
+// console.log(checkedCheckboxesData)
       checkedCheckboxesData.length > 0 &&
         checkedCheckboxesData?.forEach((item) => {
           const checkboxKey = `rooms[${roomId}][feature_status][${
             item.checkbox ?? "description"
           }]`;
+          // console.log(checkboxKey)
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
+        //  console.log(descriptionKey) 
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-          formData.append(checkboxKey, "NEEDS DAZL");
+          // formData.append(checkboxKey, "NEEDS DAZL");
           formData.append(descriptionKey, item.description);
           item.images?.forEach((image, imgIndex) => {
             const imageKey = `${imagesKey}[${imgIndex}]`;
             formData.append(imageKey, image);
           });
         });
-
+        // console.log(formData)
       dispatch(createPhd(formData))
         .unwrap()
         .then((response) => {
@@ -455,6 +481,7 @@ const RoomsInformation = (props) => {
             setShow(false);
             localStorage.setItem("saved1", JSON.stringify(response));
             setSelectvalue("");
+            localStorage.removeItem("blocksliderValue");
             Toastify({
               data: "success",
               msg: "Your item is saved now you can add more ",
@@ -535,7 +562,8 @@ const RoomsInformation = (props) => {
             // Check if an object with the same checkbox ID exists in the array
             const desc = textArray[index];
             newArray?.forEach((item, i) => {
-              if (item.checkbox === phd.id) {
+              if (item?.checkbox === phd.id) {
+                // console.log('----------',item)
                 newArray[i] = {
                   checkbox: phd.id,
                   description: description,
@@ -635,6 +663,7 @@ const RoomsInformation = (props) => {
       setErrorborder1(false);
     }
   };
+  
   const handleSelectChange = (event, typeId, roomId, name) => {
     const selectedValue = event.target.value;
     const data = `rooms[${roomId}][feature_type][${typeId}]`;
@@ -689,6 +718,10 @@ const RoomsInformation = (props) => {
   //     </Tooltip>
   //   );
   // }
+
+  
+// const state  = watch()
+// console.log(state.textArea);
 
   return (
     <div>
