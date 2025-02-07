@@ -428,14 +428,14 @@ const RoomsInformation = (props) => {
       phdCheckbox.length > 0 &&
         phdCheckbox?.forEach((item ,index) => {  
 // console.log(item)
-          // const checkboxKey = `rooms[${roomId}][feature_status][${
-          //   item.checkbox ?? "description"
-          // }]`;
+          const checkboxKey = `rooms[${roomId}][feature_status][${
+            item.checkbox ?? "description"
+          }]`;
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
-          // console.log(descriptionKey)
+          console.log("descriptionKey", descriptionKey)
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-          // formData.append(checkboxKey, "NEEDS DAZL");
+          formData.append(checkboxKey, "NEEDS DAZL");
      
           formData.append(descriptionKey,item?.description);
           
