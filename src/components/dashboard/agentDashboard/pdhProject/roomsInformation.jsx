@@ -239,7 +239,7 @@ const RoomsInformation = (props) => {
     const value = { data, val };
     setAddvalueCheckbox((prevCheckbox) => [...prevCheckbox, value]);
   };
-
+const state  = watch()
   // const handleCheckboxArrayChange = (id, index) => {
   //   setPhdCheckbox((prev) => {
   //     const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
@@ -261,10 +261,12 @@ const RoomsInformation = (props) => {
   // };
 
   const handleCheckboxArrayChange = (id, index) => {
+    
     setPhdCheckbox((prev) => {
       const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
       let updatedCheckbox = [...prev];
-
+      console.log(state.textArea[index]); 
+      
       const currentSliderValue =
         parseFloat(localStorage.getItem("blocksliderValue")) || 0;
       // console.log(currentSliderValue);
@@ -294,26 +296,36 @@ const RoomsInformation = (props) => {
       return updatedCheckbox;
     });
   };
-  
+
+
+const handleDescriptionChange = (desc , checkBoxVal)=>{
+  let arr  = [...phdCheckbox];
+  const checkBoxIndex = phdCheckbox.findIndex(c=>c.checkbox===checkBoxVal.id)
+  arr[checkBoxIndex]["description"] = desc;
+  setPhdCheckbox(arr)
+}
+
   let packageType = "";
-  
+
   if (blocksliderValue >= 0 && blocksliderValue <= 49) {
-      packageType = "NEEDS DAZL";
+    packageType = "NEEDS DAZL";
   } else if (blocksliderValue >= 50 && blocksliderValue <= 74) {
-      packageType = "MARKET READY";
+    packageType = "MARKET READY";
   } else if (blocksliderValue >= 75 && blocksliderValue <= 109) {
-      packageType = "DAZLING";
+    packageType = "DAZLING";
   } else if (blocksliderValue > 109) {
-      packageType = "DAZL PLUS";
+    packageType = "DAZL PLUS";
   }
   const save = (e, value) => {
     e.preventDefault();
+    console.log(phdCheckbox);
     
+      
     // phdCheckbox.forEach((item , index)=>{
     //   item["description"] = state.textArea[index]
     // })
     // console.log(phdCheckbox ,"hereeee");
-    
+
     // const selectedOption = input.options;
 
     // // Calculate price based on the selected option
@@ -334,7 +346,7 @@ const RoomsInformation = (props) => {
     // const checkedCheckboxesData = phdCheckbox.filter(
     //   (checkbox, index) => checkboxes[index]
     // );
-    const checkedCheckboxesData = (phdCheckbox ).filter(
+    const checkedCheckboxesData = phdCheckbox.filter(
       (checkbox, index) => checkboxes[index]
     );
 
@@ -414,7 +426,7 @@ const RoomsInformation = (props) => {
         selectedValues?.map((item, index) => {
           return formData.append(`${item.data}`, item.selectedValue);
         });
-        // console.log(addValueData)
+      // console.log(addValueData)
       if (
         addValueData.length > 0 &&
         Array.isArray(addValueCheckbox) &&
@@ -426,26 +438,25 @@ const RoomsInformation = (props) => {
       }
 
       phdCheckbox.length > 0 &&
-        phdCheckbox?.forEach((item ,index) => {  
-// console.log(item)
+        phdCheckbox?.forEach((item, index) => {
+          // console.log(item)
           const checkboxKey = `rooms[${roomId}][feature_status][${
             item.checkbox ?? "description"
           }]`;
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
-          console.log("descriptionKey", descriptionKey)
+          // console.log(descriptionKey)
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-          formData.append(checkboxKey, "NEEDS DAZL");
-     
-          formData.append(descriptionKey,item?.description);
-          
+           formData.append(checkboxKey, "NEEDS DAZL");
+
+          formData.append(descriptionKey, item?.description);
+
           item?.images?.forEach((image, imgIndex) => {
             const imageKey = `${imagesKey}[${imgIndex}]`;
             formData.append(imageKey, image);
           });
         });
-      
-        
+
       formData.append(`rooms[${roomId}][status]`, packageType);
       formData.append("zip_code", agentData.zip_code ?? "123456");
       formData.append("final", value === "save" ? 0 : 1);
@@ -455,7 +466,7 @@ const RoomsInformation = (props) => {
         saved1 !== null ? saved1.customer : undefined
       );
       saved1 !== null ? formData.append("project_id", saved1.project_id) : "";
-// console.log(checkedCheckboxesData)
+      // console.log(checkedCheckboxesData)
       checkedCheckboxesData.length > 0 &&
         checkedCheckboxesData?.forEach((item) => {
           const checkboxKey = `rooms[${roomId}][feature_status][${
@@ -463,17 +474,17 @@ const RoomsInformation = (props) => {
           }]`;
           // console.log(checkboxKey)
           const descriptionKey = `rooms[${roomId}][feature_issues_images_descr][${item.checkbox}]`;
-        //  console.log(descriptionKey) 
+          //  console.log(descriptionKey)
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-          // formData.append(checkboxKey, "NEEDS DAZL");
+          formData.append(checkboxKey, "NEEDS DAZL");
           formData.append(descriptionKey, item.description);
           item.images?.forEach((image, imgIndex) => {
             const imageKey = `${imagesKey}[${imgIndex}]`;
             formData.append(imageKey, image);
           });
         });
-        // console.log(formData)
+      // console.log(formData)
       dispatch(createPhd(formData))
         .unwrap()
         .then((response) => {
@@ -663,7 +674,7 @@ const RoomsInformation = (props) => {
       setErrorborder1(false);
     }
   };
-  
+
   const handleSelectChange = (event, typeId, roomId, name) => {
     const selectedValue = event.target.value;
     const data = `rooms[${roomId}][feature_type][${typeId}]`;
@@ -719,9 +730,8 @@ const RoomsInformation = (props) => {
   //   );
   // }
 
-  
-// const state  = watch()
-// console.log(state.textArea);
+  // const state  = watch()
+  // console.log(state.textArea);
 
   return (
     <div>
@@ -1107,6 +1117,10 @@ const RoomsInformation = (props) => {
                         variant="outlined"
                         fullWidth
                         {...register(`textArea[${index}]`)}
+                        onChange={e=>{
+                        handleDescriptionChange(e.target.value , _)
+                         
+                        }}
                         className={`${
                           watch(`textArea[${index}]`) === "" ? "error" : ""
                         } `}
