@@ -88,6 +88,7 @@ const ViewPhdAlt = ({
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selector?.data?.viewPhdAlt;
+
   const [errorBorder1, setErrorborder1] = useState(false);
   const [input, setInput] = React.useState({
     phd_description: "",
@@ -192,7 +193,8 @@ const ViewPhdAlt = ({
     viewPhdData &&
     viewPhdData[0] &&
     viewPhdData[0].roominfo &&
-    viewPhdData[0].roominfo.map((item) => item.status).flat();
+    viewPhdData[0].roominfo.map((item) => item.status).flat()&&
+    viewPhdData[0].roominfo?.map((item) => item.block_slider_value) || [];
 
   // const value = viewPhdData[0]?.roominfo.map((item) => item.feature).flat();
   // console.log(value);
@@ -551,10 +553,13 @@ const ViewPhdAlt = ({
                             </div>
 
                             <Formik initialValues={initialValues}>
+                             
                               {({ values, setFieldValue, errors }) => {
+                                // 50 and 25 is coming.
                                 console.log(
-                                  values.sliders,
-                                  values.sliders[index]
+
+                                  // values.sliders[],
+                                   initialValues.sliders[0]
                                 );
                                 return (
                                   <Form>
@@ -565,17 +570,18 @@ const ViewPhdAlt = ({
                                           style={{ margin: "10px" }}
                                         >
                                           <div className="slider-container position-relative p-3">
+
                                             <Field name={`sliders.${index}`}>
                                               {({ field }) => (
                                                 <Slider
                                                   {...field}
-                                                  value={values.sliders[index]}
+                                                  value={initialValues.sliders[index] || 0}
                                                   onChange={
                                                     (e, value) => {}
-                                                    //   setFieldValue(
-                                                    //     `sliders.${index}`,
-                                                    //     value
-                                                    //   )
+                                                      // setFieldValue(
+                                                      //   `sliders.${index}`,
+                                                      //   value
+                                                      // )
                                                   }
                                                   valueLabelDisplay="auto"
                                                   valueLabelFormat={(value) =>
