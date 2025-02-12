@@ -437,23 +437,61 @@ const CreatePhd = () => {
                   <>
                     <Box sx={{ width: 300 }} className="w-100">
                       <div className="position-relative cs-price-slider-main">
-                        <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges">
-                          <Typography gutterBottom className="start-n40px">
+                      
+
+                        {/* Inputs First */}
+                        <div className="d-flex justify-content-between">
+                          <div>
+                            <Typography variant="body">
+                              Set Low Value:{"$ "}
+                            </Typography>
+                            <input
+                              type="text"
+                              onChange={handleLowValueChange}
+                              valueLabelDisplay="on"
+                              valueLabelFormat={(value) =>
+                                formatNumberWithCommas(value)
+                              }
+                            />
+                            {errorLow && (
+                              <div style={{ color: "red" }}>{errorLow}</div>
+                            )}
+                          </div>
+
+                          <div>
+                            <Typography variant="body">
+                              Set High Value: {"$ "}
+                            </Typography>
+                            <input
+                              type="text"
+                              onChange={handleMaxValueChange}
+                              valueLabelDisplay="on"
+                              valueLabelFormat={(value) =>
+                                formatNumberWithCommas(value)
+                              }
+                            />
+                            {errorHigh && (
+                              <div style={{ color: "red" }}>{errorHigh}</div>
+                            )}
+                          </div>
+                        </div>
+                        <br />
+                        <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges slider-value">
+                          <Typography gutterBottom className="start-n40px text-white ">
                             $ {formatNumberWithCommas(lowValue)}
                           </Typography>
                           <Typography
                             gutterBottom
-                            className="end-n40px text-black"
+                            className="end-n40px text-black "
                           >
                             $ {formatNumberWithCommas(maxValue)}
                           </Typography>
                         </div>
-
+                        {/* Slider Below */}
                         <div className="slider-container position-relative">
                           <Slider
                             value={sliderValue}
                             aria-label="Default"
-                            // valueLabelDisplay="on"
                             min={lowValue}
                             max={maxValue}
                             className="cs-price-slider"
@@ -463,44 +501,6 @@ const CreatePhd = () => {
                               formatNumberWithCommas(value)
                             }
                           />
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-between">
-                        <div>
-                          <Typography variant="body">
-                            Set Low Value:{"$ "}
-                          </Typography>
-                          <input
-                            type="text"
-                            // value={formatNumberWithCommas(lowValue)}
-                            // value={lowValue}
-                            onChange={handleLowValueChange}
-                            valueLabelDisplay="on"
-                            valueLabelFormat={(value) =>
-                              formatNumberWithCommas(value)
-                            }
-                          />
-                          {errorLow && (
-                            <div style={{ color: "red" }}>{errorLow}</div>
-                          )}
-                        </div>
-
-                        <div>
-                          <Typography variant="body">
-                            Set high Value: {"$ "}
-                          </Typography>
-                          <input
-                            type="text"
-                            // value={formatNumberWithCommas(maxValue)}
-                            onChange={handleMaxValueChange}
-                            valueLabelDisplay="on"
-                            valueLabelFormat={(value) =>
-                              formatNumberWithCommas(value)
-                            }
-                          />
-                          {errorHigh && (
-                            <div style={{ color: "red" }}>{errorHigh}</div>
-                          )}
                         </div>
                       </div>
                     </Box>

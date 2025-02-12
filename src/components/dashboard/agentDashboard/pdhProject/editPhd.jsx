@@ -79,11 +79,14 @@ const EditPhd = (props) => {
   const dispatch = useDispatch();
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
-
   const selectorPhd = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selectorPhd?.data?.viewPhdAlt;
-
   const [roomIds, setRoomIds] = useState([]);
+  const phdRoomsArray = useSelector((state) => state.dashboardSlice.data.phdRoomsData);
+  
+
+  // const phdRooms = selector.data.phdRoomsData;
+  
 
   useEffect(() => {
     if (viewPhdData && viewPhdData.length > 0) {
@@ -145,6 +148,7 @@ const EditPhd = (props) => {
     viewPhdData?.[0]?.roominfo?.forEach((room, index) => {
       const roomData = {
         roomId: room.room_id,
+        block_slider_value: room.block_slider_value,
         description:
           room.description ||
           viewPhdData?.[0]?.images?.filter(
@@ -337,6 +341,7 @@ const EditPhd = (props) => {
 
     setDescriptionError(requiresDescription);
 
+
     // const selectedOption = input.options;
     // let updatedPrice = price;
 
@@ -401,7 +406,7 @@ const EditPhd = (props) => {
               );
 
               if (matchingImages) {
-                const existingImagesCount = block.roadBlockImages.length;
+                const existingImagesCount = block.roadBlockImages?.length;
                 const mergedImages = [
                   ...block.roadBlockImages, // Keep existing images
                   ...(matchingImages?.images?.map((image, index) => ({
@@ -567,65 +572,122 @@ const EditPhd = (props) => {
     });
   };
 
-  const handleValueChange = (roomId, valueId, isChecked, name) => {
-    setInput((prevState) =>
-      prevState?.map((room) => {
+  // const handleValueChange = (roomId, valueId, isChecked, name) => {
+  //   setInput((prevState) =>
+  //     prevState?.map((room) => {
+  //       if (room.roomId === roomId) {
+  //         if (name === "additionalValue") {
+  //           const updatedValues = [...room.additionalValues];
+  //           const existingIndex = updatedValues.findIndex(
+  //             (item) => item?.id === valueId
+  //           );
+  //           if (existingIndex !== -1) {
+  //             updatedValues[existingIndex].isChecked = isChecked;
+  //           } else {
+  //             updatedValues.push({ id: valueId, isChecked });
+  //           }
+  //           return { ...room, additionalValues: updatedValues };
+  //         } else if (name === "roadBlocks") {
+  //           const updatedValues = [...room.roadBlocks];
+  //           const existingIndex = updatedValues.findIndex(
+  //             (item) => item?.id === valueId
+  //           );
+  //           if (existingIndex !== -1) {
+  //             updatedValues[existingIndex].isChecked = isChecked;
+  //           } else {
+  //             updatedValues.push({ id: valueId, isChecked });
+  //           }
+  //           return { ...room, roadBlocks: updatedValues };
+  //         }
+  //       }
+  //       return room;
+  //     })
+  //   );
+  //   if (name === "roadBlocks") {
+  //     setPhotoFieldsCheckBox((prevPhotoFieldsCheckBox) => {
+  //       const updatedPhotoFieldsCheckBox = [...prevPhotoFieldsCheckBox];
+  //       const updatedPhotoFields = updatedPhotoFieldsCheckBox.map((photo) => {
+  //         const roadBlocks = photo.roadBlocks || [];
+  //         const existingIndex = roadBlocks.findIndex(
+  //           (block) => block.roadBlock_id === valueId
+  //         );
+
+  //         if (existingIndex !== -1) {
+  //           // If valueId is present, remove it
+  //           roadBlocks.splice(existingIndex, 1);
+  //         } else {
+  //           // If valueId is not present, add it
+  //           roadBlocks.push({
+  //             roadBlock_id: valueId,
+  //             images: [{ file: null }],
+  //           });
+  //         }
+
+  //         return { ...photo, roadBlocks };
+  //       });
+
+  //       return updatedPhotoFields;
+  //     });
+  //   }
+  // };
+
+
+  const handleValueChange = (
+    roomId,
+    valueId,
+    isChecked,
+    category,
+    index,
+    matchingRoadBlockIndex,
+    additionalValue, 
+    name,
+  ) => {
+    setInput((prev) => {
+     
+      return prev.map((room) => {
+
+        
         if (room.roomId === roomId) {
-          if (name === "additionalValue") {
-            const updatedValues = [...room.additionalValues];
-            const existingIndex = updatedValues.findIndex(
-              (item) => item?.id === valueId
-            );
-            if (existingIndex !== -1) {
-              updatedValues[existingIndex].isChecked = isChecked;
-            } else {
-              updatedValues.push({ id: valueId, isChecked });
+
+          let updatedRoadBlocks = [...room.roadBlocks];
+          let currentValue = room.block_slider_value || 0;
+
+          // Check if the checkbox is already checked
+          const existingIndex = updatedRoadBlocks.findIndex(
+            (item) => (item.id === valueId)
+          );
+          if (isChecked) {
+            
+            // Add the roadblock if not already there
+            if (existingIndex === -1) {
+              updatedRoadBlocks.push({ id: valueId, isChecked: true });
+              currentValue += phdRoomsArray[index]?.points || 0;
+           
             }
-            return { ...room, additionalValues: updatedValues };
-          } else if (name === "roadBlocks") {
-            const updatedValues = [...room.roadBlocks];
-            const existingIndex = updatedValues.findIndex(
-              (item) => item?.id === valueId
-            );
+          } else {
+            // Remove the roadblock and decrease value
             if (existingIndex !== -1) {
-              updatedValues[existingIndex].isChecked = isChecked;
-            } else {
-              updatedValues.push({ id: valueId, isChecked });
+          
+              updatedRoadBlocks.splice(existingIndex, 1);
+              currentValue -= phdRoomsArray[index]?.points || 0;
             }
-            return { ...room, roadBlocks: updatedValues };
           }
+  
+          // Ensure value doesn't exceed 110
+          currentValue = Math.min(110, Math.max(0, currentValue));
+  
+          return {
+            ...room,
+            roadBlocks: updatedRoadBlocks,
+            block_slider_value: currentValue,
+          };
         }
         return room;
-      })
-    );
-    if (name === "roadBlocks") {
-      setPhotoFieldsCheckBox((prevPhotoFieldsCheckBox) => {
-        const updatedPhotoFieldsCheckBox = [...prevPhotoFieldsCheckBox];
-        const updatedPhotoFields = updatedPhotoFieldsCheckBox.map((photo) => {
-          const roadBlocks = photo.roadBlocks || [];
-          const existingIndex = roadBlocks.findIndex(
-            (block) => block.roadBlock_id === valueId
-          );
-
-          if (existingIndex !== -1) {
-            // If valueId is present, remove it
-            roadBlocks.splice(existingIndex, 1);
-          } else {
-            // If valueId is not present, add it
-            roadBlocks.push({
-              roadBlock_id: valueId,
-              images: [{ file: null }],
-            });
-          }
-
-          return { ...photo, roadBlocks };
-        });
-
-        return updatedPhotoFields;
       });
-    }
+    });
   };
 
+  
   const handleRemoveImage = (room_id, imageIndex) => {
     const updatedRoomImagesObject = [...roomImagesObject];
 
@@ -675,11 +737,27 @@ const EditPhd = (props) => {
     });
   };
 
+  // const handleChangee = (e, roomId, name) => {
+  //   const value = e.target.value;
+  //   const roomIndex = input.findIndex((room) => room.roomId === roomId);
+  //   setInput((prevState) => {
+  //     const updatedRooms = [...prevState];
+  //     updatedRooms[roomIndex] = {
+  //       ...updatedRooms[roomIndex],
+  //       [name]: value,
+  //     };
+  //     return updatedRooms;
+  //   });
+  // };
+
   const handleChangee = (e, roomId, name) => {
     const value = e.target.value;
     const roomIndex = input.findIndex((room) => room.roomId === roomId);
     setInput((prevState) => {
       const updatedRooms = [...prevState];
+      prevState.map((room) =>
+        room.roomId === roomId ? { ...room, [name]: value } : room
+      );
       updatedRooms[roomIndex] = {
         ...updatedRooms[roomIndex],
         [name]: value,
@@ -1007,7 +1085,73 @@ const EditPhd = (props) => {
                 <FormLabel className="text-body">
                   Overall first impressions
                 </FormLabel>
-                <Box sx={{ width: "full", padding: 2 }}>
+                <Box sx={{ width: "full", padding: 3 }}>
+    <div className="slider-container position-relative">
+      <div className="d-flex justify-content-between w-100">
+        <p>0pts</p>
+        <p>110pts</p>
+      </div>
+
+      <Slider
+        marks={[
+          { value: 14},
+          { value: 50},
+          { value: 75},
+          { value: 110},
+        ]}
+        step={1}
+        value={
+          input.find((room) => room?.roomId === items?.room_id)
+            ?.block_slider_value || 0
+        }
+        valueLabelDisplay="on"
+        min={0}
+        max={110}
+        onChange={(e, newValue) => {
+          handleChangee(
+            { target: { value: newValue } },
+            items.room_id,
+            "block_slider_value"
+          );
+        }}
+        className="cs-price-slider"
+      />
+    </div>
+
+    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Typography
+        variant="body2"
+        onClick={() => handleChangee({ target: { value: 10 } }, items.room_id, "block_slider_value")}
+        sx={{ cursor: "pointer" }}
+      >
+        NEEDS DAZL
+      </Typography>
+      <Typography
+        variant="body2"
+        onClick={() => handleChangee({ target: { value: 60 } }, items.room_id, "block_slider_value")}
+        sx={{ cursor: "pointer" }}
+      >
+        MARKET READY
+      </Typography>
+      <Typography
+        variant="body2"
+        onClick={() => handleChangee({ target: { value: 90 } }, items.room_id, "block_slider_value")}
+        sx={{ cursor: "pointer" }}
+      >
+        DAZLING
+      </Typography>
+      <Typography
+        variant="body2"
+        onClick={() => handleChangee({ target: { value: 110 } }, items.room_id, "block_slider_value")}
+        sx={{ cursor: "pointer" }}
+      >
+        DAZL PLUS
+      </Typography>
+    </Box>
+  </Box>
+                {/* 
+          previous */}
+                {/* <Box sx={{ width: "full", padding: 2 }}>
                   <Slider
                     marks={marks}
                     slots={{
@@ -1016,7 +1160,7 @@ const EditPhd = (props) => {
                     step={1}
                     value={
                       input.find((room) => room?.roomId === items?.room_id)
-                        ?.status || ""
+                        ?.block_slider_value || 1
                     }
                     valueLabelDisplay="on"
                     min={1}
@@ -1036,7 +1180,7 @@ const EditPhd = (props) => {
                       DAZLING
                     </Typography>
                   </Box>
-                </Box>
+                </Box> */}
                 {/* <RadioGroup
                   aria-label={`${items.room_id}`}
                   name={`${items.room_id}`}

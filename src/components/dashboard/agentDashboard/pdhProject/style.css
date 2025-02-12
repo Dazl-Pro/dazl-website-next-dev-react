@@ -358,3 +358,6 @@ body .cs-price-slider:after {
 .errorTerm.MuiCheckbox-root .MuiSvgIcon-root {
   fill: red !important;
 }
+.slider-value p {
+  top: 53px !important;
+}

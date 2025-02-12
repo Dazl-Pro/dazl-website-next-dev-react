@@ -61,6 +61,9 @@
 } 
 
 }
+header{
+  z-index: 1 !important;
+}
 
  /* Hide the desktop menu on screens with a width of 600 pixels or smaller */
   @media (max-width: 574.98px) {
