@@ -5,7 +5,7 @@ import "./style.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-
+import { Modal } from "react-bootstrap";
 import Masonry from "@mui/lab/Masonry";
 import SaveIcon from "@mui/icons-material/Save";
 import Slider from "@mui/material/Slider";
@@ -442,6 +442,8 @@ const ViewPhdAlt = ({
       sendEmailButton.style.display = visible ? "block" : "none";
   };
   const [selectedImage, setSelectedImage] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState(null);
 
   // console.log(viewPhdData[0]?.roominfo[0]?.room_id);
 
@@ -534,15 +536,17 @@ const ViewPhdAlt = ({
                                   {imagesGroup?.map((image, imageIndex) => (
                                     <div key={imageIndex}>
                                       {image?.url && (
-                                       
                                           <img
                                             alt="img"
                                             src={image.url}
                                             className="object-fit-cover border"
                                             width={"100px"}
-                                            height={"100px"}
+                                            height={"100px"} 
+                                            onClick={() => {
+                                              setSelectedImageUrl(image.url);
+                                              setShowModal(true);
+                                            }}
                                             style={{ cursor: "pointer" }}
-                                            onClick={() => setSelectedImage(image.url)}
                                           />
                                         
                                       )}
@@ -702,8 +706,11 @@ const ViewPhdAlt = ({
                                                                 className="object-fit-cover border"
                                                                 width="100px"
                                                                 height="100px"
+                                                                onClick={() => {
+                                                                  setSelectedImageUrl(image);
+                                                                  setShowModal(true);
+                                                                }}
                                                                 style={{ cursor: "pointer" }}
-                                                                onClick={() => setSelectedImage(image)}
                                                               />
                                                            
                                                           </div>
@@ -772,66 +779,7 @@ const ViewPhdAlt = ({
                     );
                   })}
                 </Masonry>
-                {selectedImage && (
-        <div className="popup-overlay" onClick={() => setSelectedImage(null)}>
-          <div className="popup-content">
-            <button className="close-btn" onClick={() => setSelectedImage(null)}>✖</button>
-            <img src={selectedImage} alt="Enlarged Preview" className="popup-image" />
-          </div>
-        </div>
-      )}
-       <style>
-        {`
 
-        body.popup-active > *:not(.popup-overlay):not(.popup-content){
-  filter: blur(10px);
-}
-
-          .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-          }
-          .popup-content {
-            position: relative;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 80%;
-            max-height: 80%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 1050;
-            overflow: auto;
-  transform: translateY(5%);
-          }
-          .popup-image {
-            max-width: 100%;
-            max-height: 80vh;
-            border-radius: 10px;
-          }
-          .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: red;
-            color: white;
-            border: none;
-            font-size: 16px;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-          }
-        `}
-      </style>
                 </Box>
               </div>
 
@@ -1057,6 +1005,23 @@ const ViewPhdAlt = ({
           );
         })}
       </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Show Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            src={selectedImageUrl}
+            alt="Modal Image"
+            style={{
+              width: "60%",
+              height: "50%",
+              margin: "0 auto",
+              display: "flex",
+            }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import Tooltip from "@mui/material/Tooltip";
+import { Modal } from "react-bootstrap";
 import {
   updatePhd,
   uploadImage,
@@ -787,6 +788,8 @@ const EditPhd = (props) => {
       </Tooltip>
     );
   }
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
 
   return (
     <div>
@@ -836,19 +839,20 @@ const EditPhd = (props) => {
                           <div key={imageIndex}>
                             {image && (
                               <div>
-                                <a
-                                  href={image}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
+                                
                                   <img
                                     alt="img"
                                     src={image}
                                     className="object-fit-cover border"
                                     width={"100px"}
                                     height={"100px"}
+                                    onClick={() => {
+                                      setSelectedImageUrl(image);
+                                      setShowModal(true);
+                                    }}
+                                    style={{ cursor: "pointer" }}
                                   />
-                                </a>
+                        
                                 <div className="d-flex justify-content-center">
                                   <button
                                     type="button"
@@ -1334,19 +1338,20 @@ const EditPhd = (props) => {
                                   <div key={imageIndex}>
                                     {image && (
                                       <div>
-                                        <a
-                                          href={image}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
+                                      
                                           <img
                                             alt="img"
                                             src={image}
                                             className="object-fit-cover border"
                                             width={"100px"}
                                             height={"100px"}
+                                            onClick={() => {
+                                              setSelectedImageUrl(image);
+                                              setShowModal(true);
+                                            }}
+                                            style={{ cursor: "pointer" }}
                                           />
-                                        </a>
+                                        
                                         <div className="d-flex justify-content-center">
                                           <button
                                             type="button"
@@ -1454,6 +1459,24 @@ const EditPhd = (props) => {
           Update
         </button>
       </div>
+    {/* Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Show Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            src={selectedImageUrl}
+            alt="Modal Image"
+            style={{
+              width: "60%",
+              height: "50%",
+              margin: "0 auto",
+              display: "flex",
+            }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
