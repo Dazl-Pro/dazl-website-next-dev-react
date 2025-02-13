@@ -361,3 +361,47 @@ body .cs-price-slider:after {
 .slider-value p {
   top: 53px !important;
 }
+
+
+.custom-modal .modal-content {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+.custom-modal .modal-body {
+  /* border-bottom: none !important; */
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+  
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+

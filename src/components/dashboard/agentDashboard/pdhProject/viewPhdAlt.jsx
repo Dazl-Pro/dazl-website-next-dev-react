@@ -1005,23 +1005,23 @@ const ViewPhdAlt = ({
           );
         })}
       </div>
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Show Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img
-            src={selectedImageUrl}
-            alt="Modal Image"
-            style={{
-              width: "60%",
-              height: "50%",
-              margin: "0 auto",
-              display: "flex",
-            }}
-          />
-        </Modal.Body>
-      </Modal>
+    <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg" className="custom-modal">
+
+  <Modal.Body className="position-relative">
+  <button
+      className="close-button"
+      onClick={() => setShowModal(false)}
+    >
+      &times;
+    </button>
+    <img
+      src={selectedImageUrl}
+      alt="Modal Image"
+      className="modal-image"
+    />
+  </Modal.Body>
+</Modal>
+
     </div>
   );
 };
