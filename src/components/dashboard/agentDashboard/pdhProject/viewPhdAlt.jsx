@@ -40,6 +40,73 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
+const ProgressWithLabel = ({ low, high, mid }) => {
+  const percentage = ((mid - low) / (high - low)) * 100;
+
+  // State to track hover effect
+  const [hover, setHover] = useState(false);
+  const getPriceString = (price) => {
+    if (price < 1000000) {
+      return Math.floor(price / 1000).toFixed(0) + "k";
+    } else {
+      return Math.floor(price / 1000000).toFixed(0) + "M";
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      <Box sx={{ position: "relative", width: "100%" }}>
+        {/* Progress Bar */}
+        <BorderLinearProgress
+          variant="determinate"
+          value={percentage}
+          sx={{ flexGrow: 1 }}
+        />
+
+        {/* Circular Label at the Tip */}
+        <Box
+          sx={{
+            position: "absolute",
+            left: `${percentage}%`,
+            transform: "translateX(-50%)",
+            width: "maxContentWidth",
+            height: 28,
+            borderRadius: "5px",
+            backgroundColor: "white",
+            border: "1px solid #1a90ff",
+            display: "flex",
+            justifyContent: "center",
+            padding: "3px",
+            backgroundColor: "white",
+            border: "2px solid gray",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
+          <Typography
+            variant="caption"
+            component="div"
+            sx={{ color: "black", fontWeight: "bold", whiteSpace: "nowrap" }}
+          >
+            ${hover ? mid.toFixed(2) : getPriceString(mid)}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
 const ViewPhdAlt = ({
   ele,
   index,
@@ -88,6 +155,7 @@ const ViewPhdAlt = ({
   const { itemId } = useParams();
   const selector = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selector?.data?.viewPhdAlt;
+  console.log(viewPhdData, "heereee");
 
   const [errorBorder1, setErrorborder1] = useState(false);
   const [input, setInput] = React.useState({
@@ -188,13 +256,13 @@ const ViewPhdAlt = ({
     // updatedProgressBars[feature_id] = newValue;
     // setProgressBars(updatedProgressBars);
   };
-  console.log(viewPhdData);
   const temp =
-    viewPhdData &&
-    viewPhdData[0] &&
-    viewPhdData[0].roominfo &&
-    viewPhdData[0].roominfo.map((item) => item.status).flat()&&
-    viewPhdData[0].roominfo?.map((item) => item.block_slider_value) || [];
+    (viewPhdData &&
+      viewPhdData[0] &&
+      viewPhdData[0]?.roominfo &&
+      viewPhdData[0]?.roominfo.map((item) => item.status).flat() &&
+      viewPhdData[0]?.roominfo?.map((item) => item.block_slider_value)) ||
+    [];
 
   // const value = viewPhdData[0]?.roominfo.map((item) => item.feature).flat();
   // console.log(value);
@@ -205,8 +273,8 @@ const ViewPhdAlt = ({
     sliders: temp,
     // bidder: value1,
   };
-  console.log(initialValues);
-  console.log("initail values", initialValues);
+  // console.log(initialValues);
+  // console.log("initail values", initialValues);
   const handleSliderChange = (setFieldValue, index, newValue) => {
     setFieldValue(`sliders.${index}`, newValue);
   };
@@ -270,10 +338,10 @@ const ViewPhdAlt = ({
         dispatch(viewPhdAlt({ id: itemId, value: "open" }))
           .unwrap()
           .then(() => {
-            console.log(typeof currentValue);
-            console.log(temp);
+            // console.log(typeof currentValue);
+            // console.log(temp);
             let updatedValue = temp[index];
-            console.log(updatedValue, "upodated value");
+            // console.log(updatedValue, "upodated value");
             if (typeof updatedValue === "string") {
               updatedValue = parseInt(updatedValue);
             }
@@ -283,7 +351,7 @@ const ViewPhdAlt = ({
             } else if (status === "D.I.Y") {
               updatedValue += 1;
             } else if (status === "Pass") {
-              console.log("Pass: No change");
+              // console.log("Pass: No change");
             }
             setValue(`sliders.${index}`, updatedValue);
 
@@ -295,7 +363,7 @@ const ViewPhdAlt = ({
             //   [feature_id]: updatedValue,
             // }));
 
-            console.log("After update:", updatedValue);
+            // console.log("After update:", updatedValue);
             setVal(updatedValue);
           });
       });
@@ -335,9 +403,9 @@ const ViewPhdAlt = ({
 
       dispatch(
         mailPdf({
-          firstName: viewPhdData[0].customer.first_name,
-          lastName: viewPhdData[0].customer.last_name,
-          email: viewPhdData[0].customer.email,
+          firstName: viewPhdData[0]?.customer.first_name,
+          lastName: viewPhdData[0]?.customer.last_name,
+          email: viewPhdData[0]?.customer.email,
           pdfData: pdfBlob,
         })
       );
@@ -442,10 +510,26 @@ const ViewPhdAlt = ({
       sendEmailButton.style.display = visible ? "block" : "none";
   };
   const [selectedImage, setSelectedImage] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
 
   // console.log(viewPhdData[0]?.roominfo[0]?.room_id);
+
+  const getPriceString = (price) => {
+    if (price < 1000000) {
+      return Math.floor(price / 1000).toFixed(0) + "k";
+    } else {
+      return Math.floor(price / 1000000).toFixed(0) + "M";
+    }
+  };
+
+  const getScorePrecentage = (type) => {
+    return (
+      (Math.round(type - viewPhdData[0]?.low_price) /
+        Math.round(viewPhdData[0]?.high_price - viewPhdData[0]?.low_price)) *
+      100
+    );
+  };
 
   return (
     <div className="center-content p-3">
@@ -505,201 +589,207 @@ const ViewPhdAlt = ({
                   Updated House Details And Condition:-
                 </h3>
                 <Box>
-                <Masonry columns={{ xs: 1, sm: 1, md: 1 }} spacing={2}>
-                  {items?.roominfo.map((ele, index) => {
-                    const roomId = ele?.room_id;
-                    const imagesGroup = items?.images?.filter(
-                      (image) => image?.room_id === roomId
-                    );
-                    return (
-                      <div key={index} className="mb-4 col-sm-12">
-                        <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4">
-                          <div className="border border-rounded p-2">
-                            <div className="d-flex align-items-center justify-content-between">
-                              <h3 className="fw-semibold font-18">
-                                {ele?.room_name}
-                              </h3>
-                            </div>
+                  <Masonry columns={{ xs: 1, sm: 1, md: 1 }} spacing={2}>
+                    {items?.roominfo.map((ele, index) => {
+                      const roomId = ele?.room_id;
+                      const imagesGroup = items?.images?.filter(
+                        (image) => image?.room_id === roomId
+                      );
+                      return (
+                        <div key={index} className="mb-4 col-sm-12">
+                          <div className="flex-grow-1 mx-2 bg-custom-red-col bg-white shadow p-3 rounded-4">
+                            <div className="border border-rounded p-2">
+                              <div className="d-flex align-items-center justify-content-between">
+                                <h3 className="fw-semibold font-18">
+                                  {ele?.room_name}
+                                </h3>
+                              </div>
 
-                            <div>
-                              {
-                                items.images.filter(
-                                  (image) => image?.room_id === roomId
-                                )[0]?.description
-                              }
-                            </div>
+                              <div>
+                                {
+                                  items.images.filter(
+                                    (image) => image?.room_id === roomId
+                                  )[0]?.description
+                                }
+                              </div>
 
-                            <div className="ps-0 mb-4 mt-2">
-                              <div key={index}>
-                                <div className="d-flex gap-1 flex-wrap">
-                                  {/* Display images for the current room_id */}
-                                  {imagesGroup?.map((image, imageIndex) => (
-                                    <div key={imageIndex}>
-                                      {image?.url && (
+                              <div className="ps-0 mb-4 mt-2">
+                                <div key={index}>
+                                  <div className="d-flex gap-1 flex-wrap">
+                                    {/* Display images for the current room_id */}
+                                    {imagesGroup?.map((image, imageIndex) => (
+                                      <div key={imageIndex}>
+                                        {image?.url && (
                                           <img
                                             alt="img"
                                             src={image.url}
                                             className="object-fit-cover border"
                                             width={"100px"}
-                                            height={"100px"} 
+                                            height={"100px"}
                                             onClick={() => {
                                               setSelectedImageUrl(image.url);
                                               setShowModal(true);
                                             }}
                                             style={{ cursor: "pointer" }}
                                           />
-                                        
-                                      )}
-                                    </div>
-                                  ))}
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <Formik initialValues={initialValues}>
-                             
-                              {({ values, setFieldValue, errors }) => {
-                                // 50 and 25 is coming.
-                                console.log(
-
-                                  // values.sliders[],
-                                   initialValues.sliders[0]
-                                );
-                                return (
-                                  <Form>
-                                    {ele?.feature?.length !== 0 &&
-                                      ele?.feature[0]?.feature_name !== "" && (
-                                        <div
-                                          className="p-3 mt-3 bg-white"
-                                          style={{ margin: "10px" }}
-                                        >
-                                          <div className="slider-container position-relative p-3">
-
-                                            <Field name={`sliders.${index}`}>
-                                              {({ field }) => (
-                                                <Slider
-                                                  {...field}
-                                                  value={initialValues.sliders[index] || 0}
-                                                  onChange={
-                                                    (e, value) => {}
+                              <Formik initialValues={initialValues}>
+                                {({ values, setFieldValue, errors }) => {
+                                  // 50 and 25 is coming.
+                                  // console.log(
+                                  //   // values.sliders[],
+                                  //   initialValues.sliders[0]
+                                  // );
+                                  return (
+                                    <Form>
+                                      {ele?.feature?.length !== 0 &&
+                                        ele?.feature[0]?.feature_name !==
+                                          "" && (
+                                          <div
+                                            className="p-3 mt-3 bg-white"
+                                            style={{ margin: "10px" }}
+                                          >
+                                            <div className="slider-container position-relative p-3">
+                                              <Field name={`sliders.${index}`}>
+                                                {({ field }) => (
+                                                  <Slider
+                                                    {...field}
+                                                    value={
+                                                      initialValues.sliders[
+                                                        index
+                                                      ] || 0
+                                                    }
+                                                    onChange={
+                                                      (e, value) => {}
                                                       // setFieldValue(
                                                       //   `sliders.${index}`,
                                                       //   value
                                                       // )
-                                                  }
-                                                  valueLabelDisplay="auto"
-                                                  valueLabelFormat={(value) =>
-                                                    `${value}`
-                                                  }
-                                                  min={0}
-                                                  max={100}
-                                                  // value={
-                                                  //   values.sliders?.[
-                                                  //     ele.feature_id
-                                                  //   ] || 0
-                                                  // } // Bind value to Formik state, defaulting to 0
-                                                  // valueLabelDisplay="on"
-                                                  // min={0}
-                                                  // max={110}
-                                                  // onChange={(e, newValue) =>
-                                                  //   handleSliderChange(
-                                                  //     setFieldValue,
-                                                  //     ele.feature_id,
-                                                  //     newValue
-                                                  //   )
-                                                  // }
-                                                  className="cs-price-slider"
-                                                />
-                                              )}
-                                            </Field>
-                                          </div>
-                                          <Box
-                                            sx={{
-                                              display: "flex",
-                                              justifyContent: "space-between",
-                                            }}
-                                          >
-                                            <Typography
-                                              variant="body2"
-                                              // onClick={() =>
-                                              //   handleSliderChange(
-                                              //     setFieldValue,
-                                              //     index,
-                                              //     1
-                                              //   )
-                                              // }
-                                              sx={{ cursor: "pointer" }}
-                                            >
-                                              NEEDS DAZL
-                                            </Typography>
-                                            <Typography
-                                              variant="body2"
-                                              // onClick={() =>
-                                              //   handleSliderChange(
-                                              //     setFieldValue,
-                                              //     index,
-                                              //     35
-                                              //   )
-                                              // }
-                                              sx={{ cursor: "pointer" }}
-                                            >
-                                              MARKET READY
-                                            </Typography>
-                                            <Typography
-                                              variant="body2"
-                                              // onClick={() =>
-                                              //   handleSliderChange(
-                                              //     setFieldValue,
-                                              //     index,
-                                              //     35
-                                              //   )
-                                              // }
-                                              sx={{ cursor: "pointer" }}
-                                            >
-                                              DAZLING
-                                            </Typography>
-                                            <Typography
-                                              variant="body2"
-                                              // onClick={() =>
-                                              //   handleSliderChange(
-                                              //     setFieldValue,
-                                              //     index,
-                                              //     110
-                                              //   )
-                                              // }
-                                              sx={{ cursor: "pointer" }}
-                                            >
-                                              DAZL PLUS
-                                            </Typography>
-                                          </Box>
-                                          {errors.sliders && (
-                                            <div className="text-primary">
-                                              Please Select Impressions Value*
+                                                    }
+                                                    valueLabelDisplay="auto"
+                                                    valueLabelFormat={(value) =>
+                                                      `${value}`
+                                                    }
+                                                    min={0}
+                                                    max={100}
+                                                    // value={
+                                                    //   values.sliders?.[
+                                                    //     ele.feature_id
+                                                    //   ] || 0
+                                                    // } // Bind value to Formik state, defaulting to 0
+                                                    // valueLabelDisplay="on"
+                                                    // min={0}
+                                                    // max={110}
+                                                    // onChange={(e, newValue) =>
+                                                    //   handleSliderChange(
+                                                    //     setFieldValue,
+                                                    //     ele.feature_id,
+                                                    //     newValue
+                                                    //   )
+                                                    // }
+                                                    className="cs-price-slider"
+                                                  />
+                                                )}
+                                              </Field>
                                             </div>
-                                          )}
-                                          <h3 className="text-center d-flex mb-3 mt-1">
-                                            Buyer Road Blocks:
-                                          </h3>
-                                          <div className="row flex-wrap justify-space-between abvc">
-                                            {ele?.feature?.map(
-                                              (eleInner, eleindex) => (
-                                                <div
-                                                  className="col-md-4 border-0 border-end"
-                                                  key={eleindex}
-                                                >
-                                                  <h5 className="mb-2 ms-2">
-                                                    {eleInner.feature_name}:
-                                                  </h5>
-                                                  <div className="border d-flex align-items-center ps-2 py-3 mb-3">
-                                                    <div>
-                                                      {eleInner?.imageDesc}
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                              }}
+                                            >
+                                              <Typography
+                                                variant="body2"
+                                                // onClick={() =>
+                                                //   handleSliderChange(
+                                                //     setFieldValue,
+                                                //     index,
+                                                //     1
+                                                //   )
+                                                // }
+                                                sx={{ cursor: "pointer" }}
+                                              >
+                                                NEEDS DAZL
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                // onClick={() =>
+                                                //   handleSliderChange(
+                                                //     setFieldValue,
+                                                //     index,
+                                                //     35
+                                                //   )
+                                                // }
+                                                sx={{ cursor: "pointer" }}
+                                              >
+                                                MARKET READY
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                // onClick={() =>
+                                                //   handleSliderChange(
+                                                //     setFieldValue,
+                                                //     index,
+                                                //     35
+                                                //   )
+                                                // }
+                                                sx={{ cursor: "pointer" }}
+                                              >
+                                                DAZLING
+                                              </Typography>
+                                              <Typography
+                                                variant="body2"
+                                                // onClick={() =>
+                                                //   handleSliderChange(
+                                                //     setFieldValue,
+                                                //     index,
+                                                //     110
+                                                //   )
+                                                // }
+                                                sx={{ cursor: "pointer" }}
+                                              >
+                                                DAZL PLUS
+                                              </Typography>
+                                            </Box>
+                                            {errors.sliders && (
+                                              <div className="text-primary">
+                                                Please Select Impressions Value*
+                                              </div>
+                                            )}
+                                            <h3 className="text-center d-flex mb-3 mt-1">
+                                              Buyer Road Blocks:
+                                            </h3>
+                                            <div className="row flex-wrap justify-space-between abvc">
+                                              {ele?.feature?.map(
+                                                (eleInner, eleindex) => (
+                                                  <div
+                                                    className="col-md-4 border-0 border-end"
+                                                    key={eleindex}
+                                                  >
+                                                    <h5 className="mb-2 ms-2">
+                                                      {eleInner.feature_name}:
+                                                    </h5>
+                                                    <div className="border d-flex align-items-center ps-2 py-3 mb-3">
+                                                      <div>
+                                                        {eleInner?.imageDesc}
+                                                      </div>
                                                     </div>
-                                                  </div>
-                                                  <div className="ps-0 mb-3">
-                                                    <div className="d-flex gap-1 flex-wrap">
-                                                      {eleInner?.images?.map(
-                                                        (image, imageIndex) => (
-                                                          <div key={imageIndex}>  
+                                                    <div className="ps-0 mb-3">
+                                                      <div className="d-flex gap-1 flex-wrap">
+                                                        {eleInner?.images?.map(
+                                                          (
+                                                            image,
+                                                            imageIndex
+                                                          ) => (
+                                                            <div
+                                                              key={imageIndex}
+                                                            >
                                                               <img
                                                                 alt="img"
                                                                 src={image}
@@ -707,79 +797,89 @@ const ViewPhdAlt = ({
                                                                 width="100px"
                                                                 height="100px"
                                                                 onClick={() => {
-                                                                  setSelectedImageUrl(image);
-                                                                  setShowModal(true);
+                                                                  setSelectedImageUrl(
+                                                                    image
+                                                                  );
+                                                                  setShowModal(
+                                                                    true
+                                                                  );
                                                                 }}
-                                                                style={{ cursor: "pointer" }}
+                                                                style={{
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
                                                               />
-                                                           
-                                                          </div>
+                                                            </div>
+                                                          )
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                    {/* Status radio buttons */}
+                                                    <div
+                                                      style={{
+                                                        display: "flex",
+                                                        gap: "10px",
+                                                        paddingBottom: "10px",
+                                                        marginBottom: "10px",
+                                                      }}
+                                                    >
+                                                      {allStatus.map(
+                                                        (status) => (
+                                                          <label
+                                                            key={status}
+                                                            className="custom-radio-label"
+                                                          >
+                                                            <input
+                                                              type="radio"
+                                                              name={`status-${index}-${eleindex}-${status}`}
+                                                              checked={
+                                                                eleInner.bid_status ===
+                                                                status
+                                                              }
+                                                              onChange={() => {
+                                                                onchangeStatus(
+                                                                  status,
+                                                                  ele.room_id,
+                                                                  eleInner.feature_id,
+                                                                  index,
+                                                                  values
+                                                                    .sliders[
+                                                                    index
+                                                                  ],
+                                                                  setFieldValue
+                                                                );
+                                                                // setFieldValue(
+                                                                //   `sliders.${index}`,
+
+                                                                // );
+                                                                setCurrentStatus(
+                                                                  status
+                                                                );
+                                                              }}
+                                                            />
+                                                            <span>
+                                                              {status}
+                                                            </span>
+                                                          </label>
                                                         )
                                                       )}
                                                     </div>
                                                   </div>
-                                                  {/* Status radio buttons */}
-                                                  <div
-                                                    style={{
-                                                      display: "flex",
-                                                      gap: "10px",
-                                                      paddingBottom: "10px",
-                                                      marginBottom: "10px",
-                                                    }}
-                                                  >
-                                                    {allStatus.map((status) => (
-                                                      <label
-                                                        key={status}
-                                                        className="custom-radio-label"
-                                                      >
-                                                        <input
-                                                          type="radio"
-                                                          name={`status-${index}-${eleindex}-${status}`}
-                                                          checked={
-                                                            eleInner.bid_status ===
-                                                            status
-                                                          }
-                                                          onChange={() => {
-                                                            onchangeStatus(
-                                                              status,
-                                                              ele.room_id,
-                                                              eleInner.feature_id,
-                                                              index,
-                                                              values.sliders[
-                                                                index
-                                                              ],
-                                                              setFieldValue
-                                                            );
-                                                            // setFieldValue(
-                                                            //   `sliders.${index}`,
-
-                                                            // );
-                                                            setCurrentStatus(
-                                                              status
-                                                            );
-                                                          }}
-                                                        />
-                                                        <span>{status}</span>
-                                                      </label>
-                                                    ))}
-                                                  </div>
-                                                </div>
-                                              )
-                                            )}
+                                                )
+                                              )}
+                                            </div>
                                           </div>
-                                        </div>
-                                      )}
-                                  </Form>
-                                );
-                              }}
-                            </Formik>
+                                        )}
+                                    </Form>
+                                  );
+                                }}
+                              </Formik>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </Masonry>
-
+                      );
+                    })}
+                  </Masonry>
                 </Box>
               </div>
 
@@ -789,18 +889,31 @@ const ViewPhdAlt = ({
                     <h3>Preliminary Value/Score</h3>
                     <div>
                       <div className="d-flex justify-content-between mt-3 mb-2">
-                        <p className="mb-0">$200k</p>
+                        <p className="mb-0">
+                          ${getPriceString(viewPhdData[0]?.low_price)}
+                        </p>{" "}
                         <p className="mb-0">
                           $
-                          {progressBarpre
-                            ? (progressBarpre / 1000).toFixed(1) + "k"
-                            : "2M"}
+                          {getPriceString(
+                            (parseInt(viewPhdData[0]?.high_price) +
+                              parseInt(viewPhdData[0]?.low_price)) /
+                              2
+                          )}
                         </p>
-                        <p className="mb-0">$2M</p>
+                        <p className="mb-0">
+                          ${getPriceString(viewPhdData[0]?.high_price)}
+                          {/* {progressBarpre
+                            ? (progressBarpre / 1000).toFixed(1) + "k"
+                            : "2M"} */}
+                        </p>
                       </div>
-                      <BorderLinearProgress
-                        variant="determinate"
-                        value={(progressBarpre / 1800000) * 100}
+                      <ProgressWithLabel
+                        high={parseInt(viewPhdData[0]?.high_price)}
+                        low={parseInt(viewPhdData[0]?.low_price)}
+                        mid={parseInt(viewPhdData[0]?.pre_price)}
+                        // variant="determinate"
+                        // label={`$${getPriceString(viewPhdData[0]?.pre_price)}`}
+                        // value={getScorePrecentage(viewPhdData[0]?.pre_price)}
                       />
                     </div>
                   </div>
@@ -810,18 +923,28 @@ const ViewPhdAlt = ({
                     <h3>phd Value/Score</h3>
                     <div>
                       <div className="d-flex justify-content-between mt-3 mb-2">
-                        <p className="mb-0">$200k</p>
                         <p className="mb-0">
-                          ${" "}
-                          {progressBarpre
-                            ? (progressBarpre / 1000).toFixed(1) + "k"
-                            : "2M"}
+                          ${getPriceString(viewPhdData[0]?.low_price)}
                         </p>
-                        <p className="mb-0">$2M</p>
+                        <p className="mb-0">
+                          $
+                          {getPriceString(
+                            (parseInt(viewPhdData[0]?.high_price) +
+                              parseInt(viewPhdData[0]?.low_price)) /
+                              2
+                          )}
+                        </p>
+                        <p className="mb-0">
+                          ${getPriceString(viewPhdData[0]?.high_price)}
+                        </p>
                       </div>
-                      <BorderLinearProgress
-                        variant="determinate"
-                        value={(progressBarpre / 1800000) * 100}
+                      <ProgressWithLabel
+                        high={parseInt(viewPhdData[0]?.high_price)}
+                        low={parseInt(viewPhdData[0]?.low_price)}
+                        mid={parseInt(viewPhdData[0]?.phd_price)}
+                        // variant="determinate"
+                        // label={`$${getPriceString(viewPhdData[0]?.pre_price)}`}
+                        // value={getScorePrecentage(viewPhdData[0]?.pre_price)}
                       />
                     </div>
                   </div>
@@ -831,18 +954,28 @@ const ViewPhdAlt = ({
                     <h3>DAZL Value/Score</h3>
                     <div>
                       <div className="d-flex justify-content-between mt-3 mb-2">
-                        <p className="mb-0">$200k</p>
+                        <p className="mb-0">
+                          ${getPriceString(viewPhdData[0]?.low_price)}
+                        </p>
                         <p className="mb-0">
                           $
-                          {progressBar
-                            ? (progressBar / 1000).toFixed(1) + "k"
-                            : "2M"}
+                          {getPriceString(
+                            (parseInt(viewPhdData[0]?.high_price) +
+                              parseInt(viewPhdData[0]?.low_price)) /
+                              2
+                          )}
                         </p>
-                        <p className="mb-0">$2M</p>
+                        <p className="mb-0">
+                          ${getPriceString(viewPhdData[0]?.high_price)}
+                        </p>
                       </div>
-                      <BorderLinearProgress
-                        variant="determinate"
-                        value={(progressBar / 1800000) * 100}
+                      <ProgressWithLabel
+                        high={parseInt(viewPhdData[0]?.high_price)}
+                        low={parseInt(viewPhdData[0]?.low_price)}
+                        mid={parseInt(viewPhdData[0]?.dazl_price)}
+                        // variant="determinate"
+                        // label={`$${getPriceString(viewPhdData[0]?.pre_price)}`}
+                        // value={getScorePrecentage(viewPhdData[0]?.pre_price)}
                       />
                     </div>
                   </div>
@@ -1005,23 +1138,24 @@ const ViewPhdAlt = ({
           );
         })}
       </div>
-    <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg" className="custom-modal">
-
-  <Modal.Body className="position-relative">
-  <button
-      className="close-button"
-      onClick={() => setShowModal(false)}
-    >
-      &times;
-    </button>
-    <img
-      src={selectedImageUrl}
-      alt="Modal Image"
-      className="modal-image"
-    />
-  </Modal.Body>
-</Modal>
-
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        size="lg"
+        className="custom-modal"
+      >
+        <Modal.Body className="position-relative">
+          <button className="close-button" onClick={() => setShowModal(false)}>
+            &times;
+          </button>
+          <img
+            src={selectedImageUrl}
+            alt="Modal Image"
+            className="modal-image"
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
