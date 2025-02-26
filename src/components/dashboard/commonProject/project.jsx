@@ -153,7 +153,6 @@ const Commonproject = ({
           features: [{ features, inspectionNotes, images }],
         });
       }
-
       return acc;
     }, []);
 
@@ -161,6 +160,7 @@ const Commonproject = ({
   };
 
   const handleGetCheckboxValues = () => {
+    console.log("===============");
     let payload;
     if (location.pathname === "/agent/createProject") {
       payload = "realtorprojects";
@@ -199,10 +199,15 @@ const Commonproject = ({
 
     console.log("groupedData", groupedData);
 
+    const completeData = mergeFeatures(groupedData, groupedDataImages);
+
     if (ImagesFinal === true) {
+      console.log("11111111");
       let completedPromises = 0;
       if (selectedImages.length === 0) {
+        console.log("2222222222222");
         if (groupedData.length > 0) {
+          console.log("33333333333333");
           // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
           groupedData.forEach((item) => {
             dispatch(
@@ -243,6 +248,7 @@ const Commonproject = ({
               });
           });
         } else {
+          console.log("444444444444");
           dispatch(
             addAnotherRoom({
               roomId,
@@ -279,11 +285,13 @@ const Commonproject = ({
             });
         }
       } else {
-        groupedDataImages.forEach((item) => {
+        console.log("5555555555");
+        completeData.forEach((item) => {
           dispatch(addAnotherRoom(item))
             .unwrap()
             .then((response) => {
               const data = [...selectImagesFinal, response];
+              console.log("5555555555", data);
               dispatch(addRoomFeatures({ data, payload, name, projectID }))
                 .unwrap()
                 .then((res) => {
@@ -312,8 +320,11 @@ const Commonproject = ({
         });
       }
     } else {
+      console.log("6666666666");
       if (selectedImages.length === 0) {
+        console.log("7777777777777");
         if (selectedCheckboxes.length > 0) {
+          console.log("88888888888");
           dispatch(
             addRoomFeatures({
               data: groupedData,
@@ -343,6 +354,7 @@ const Commonproject = ({
               localStorage.removeItem("projectItem");
             });
         } else {
+          console.log("999999999999ß");
           dispatch(
             addRoomFeatures({
               data: [{ roomId: roomId, projectID }],
@@ -373,7 +385,11 @@ const Commonproject = ({
             });
         }
       } else {
-        dispatch(addRoomFeatures({ selectedImages, payload, name, projectID }))
+        console.log("00000000000", selectedImages);
+        console.log("PAYLOAD ", mergeData(selectedImages, groupedData));
+        const data = mergeData(selectedImages, groupedData);
+        // dispatch(addRoomFeatures({ selectedImages, payload, name, projectID }))
+        dispatch(addRoomFeatures({ data: data.data, payload, name, projectID }))
           .unwrap()
           .then((res) => {
             Toastify({ data: "success", msg: res.message });
@@ -398,31 +414,87 @@ const Commonproject = ({
     }
   };
 
+  function mergeData(dataWithImages, dataWithoutImages) {
+    let mergedData = dataWithoutImages.map((room) => {
+      return {
+        roomId: room.roomId,
+        features: room.features.map((feature) => {
+          let match = dataWithImages.find(
+            (imgFeature) => imgFeature.features === feature.features
+          );
+          if (match) {
+            return { ...feature, images: match.images };
+          }
+          return feature;
+        }),
+      };
+    });
+
+    return {
+      data: mergedData,
+      name: "",
+      projectID: null,
+    };
+  }
+
+  function mergeFeatures(baseData, imageData) {
+    const imageMap = new Map();
+
+    // Create a map of features with images
+    imageData.forEach((room) => {
+      room.features.forEach((feature) => {
+        imageMap.set(
+          `${room.roomId}-${feature.features}`,
+          feature.images || []
+        );
+      });
+    });
+
+    // Merge images into base data
+    baseData.forEach((room) => {
+      room.features.forEach((feature) => {
+        const key = `${room.roomId}-${feature.features}`;
+        if (imageMap.has(key)) {
+          feature.images = imageMap.get(key);
+        }
+      });
+    });
+
+    return baseData;
+  }
+
   const addAnother = () => {
     setImagesFinal(true);
     const roomId = localStorage.getItem("roomId");
     const projectID = localStorage.getItem("projectID");
     const groupedDataImages = groupByRoomId(selectedImages);
     // Check if there are no selected images
+    console.log("|||||||||=-=-=-=-=-", groupedDataImages);
+    const selectedCheckboxes = checkboxValues
+      .map((isChecked, index) => {
+        if (isChecked) {
+          return {
+            roomId,
+            projectID,
+            features: phdRooms[index].id, // Assuming phdRooms contains the ids
+            inspectionNotes: textValues[index] || "", // Include description if provided
+            // Include description if provided
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null); // Filter out null values
+    const groupedData = groupByRoomId(selectedCheckboxes);
+
+    console.log("|+|+|++|+=-=-=-=-=-", groupedData);
+
+    const completeData = mergeFeatures(groupedData, groupedDataImages);
+
+    console.log("|+|+|++|+=", completeData);
     if (selectedImages.length === 0) {
       // Collect checkbox IDs and descriptions for the selected checkboxes
-      const selectedCheckboxes = checkboxValues
-        .map((isChecked, index) => {
-          if (isChecked) {
-            return {
-              roomId,
-              projectID,
-              features: phdRooms[index].id, // Assuming phdRooms contains the ids
-              inspectionNotes: textValues[index] || "", // Include description if provided
-              // Include description if provided
-            };
-          }
-          return null;
-        })
-        .filter((item) => item !== null); // Filter out null values
-      const groupedData = groupByRoomId(selectedCheckboxes);
-
       console.log("-=-=-=-=-=-=-=-", groupedData);
+
       if (groupedData.length > 0) {
         // Dispatch room ID and selected checkboxes (checkboxId and descriptions) when no images are selected
         groupedData.forEach((item) => {
@@ -464,7 +536,7 @@ const Commonproject = ({
       }
     } else {
       // Process selected images and room ID as in the original code
-      groupedDataImages.forEach((item) => {
+      completeData.forEach((item) => {
         dispatch(addAnotherRoom(item))
           .unwrap()
           .then((response) => {
@@ -642,6 +714,14 @@ const Commonproject = ({
                                   >
                                     <DeleteIcon />
                                   </button>
+                                )}
+                                {/* Show error if no images are uploaded */}
+                                {fields.filter(
+                                  (field) => field.indexId === index
+                                ).length === 0 && (
+                                  <p className="text-danger mt-2">
+                                    At least one image is required.
+                                  </p>
                                 )}
                               </div>
                             </div>

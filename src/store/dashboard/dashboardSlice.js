@@ -359,6 +359,9 @@ export const updatePhd = createAsyncThunk(
 export const addRoomFeatures = createAsyncThunk(
   "dashboard/addRoomFeatures",
   async (data, { dispatch }) => {
+    console.log("====================");
+    console.log("Request", data);
+    console.log("====================");
     try {
       const response = await http.post(`/${data.payload}`, {
         data: data.selectedImages ?? data.data,
