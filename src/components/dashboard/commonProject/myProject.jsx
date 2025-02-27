@@ -153,7 +153,7 @@ const MyProject = () => {
 
   // console.log( imagesUpload);
 
-  const handleSubmit = (item, project_id, roominfoItems) => {
+  const handleSubmit = (item, project_id, roominfoItems, index) => {
     let images = [];
     const project = imagesArray.find(
       (project) => project?.project_id === project_id
@@ -165,7 +165,7 @@ const MyProject = () => {
         (room) => room?.room_id === roominfoItems.room_id
       );
       if (room) {
-        images = room.feature[0].images;
+        images = room.feature[index].images;
         console.log("images", images);
       } else {
         console.log("Room not found");
@@ -494,7 +494,7 @@ const MyProject = () => {
                               return (
                                 <div key={indexroomInfo}>
                                   <h4 className="text-start my-projects-head d-flex">
-                                    {roominfoItems?.room_name}jj
+                                    {roominfoItems?.room_name}
                                   </h4>
 
                                   <div className="d-flex flex-row flex-wrap rounded-4 mb-4">
@@ -515,13 +515,14 @@ const MyProject = () => {
                                                 editItem ? (
                                                   <button
                                                     className="btn btn-outline-success mx-1 btn-sm"
-                                                    onClick={() =>
+                                                    onClick={() => {
                                                       handleSubmit(
                                                         item,
                                                         items?.project_id,
-                                                        roominfoItems
-                                                      )
-                                                    }
+                                                        roominfoItems,
+                                                        index
+                                                      );
+                                                    }}
                                                   >
                                                     <CheckIcon />
                                                   </button>
@@ -613,30 +614,34 @@ const MyProject = () => {
                                                                 }}
                                                               />
                                                             )} */}
-                                                          {delShow && (
-                                                            <div className="d-flex justify-content-center">
-                                                              <button
-                                                                type="button"
-                                                                className="btn btn-primary btn-sm mt-2"
-                                                                onClick={() =>
-                                                                  handleRemoveImage(
-                                                                    dataIndex,
-                                                                    indexroomInfo,
-                                                                    index,
-                                                                    imageIdx
-                                                                  )
-                                                                }
-                                                              >
-                                                                <DeleteIcon />
-                                                              </button>
-                                                            </div>
-                                                          )}
+                                                          {delShow &&
+                                                            item?.feature_id ===
+                                                              editItem && (
+                                                              <div className="d-flex justify-content-center">
+                                                                <button
+                                                                  type="button"
+                                                                  className="btn btn-primary btn-sm mt-2"
+                                                                  onClick={() =>
+                                                                    handleRemoveImage(
+                                                                      dataIndex,
+                                                                      indexroomInfo,
+                                                                      index,
+                                                                      imageIdx
+                                                                    )
+                                                                  }
+                                                                >
+                                                                  <DeleteIcon />
+                                                                </button>
+                                                              </div>
+                                                            )}
                                                         </div>
                                                       )}
                                                     </div>
                                                   )
                                                 )}
                                                 {chooseShow &&
+                                                  item?.feature_id ===
+                                                    editItem &&
                                                   // newImages.length < 4 &&
                                                   newImages.map(
                                                     (
