@@ -83,11 +83,11 @@ const EditPhd = (props) => {
   const selectorPhd = useSelector((state) => state.dashboardSlice);
   const viewPhdData = selectorPhd?.data?.viewPhdAlt;
   const [roomIds, setRoomIds] = useState([]);
-  const phdRoomsArray = useSelector((state) => state.dashboardSlice.data.phdRoomsData);
-  
+  const phdRoomsArray = useSelector(
+    (state) => state.dashboardSlice.data.phdRoomsData
+  );
 
   // const phdRooms = selector.data.phdRoomsData;
-  
 
   useEffect(() => {
     if (viewPhdData && viewPhdData.length > 0) {
@@ -341,7 +341,6 @@ const EditPhd = (props) => {
     );
 
     setDescriptionError(requiresDescription);
-
 
     // const selectedOption = input.options;
     // let updatedPrice = price;
@@ -632,7 +631,6 @@ const EditPhd = (props) => {
   //   }
   // };
 
-
   const handleValueChange = (
     roomId,
     valueId,
@@ -640,43 +638,36 @@ const EditPhd = (props) => {
     category,
     index,
     matchingRoadBlockIndex,
-    additionalValue, 
-    name,
+    additionalValue,
+    name
   ) => {
     setInput((prev) => {
-     
       return prev.map((room) => {
-
-        
         if (room.roomId === roomId) {
-
           let updatedRoadBlocks = [...room.roadBlocks];
           let currentValue = room.block_slider_value || 0;
 
           // Check if the checkbox is already checked
           const existingIndex = updatedRoadBlocks.findIndex(
-            (item) => (item.id === valueId)
+            (item) => item.id === valueId
           );
           if (isChecked) {
-            
             // Add the roadblock if not already there
             if (existingIndex === -1) {
               updatedRoadBlocks.push({ id: valueId, isChecked: true });
               currentValue += phdRoomsArray[index]?.points || 0;
-           
             }
           } else {
             // Remove the roadblock and decrease value
             if (existingIndex !== -1) {
-          
               updatedRoadBlocks.splice(existingIndex, 1);
               currentValue -= phdRoomsArray[index]?.points || 0;
             }
           }
-  
+
           // Ensure value doesn't exceed 110
           currentValue = Math.min(110, Math.max(0, currentValue));
-  
+
           return {
             ...room,
             roadBlocks: updatedRoadBlocks,
@@ -688,7 +679,6 @@ const EditPhd = (props) => {
     });
   };
 
-  
   const handleRemoveImage = (room_id, imageIndex) => {
     const updatedRoomImagesObject = [...roomImagesObject];
 
@@ -839,20 +829,19 @@ const EditPhd = (props) => {
                           <div key={imageIndex}>
                             {image && (
                               <div>
-                                
-                                  <img
-                                    alt="img"
-                                    src={image}
-                                    className="object-fit-cover border"
-                                    width={"100px"}
-                                    height={"100px"}
-                                    onClick={() => {
-                                      setSelectedImageUrl(image);
-                                      setShowModal(true);
-                                    }}
-                                    style={{ cursor: "pointer" }}
-                                  />
-                        
+                                <img
+                                  alt="img"
+                                  src={image}
+                                  className="object-fit-cover border"
+                                  width={"100px"}
+                                  height={"100px"}
+                                  onClick={() => {
+                                    setSelectedImageUrl(image);
+                                    setShowModal(true);
+                                  }}
+                                  style={{ cursor: "pointer" }}
+                                />
+
                                 <div className="d-flex justify-content-center">
                                   <button
                                     type="button"
@@ -1089,7 +1078,7 @@ const EditPhd = (props) => {
                 <FormLabel className="text-body">
                   Overall first impressions
                 </FormLabel>
-                <Box sx={{ width: "full", padding: 3 }}>
+                {/* <Box sx={{ width: "full", padding: 3 }}>
     <div className="slider-container position-relative">
       <div className="d-flex justify-content-between w-100">
         <p>0pts</p>
@@ -1152,9 +1141,8 @@ const EditPhd = (props) => {
         DAZL PLUS
       </Typography>
     </Box>
-  </Box>
-                {/* 
-          previous */}
+  </Box> */}
+                {/* previous */}
                 {/* <Box sx={{ width: "full", padding: 2 }}>
                   <Slider
                     marks={marks}
@@ -1185,7 +1173,7 @@ const EditPhd = (props) => {
                     </Typography>
                   </Box>
                 </Box> */}
-                {/* <RadioGroup
+                <RadioGroup
                   aria-label={`${items.room_id}`}
                   name={`${items.room_id}`}
                   value={
@@ -1196,37 +1184,7 @@ const EditPhd = (props) => {
                   required
                 >
                   <div className="row">
-                    <div className="col-md-4 d-flex align-items-center">
-                      <FormControlLabel
-                        value="DAZLING"
-                        className="me-2"
-                        control={
-                          <Radio
-                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
-                          />
-                        }
-                        label="DAZLING"
-                      />
-                      <div className="fst-italic text-danger text-decoration-underline">
-                        80% room value
-                      </div>
-                    </div>
-                    <div className="col-md-4 d-flex align-items-center">
-                      <FormControlLabel
-                        value="MARKET READY"
-                        className="me-2"
-                        control={
-                          <Radio
-                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
-                          />
-                        }
-                        label="MARKET READY"
-                      />
-                      <div className="fst-italic text-danger text-decoration-underline">
-                        50% room value
-                      </div>
-                    </div>
-                    <div className="col-md-4 d-flex align-items-center">
+                    <div className="col-md-3 d-flex align-items-center">
                       <FormControlLabel
                         value="NEEDS DAZL"
                         className="me-2"
@@ -1237,12 +1195,54 @@ const EditPhd = (props) => {
                         }
                         label="NEEDS DAZL"
                       />
-                      <div className="fst-italic text-danger text-decoration-underline">
+                      {/* <div className="fst-italic text-danger text-decoration-underline">
                         30% room value
-                      </div>
+                      </div> */}
+                    </div>
+
+                    <div className="col-md-3 d-flex align-items-center">
+                      <FormControlLabel
+                        value="MARKET READY"
+                        className="me-2"
+                        control={
+                          <Radio
+                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
+                          />
+                        }
+                        label="MARKET READY"
+                      />
+                      {/* <div className="fst-italic text-danger text-decoration-underline">
+                        50% room value
+                      </div> */}
+                    </div>
+                    <div className="col-md-3 d-flex align-items-center">
+                      <FormControlLabel
+                        value="DAZLING"
+                        className="me-2"
+                        control={
+                          <Radio
+                          // className={`${errorBorderRadio ? "errorSub" : ""} `}
+                          />
+                        }
+                        label="DAZLING"
+                      />
+                      {/* <div className="fst-italic text-danger text-decoration-underline">
+                        80% room value
+                      </div> */}
+                    </div>
+                    <div className="col-md-3 d-flex align-items-center">
+                      <FormControlLabel
+                        value="DAZL PLUS"
+                        className="me-2"
+                        control={<Radio />}
+                        label="DAZL PLUS"
+                      />
+                      {/* <div className="fst-italic text-danger text-decoration-underline">
+                        100% room value
+                      </div> */}
                     </div>
                   </div>
-                </RadioGroup> */}
+                </RadioGroup>
               </div>
               <p className="mb-1">Buyer Road Blocks or Recommendations?</p>
               <div className="bg-light rounded-2 py-2 px-3">
@@ -1338,20 +1338,19 @@ const EditPhd = (props) => {
                                   <div key={imageIndex}>
                                     {image && (
                                       <div>
-                                      
-                                          <img
-                                            alt="img"
-                                            src={image}
-                                            className="object-fit-cover border"
-                                            width={"100px"}
-                                            height={"100px"}
-                                            onClick={() => {
-                                              setSelectedImageUrl(image);
-                                              setShowModal(true);
-                                            }}
-                                            style={{ cursor: "pointer" }}
-                                          />
-                                        
+                                        <img
+                                          alt="img"
+                                          src={image}
+                                          className="object-fit-cover border"
+                                          width={"100px"}
+                                          height={"100px"}
+                                          onClick={() => {
+                                            setSelectedImageUrl(image);
+                                            setShowModal(true);
+                                          }}
+                                          style={{ cursor: "pointer" }}
+                                        />
+
                                         <div className="d-flex justify-content-center">
                                           <button
                                             type="button"
@@ -1459,24 +1458,25 @@ const EditPhd = (props) => {
           Update
         </button>
       </div>
-    {/* Modal */}
-    <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg" className="custom-modal">
-
-  <Modal.Body className="position-relative">
-  <button
-      className="close-button"
-      onClick={() => setShowModal(false)}
-    >
-      &times;
-    </button>
-    <img
-      src={selectedImageUrl}
-      alt="Modal Image"
-      className="modal-image"
-    />
-  </Modal.Body>
-</Modal>
-
+      {/* Modal */}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        size="lg"
+        className="custom-modal"
+      >
+        <Modal.Body className="position-relative">
+          <button className="close-button" onClick={() => setShowModal(false)}>
+            &times;
+          </button>
+          <img
+            src={selectedImageUrl}
+            alt="Modal Image"
+            className="modal-image"
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

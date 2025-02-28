@@ -95,6 +95,12 @@ const Commonproject = ({
     })),
   };
 
+  useEffect(() => {
+    setCheckboxValues(Array(phdRooms?.length).fill(false));
+    setTextValues([]);
+    setSelectedImages([]);
+  }, [phdRooms]);
+
   const {
     control,
     setError,
@@ -473,6 +479,10 @@ const Commonproject = ({
     const selectedCheckboxes = checkboxValues
       .map((isChecked, index) => {
         if (isChecked) {
+          if (!textValues[index] || "") {
+            setErrorBorder(true);
+            return;
+          }
           return {
             roomId,
             projectID,
@@ -756,6 +766,7 @@ const Commonproject = ({
             variant="contained"
             className="btn btn-danger btn-sizee"
             onClick={addAnother}
+            disabled={!checkboxValues.includes(true)}
             // disabled={selectedImages?.length === 0 ? true : false}
             style={{
               margin: "0px 10px",

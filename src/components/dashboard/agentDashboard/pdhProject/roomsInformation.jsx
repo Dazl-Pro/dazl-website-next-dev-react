@@ -239,7 +239,7 @@ const RoomsInformation = (props) => {
     const value = { data, val };
     setAddvalueCheckbox((prevCheckbox) => [...prevCheckbox, value]);
   };
-const state  = watch()
+  const state = watch();
   // const handleCheckboxArrayChange = (id, index) => {
   //   setPhdCheckbox((prev) => {
   //     const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
@@ -261,12 +261,11 @@ const state  = watch()
   // };
 
   const handleCheckboxArrayChange = (id, index) => {
-    
     setPhdCheckbox((prev) => {
       const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
       let updatedCheckbox = [...prev];
-      console.log(state.textArea[index]); 
-      
+      console.log(state.textArea[index]);
+
       const currentSliderValue =
         parseFloat(localStorage.getItem("blocksliderValue")) || 0;
       // console.log(currentSliderValue);
@@ -297,13 +296,14 @@ const state  = watch()
     });
   };
 
-
-const handleDescriptionChange = (desc , checkBoxVal)=>{
-  let arr  = [...phdCheckbox];
-  const checkBoxIndex = phdCheckbox.findIndex(c=>c.checkbox===checkBoxVal.id)
-  arr[checkBoxIndex]["description"] = desc;
-  setPhdCheckbox(arr)
-}
+  const handleDescriptionChange = (desc, checkBoxVal) => {
+    let arr = [...phdCheckbox];
+    const checkBoxIndex = phdCheckbox.findIndex(
+      (c) => c.checkbox === checkBoxVal.id
+    );
+    arr[checkBoxIndex]["description"] = desc;
+    setPhdCheckbox(arr);
+  };
 
   let packageType = "";
 
@@ -319,8 +319,7 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
   const save = (e, value) => {
     e.preventDefault();
     console.log(phdCheckbox);
-    
-      
+
     // phdCheckbox.forEach((item , index)=>{
     //   item["description"] = state.textArea[index]
     // })
@@ -447,7 +446,7 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
           // console.log(descriptionKey)
           const imagesKey = `rooms[${roomId}][feature_issues_images][${item.checkbox}]`;
 
-           formData.append(checkboxKey, "NEEDS DAZL");
+          formData.append(checkboxKey, "NEEDS DAZL");
 
           formData.append(descriptionKey, item?.description);
 
@@ -457,7 +456,7 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
           });
         });
 
-      formData.append(`rooms[${roomId}][status]`, packageType);
+      formData.append(`rooms[${roomId}][status]`, input.options);
       formData.append("zip_code", agentData.zip_code ?? "123456");
       formData.append("final", value === "save" ? 0 : 1);
       formData.append("house_id", saved1 !== null ? saved1.house_id : "");
@@ -665,6 +664,8 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
   // };
 
   const onChange = (e) => {
+    console.log("CheckBox ", e.target.value);
+    console.log("CheckBox ", e.target.name);
     const name = e.target.name;
     const value = e.target.value;
     setInput({ ...input, [name]: value });
@@ -707,6 +708,8 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
     setInput({ ...input, ["level"]: newValue });
     setErrorborder1(false);
   };
+
+  console.log("val", val);
 
   // function ValueLabelComponent(props) {
   //   const { children, value } = props;
@@ -976,7 +979,7 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
             <h4>Overall first impressions:</h4>
           </FormLabel>
 
-          <Box sx={{ width: "full", padding: 3 }}>
+          {/* <Box sx={{ width: "full", padding: 3 }}>
             <div className="slider-container position-relative">
               <div className="d-flex justify-content-between w-100">
                 <p>0pts</p>
@@ -1037,36 +1040,16 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
                 Please Select Impressions Value*
               </div>
             )}
-          </Box>
-          {/* <RadioGroup
+          </Box> */}
+          <RadioGroup
             aria-label="options"
             name="options"
             value={input.options}
             onChange={onChange}
             required
           >
-            <div className="row">
-              <div className="col-md-4 d-flex align-items-center">
-                <FormControlLabel
-                  value="DAZLING"
-                  className="me-2"
-                  control={
-                    <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
-                  }
-                  label="DAZLING"
-                />
-              </div>
-              <div className="col-md-4 d-flex align-items-center">
-                <FormControlLabel
-                  value="MARKET READY"
-                  className="me-2"
-                  control={
-                    <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
-                  }
-                  label="MARKET READY"
-                />
-              </div>
-              <div className="col-md-4 d-flex align-items-center">
+            <div className="row ">
+              <div className="col-md-3 d-flex align-items-center">
                 <FormControlLabel
                   value="NEEDS DAZL"
                   className="me-2"
@@ -1076,8 +1059,39 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
                   label="NEEDS DAZL"
                 />
               </div>
+
+              <div className="col-md-3 d-flex align-items-center">
+                <FormControlLabel
+                  value="MARKET READY"
+                  className="me-2"
+                  control={
+                    <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
+                  }
+                  label="MARKET READY"
+                />
+              </div>
+              <div className="col-md-3 d-flex align-items-center">
+                <FormControlLabel
+                  value="DAZLING"
+                  className="me-2"
+                  control={
+                    <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
+                  }
+                  label="DAZLING"
+                />
+              </div>
+              <div className="col-md-3 d-flex align-items-center">
+                <FormControlLabel
+                  value="DAZL PLUS"
+                  className="me-2"
+                  control={
+                    <Radio className={`${errorBorder1 ? "errorSub" : ""} `} />
+                  }
+                  label="DAZL PLUS"
+                />
+              </div>
             </div>
-          </RadioGroup> */}
+          </RadioGroup>
           {errors.selectedOption && (
             <span className="text-danger">{errors.selectedOption.message}</span>
           )}
@@ -1117,9 +1131,8 @@ const handleDescriptionChange = (desc , checkBoxVal)=>{
                         variant="outlined"
                         fullWidth
                         {...register(`textArea[${index}]`)}
-                        onChange={e=>{
-                        handleDescriptionChange(e.target.value , _)
-                         
+                        onChange={(e) => {
+                          handleDescriptionChange(e.target.value, _);
                         }}
                         className={`${
                           watch(`textArea[${index}]`) === "" ? "error" : ""

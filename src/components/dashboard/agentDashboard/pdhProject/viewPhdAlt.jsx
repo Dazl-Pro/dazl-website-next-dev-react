@@ -53,6 +53,17 @@ const ProgressWithLabel = ({ low, high, mid }) => {
     }
   };
 
+  console.log(
+    "percentage ",
+    percentage,
+    "low ",
+    low,
+    "high ",
+    high,
+    "mid ",
+    mid
+  );
+
   return (
     <Box
       sx={{
@@ -66,7 +77,8 @@ const ProgressWithLabel = ({ low, high, mid }) => {
         {/* Progress Bar */}
         <BorderLinearProgress
           variant="determinate"
-          value={percentage}
+          // value={percentage}
+          value={percentage > 100 ? 100 : percentage}
           sx={{ flexGrow: 1 }}
         />
 
@@ -74,7 +86,7 @@ const ProgressWithLabel = ({ low, high, mid }) => {
         <Box
           sx={{
             position: "absolute",
-            left: `${percentage}%`,
+            left: `${percentage > 100 ? 100 : percentage}%`,
             transform: "translateX(-50%)",
             width: "maxContentWidth",
             height: 28,
@@ -603,6 +615,9 @@ const ViewPhdAlt = ({
                                 <h3 className="fw-semibold font-18">
                                   {ele?.room_name}
                                 </h3>
+                                <p className="fw-semibold font-10 text-danger mx-2">
+                                  {ele?.status}
+                                </p>
                               </div>
 
                               <div>
@@ -655,7 +670,7 @@ const ViewPhdAlt = ({
                                             className="p-3 mt-3 bg-white"
                                             style={{ margin: "10px" }}
                                           >
-                                            <div className="slider-container position-relative p-3">
+                                            {/* <div className="slider-container position-relative p-3">
                                               <Field name={`sliders.${index}`}>
                                                 {({ field }) => (
                                                   <Slider
@@ -697,8 +712,8 @@ const ViewPhdAlt = ({
                                                   />
                                                 )}
                                               </Field>
-                                            </div>
-                                            <Box
+                                            </div> */}
+                                            {/* <Box
                                               sx={{
                                                 display: "flex",
                                                 justifyContent: "space-between",
@@ -756,7 +771,7 @@ const ViewPhdAlt = ({
                                               >
                                                 DAZL PLUS
                                               </Typography>
-                                            </Box>
+                                            </Box> */}
                                             {errors.sliders && (
                                               <div className="text-primary">
                                                 Please Select Impressions Value*

@@ -7,6 +7,17 @@ const CustomerCreateProject = () => {
   const [show, setShow] = React.useState(false);
   const [selectValue, setSelectvalue] = React.useState("");
   const [name, setName] = React.useState("");
+  // const [update, setUpdate] = React.useState(0);
+
+  // useEffect(() => {
+  //   const roomId = localStorage.getItem("roomId");
+
+  //   console.log("roomId", roomId);
+
+  //   if (!roomId) {
+  //     setUpdate((prev) => prev + 1);
+  //   }
+  // }, [selectValue]);
 
   return (
     <div className="py-0 create-project-container-height">
@@ -45,6 +56,7 @@ const CustomerCreateProject = () => {
           /> */}
           <div className="customer-create-project">
             <Commonproject
+              // key={update}
               show={show}
               name={name}
               setShow={setShow}
