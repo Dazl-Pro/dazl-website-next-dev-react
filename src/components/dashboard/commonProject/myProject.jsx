@@ -516,6 +516,7 @@ const MyProject = () => {
                                                   <button
                                                     className="btn btn-outline-success mx-1 btn-sm"
                                                     onClick={() => {
+                                                      setNewImages([{}]);
                                                       handleSubmit(
                                                         item,
                                                         items?.project_id,
@@ -567,6 +568,7 @@ const MyProject = () => {
                                                       key={imageIdx}
                                                       style={{
                                                         width: "200px",
+                                                        marginBottom: "10px",
                                                       }}
                                                     >
                                                       {img && (
@@ -642,42 +644,118 @@ const MyProject = () => {
                                                 {chooseShow &&
                                                   item?.feature_id ===
                                                     editItem &&
+                                                  imagesUpload.map(
+                                                    (img, imageIndex) => (
+                                                      <div
+                                                        key={imageIndex}
+                                                        style={{
+                                                          width: "200px",
+                                                          marginBottom: "10px",
+                                                        }}
+                                                      >
+                                                        {img && (
+                                                          <div>
+                                                            <img
+                                                              alt="img"
+                                                              src={img}
+                                                              accept=".jpg,.jpeg,.png"
+                                                              className="object-fit-cover border"
+                                                              width={"100px"}
+                                                              height={"100px"}
+                                                              onClick={() => {
+                                                                setSelectedImageUrl(
+                                                                  img
+                                                                );
+                                                                setShowModal2(
+                                                                  true
+                                                                );
+                                                              }}
+                                                            />
+
+                                                            {delShow &&
+                                                              item?.feature_id ===
+                                                                editItem && (
+                                                                <div className="d-flex justify-content-center">
+                                                                  <button
+                                                                    type="button"
+                                                                    className="btn btn-primary btn-sm mt-2"
+                                                                    onClick={() => {
+                                                                      setImagesUpload(
+                                                                        (
+                                                                          prev
+                                                                        ) =>
+                                                                          prev.filter(
+                                                                            (
+                                                                              _,
+                                                                              index
+                                                                            ) =>
+                                                                              index !==
+                                                                              imageIndex
+                                                                          )
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    <DeleteIcon />
+                                                                  </button>
+                                                                </div>
+                                                              )}
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    )
+                                                  )}
+                                                {chooseShow &&
+                                                  item?.feature_id ===
+                                                    editItem &&
                                                   // newImages.length < 4 &&
                                                   newImages.map(
                                                     (
-                                                      imgIdx
+                                                      imgIdx,
+                                                      fieldindex
                                                       // projectIdx,
                                                       // featureIdx
                                                     ) => (
-                                                      <input
-                                                        className="w-100"
-                                                        type="file"
-                                                        accept=".png, .jpg, .jpeg"
-                                                        onChange={(e) => {
-                                                          const file =
-                                                            e.target.files[0];
-                                                          if (
-                                                            file &&
-                                                            file.type.startsWith(
-                                                              "image/"
-                                                            )
-                                                          ) {
-                                                            // Ensure to pass the correct indices for the image location
-                                                            uploadImage(
-                                                              file,
-                                                              // projectIdx,
-                                                              imgIdx
-                                                              // featureIdx
-                                                            );
+                                                      <div>
+                                                        <input
+                                                          id="Choose_File"
+                                                          className="w-100"
+                                                          type="file"
+                                                          accept=".png, .jpg, .jpeg"
+                                                          style={{
+                                                            marginBottom:
+                                                              "10px",
+                                                            display: "none",
+                                                          }}
+                                                          onChange={(e) => {
+                                                            const file =
+                                                              e.target.files[0];
+                                                            if (
+                                                              file &&
+                                                              file.type.startsWith(
+                                                                "image/"
+                                                              )
+                                                            ) {
+                                                              uploadImage(
+                                                                file,
+                                                                imgIdx
+                                                              );
+                                                            }
+                                                          }}
+                                                        />
+                                                        <button
+                                                          type="button"
+                                                          className="btn btn-primary btn-sm mt-2"
+                                                          onClick={() =>
+                                                            document
+                                                              .getElementById(
+                                                                "Choose_File"
+                                                              )
+                                                              .click()
                                                           }
-                                                        }}
-                                                        // onChange={(e) => {
-                                                        //   uploadImage(
-                                                        //     e,
-                                                        //     imgIdx
-                                                        //   );
-                                                        // }}
-                                                      />
+                                                        >
+                                                          Choose File
+                                                        </button>
+                                                      </div>
                                                     )
                                                   )}
                                               </div>

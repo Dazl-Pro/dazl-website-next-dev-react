@@ -706,15 +706,15 @@ const Commonproject = ({
                                     {errors.file.message}
                                   </p>
                                 )}
-                                {fields.length > 11 && (
-                                  <button
-                                    type="button"
-                                    onClick={() => remove(imgIndex)}
-                                    className="btn btn-light bg-light-red border-danger space"
-                                  >
-                                    <DeleteIcon />
-                                  </button>
-                                )}
+                                {/* {fields.length > 2 && ( */}
+                                <button
+                                  type="button"
+                                  onClick={() => remove(imgIndex)}
+                                  className="btn btn-light bg-light-red border-danger space"
+                                >
+                                  <DeleteIcon />
+                                </button>
+                                {/* )} */}
                                 {/* Show error if no images are uploaded */}
                                 {fields.filter(
                                   (field) => field.indexId === index
