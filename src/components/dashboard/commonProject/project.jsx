@@ -95,6 +95,8 @@ const Commonproject = ({
     })),
   };
 
+  console.log("==>", selectedImages);
+
   useEffect(() => {
     setCheckboxValues(Array(phdRooms?.length).fill(false));
     setTextValues([]);
@@ -569,7 +571,7 @@ const Commonproject = ({
   const handleImage = (phd, index, e) => {
     const file = e.target.files[0];
     const isImage = file && file.type.startsWith("image/");
-    clearErrors(`photos[${index}].file`);
+    // clearErrors(`photos[${index}].file`);
     if (!isImage) {
       setError(`photos[${index}].file`, {
         type: "manual",
@@ -625,6 +627,34 @@ const Commonproject = ({
         });
     }
   };
+
+  console.log("phdRooms ==>", phdRooms);
+
+  const presentImages = (id) => {
+    const data = selectedImages.filter((item) => item.features == id);
+    console.log("data==>", data);
+
+    if (data.length > 0) {
+      return data[0].images;
+    } else {
+      return [];
+    }
+  };
+
+  const deleteImage = (featureId, imageIndex) => {
+    setSelectedImages((prevImages) =>
+      prevImages.map((item) => {
+        if (item.features === featureId) {
+          return {
+            ...item,
+            images: item.images.filter((_, index) => index !== imageIndex),
+          };
+        }
+        return item;
+      })
+    );
+  };
+
   return (
     <>
       <CommonRoomform
@@ -691,59 +721,66 @@ const Commonproject = ({
                       <p className="text-danger mt-2">Note is required.</p>
                     )}
                     {/* Image Upload Fields */}
-                    <div className="form-row bg-light rounded-2 btn-mt">
-                      <div className="row">
-                        <p className="mt-3 text-start">
-                          Add Photos of inspiration or issues.
-                        </p>
-                        {fields?.map((field, imgIndex) => {
-                          return field.indexId === index ? (
-                            <div className="col-md-6 mt-3" key={imgIndex}>
-                              <div className="d-flex align-items-start gap-2">
-                                <input
-                                  type="file"
-                                  className={`form-control ${
-                                    errors.photos &&
-                                    errors?.photos[imgIndex]?.file
-                                      ? "error"
-                                      : ""
-                                  }`}
-                                  accept=".png, .jpg, .jpeg"
-                                  onChange={(e) => handleImage(_, imgIndex, e)}
-                                />
-                                {errors.file && (
-                                  <p className="text-danger mt-2">
-                                    {errors.file.message}
-                                  </p>
-                                )}
-                                {/* {fields.length > 2 && ( */}
-                                <button
-                                  type="button"
-                                  onClick={() => remove(imgIndex)}
-                                  className="btn btn-light bg-light-red border-danger space"
-                                >
-                                  <DeleteIcon />
-                                </button>
-                                {/* )} */}
-                                {/* Show error if no images are uploaded */}
-                                {fields.filter(
-                                  (field) => field.indexId === index
-                                ).length === 0 && (
-                                  <p className="text-danger mt-2">
-                                    At least one image is required.
-                                  </p>
-                                )}
-                              </div>
+                    <div className="row">
+                      <p className="mt-3 text-start">
+                        Add Photos of inspiration or issues.
+                      </p>
+
+                      <div>
+                        {presentImages(_.id).map((item, imgIndex) => {
+                          console.log(imgIndex, "==>", item);
+                          return (
+                            <div className="mb-2">
+                              <img
+                                alt="img"
+                                src={item}
+                                width="100px"
+                                height="100px"
+                                style={{ resize: "" }}
+                              />
+                              <span
+                                className="ml-2 text-danger"
+                                onClick={() => deleteImage(_.id, imgIndex)}
+                              >
+                                <DeleteIcon />
+                              </span>
                             </div>
-                          ) : (
-                            ""
                           );
                         })}
                       </div>
+                      <div className="col-md-6 mt-3">
+                        <div className="d-flex align-items-start gap-2 d-none">
+                          <input
+                            id="image_upload"
+                            type="file"
+                            className={`form-control ${
+                              errors.photos && errors?.photos[imgIndex]?.file
+                                ? "error"
+                                : ""
+                            }`}
+                            accept=".png, .jpg, .jpeg"
+                            onChange={(e) => handleImage(_, index, e)}
+                          />
+                          {errors.file && (
+                            <p className="text-danger mt-2">
+                              {errors.file.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-primary my-3"
+                        onClick={() =>
+                          document.getElementById("image_upload").click()
+                        }
+                      >
+                        Upload Image
+                      </button>
                       {/* {fields.filter((field) => field.indexId === index)
                         .length < 5 && ( */}
                       {/* // disabled={fields.length === 0 || !isLastFieldFilled()} */}
-                      {fields.filter((field) => field.indexId === index)
+                      {/* {fields.filter((field) => field.indexId === index)
                         .length < 5 && (
                         <button
                           type="button"
@@ -753,7 +790,7 @@ const Commonproject = ({
                         >
                           Upload More
                         </button>
-                      )}
+                      )} */}
                       {/* )} */}
                     </div>
                   </>

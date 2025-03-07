@@ -36,14 +36,14 @@ const ProfessionalDashboard = () => {
             Dazl is an online tool that enables service pros to streamline their
             project requests and to evaluate opportunities more selectively.
             Dazl's project opportunity pipeline is populated through two
-            channels:
-            <span
+            channels
+            {/* <span
               style={{ cursor: "pointer" }}
               className="text-primary fw-bold"
               onClick={() => (localStorage.clear(), navigate("/"))}
             >
               Log Out
-            </span>
+            </span> */}
           </p>
           <div className="console-flex d-flex justify-content-center align-items-baseline">
             <button

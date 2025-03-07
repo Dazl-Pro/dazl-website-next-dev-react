@@ -30,6 +30,7 @@ const ProjectOpportunity = () => {
   const [chooseShow, setChooseShow] = React.useState(false);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [checkboxName, setCheckboxName] = useState("");
 
   const [showModal2, setShowModal2] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
@@ -90,14 +91,14 @@ const ProjectOpportunity = () => {
   //   // navigate("/company/projectOpportunities");
   // };
 
-  const handleSendMail = (ids) => {
+  const handleSendMail = (ids, interested) => {
     // console.log(ids);
     if (ids) {
       dispatch(
         sendMailHomeOwner({
           projectId: id, // Use selected room id
           roomId: ids,
-          isInterested: true,
+          isInterested: interested,
           homeOwnerMail: data.customer.email,
           homeOwnerName:
             data.customer.first_name + " " + data.customer.last_name,
@@ -147,21 +148,22 @@ const ProjectOpportunity = () => {
     }
   };
   const handleAnotherClick = (ids) => {
-    if (isModalOptionSelected) {
-      handleSendMail(ids);
-    }
-    setShowModal(true);
+    // if (isModalOptionSelected) {
+    handleSendMail(ids);
+    // }
+    // setShowModal(true);
   };
 
   const handleButtonClick = (ids, interested) => {
     console.log("Button clicked, interested:", interested);
     // Call the appropriate function based on the value of 'interested'
-    if (interested === true) {
-      handleSendMail(ids);
-    } else if (interested === false) {
-      setShowModal(true);
-      handleAnotherClick(ids);
-    }
+    // if (interested === true) {
+    handleSendMail(ids, interested);
+    // }
+    // else if (interested === false) {
+    // setShowModal(true);
+    // handleAnotherClick(ids);
+    // }
   };
   // const handleButtonClick = (roomId, isInterested = true) => {
   //   setSelectedRoomIds((prevSelectedRoomIds) => {
@@ -353,6 +355,8 @@ const ProjectOpportunity = () => {
                             <input
                               type="checkbox"
                               id="checkbox"
+                              style={{ background: "#fff" }}
+                              checked={checkboxName == "yes" ? true : false}
                               // checked={interested === true}
                               // checked={selectedRoomIds(room.room_id)}
                               // onChange={() => {
@@ -362,8 +366,16 @@ const ProjectOpportunity = () => {
                               // onChange={() => handleCheckboxChange(room.room_id)}
                               // onClick={() => setShowModal(false)}
                               onChange={() => {
-                                setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
-                                handleButtonClick(room.room_id, true);
+                                setCheckboxName((prev) => {
+                                  const newValue = prev === "yes" ? "" : "yes";
+
+                                  // If newValue is "yes", call the function
+                                  if (newValue === "yes") {
+                                    handleButtonClick(room.room_id, true);
+                                  }
+
+                                  return newValue;
+                                });
                               }}
                             />
                             <span className="fw-bold fs-6 ms-2"> YES </span>,
@@ -377,14 +389,25 @@ const ProjectOpportunity = () => {
                               id="checkbox"
                               // checked={interested === false}
                               // onChange={() => setInterested(false)}
-
+                              checked={checkboxName == "no" ? true : false}
                               // onClick={() => setShowModal(true)}
                               // checked={isModalOptionSelected}
                               // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
+
                               onChange={() => {
-                                setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
-                                handleButtonClick(room.room_id, false);
+                                setCheckboxName((prev) => {
+                                  const newValue = prev === "no" ? "" : "no";
+
+                                  // If newValue is "yes", call the function
+                                  if (newValue === "no") {
+                                    handleButtonClick(room.room_id, false);
+                                  }
+
+                                  return newValue;
+                                });
                               }}
+                              // setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
+                              // handleButtonClick(room.room_id, false);
                             />
                             <span className="fw-bold fs-6 ms-2"> NO </span>, I'm
                             not interseted.{" "}

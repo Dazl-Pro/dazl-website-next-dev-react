@@ -594,7 +594,7 @@ const SignupPros = () => {
                             }
                           }}
                         /> */}
-                        <input
+                        {/* <input
                           type="text"
                           {...field}
                           className={`width-input form-control ${
@@ -603,6 +603,7 @@ const SignupPros = () => {
                           placeholder="Company Number*"
                           value={field.value} // Ensure the input reflects the current value
                           onChange={(e) => {
+                            console.log("<====>", e.target.value);
                             // Allow only numbers and dashes
                             const formattedValue = e.target.value
                               .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
@@ -620,7 +621,64 @@ const SignupPros = () => {
                               e.preventDefault();
                             }
                           }}
+                        /> */}
+                        {/* 
+                        {errors.number && (
+                          <p className="text-danger">{errors.number.message}</p>
+                        )} */}
+
+                        <PhoneInput
+                          country={"us"}
+                          enableSearch={true}
+                          value={field.value}
+                          // onChange={(phone) => {
+                          //   setPhone(phone);
+                          //   setValue("mobilenumber", phone, {
+                          //     shouldValidate: true,
+                          //   });
+                          // }}
+                          onChange={(e) => {
+                            console.log("====>", e);
+                            // Allow only numbers and dashes
+                            const formattedValue = e
+                              .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
+                              .replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"); // Example format: XXX-XXX-XXXX
+                            // Update the input value
+                            field.onChange({
+                              target: { value: formattedValue },
+                            });
+                          }}
+                          placeholder="+1 (545) 674-3543"
+                          inputStyle={{
+                            paddingTop: 8,
+                            paddingBottom: 8,
+                            width: "100%",
+                            border: 0,
+
+                            color: "black",
+                            background: "#fff",
+                            borderRadius: "6px",
+                            height: "40px",
+                          }}
+                          buttonStyle={{
+                            borderTopLeftRadius: "10px",
+                            borderBottomLeftRadius: "10px",
+                          }}
+                          containerStyle={{
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "6px",
+                          }}
+                          inputProps={{
+                            id: "mobile",
+                            name: "mobile",
+                            required: true,
+                          }}
                         />
+                        {/* {errors?.mobilenumber && (
+                          <p className="text-danger">
+                            {errors?.mobilenumber?.message}
+                          </p>
+                        )} */}
 
                         {errors.number && (
                           <p className="text-danger">{errors.number.message}</p>
@@ -629,7 +687,7 @@ const SignupPros = () => {
                     )}
                   />
                 </div>
-                <div className={`form-row col-md-4 mb-3`}>
+                {/* <div className={`form-row col-md-4 mb-3`}>
                   <PhoneInput
                     country={"us"}
                     enableSearch={true}
@@ -669,7 +727,7 @@ const SignupPros = () => {
                       {errors?.mobilenumber?.message}
                     </p>
                   )}
-                </div>
+                </div> */}
                 <div className={`form-row col-md-4 mb-3`}>
                   <Controller
                     name="yearofbusiness"
