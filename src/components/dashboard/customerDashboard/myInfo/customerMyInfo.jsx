@@ -180,10 +180,10 @@ const CustomerMyInfo = () => {
                 </div>
               </div>
 
-              <div className="d-flex justify-content-center align-items-center flex-column">
+              <div className="d-flex justify-content-center align-items-center flex-column mt-4">
                 <button
                   type="submit"
-                  className="btn btn-primary mw-230px w-100 mt-2"
+                  className="btn btn-primary mw-230px w-100 "
                 >
                   {disable ? "Update" : "Edit"}
                 </button>

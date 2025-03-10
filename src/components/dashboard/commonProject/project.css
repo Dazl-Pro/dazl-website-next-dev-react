@@ -148,3 +148,27 @@ h4 {
 .images-project-all > div > img {
   border-radius: 8px;
 }
+
+.dlt-btn button {
+  padding: 1px 6px;
+}
+.dlt-btn {
+  position: absolute;
+  top: 0;
+  right: 5%;
+}
+.dlt-btn svg {
+  width: 1.2rem;
+  padding: 0;
+}
+
+@media screen and (max-width: 1279px) {
+  .img-box {
+    flex: 1 1 48%;
+}
+}
+.dlt-btn-2 {
+  position: absolute;
+  top: 0;
+  left: 50%;
+}

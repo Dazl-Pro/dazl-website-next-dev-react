@@ -502,10 +502,10 @@ const MyProject = () => {
                                       (item, index) => (
                                         <div
                                           key={index}
-                                          className="col-4 border bath-box m-2 p-2"
+                                          className="col-6  bath-box p-2 h-100"
                                           width="200px"
                                         >
-                                          <div>
+                                          <div className="border p-2">
                                             <div className="d-flex justify-content-between">
                                               <p className="item-nammeee fw-bold text-start fs-4">
                                                 {item?.feature_name}
@@ -555,7 +555,7 @@ const MyProject = () => {
                                                   {item?.inspectionNotes}
                                                 </p>
                                               )}
-                                              <div className="row mt-2 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 d-flex flex-column flex-wrap pe-0">
+                                              <div className="row mt-2  d-flex  flex-wrap pe-0">
                                                 {imagesArray?.[
                                                   dataIndex
                                                 ]?.roominfo?.[
@@ -564,15 +564,17 @@ const MyProject = () => {
                                                   index
                                                 ]?.images?.map(
                                                   (img, imageIdx) => (
-                                                    <div
+                                                    <div className="col-lg-4 img-box"
                                                       key={imageIdx}
                                                       style={{
-                                                        width: "200px",
+                                                        // width: "200px",
                                                         marginBottom: "10px",
                                                       }}
                                                     >
                                                       {img && (
-                                                        <div>
+                                                        <div style={{width : "100px",
+                                                               position: "relative",
+                                                        }}>
                                                           <img
                                                             alt="img"
                                                             src={img}
@@ -619,10 +621,10 @@ const MyProject = () => {
                                                           {delShow &&
                                                             item?.feature_id ===
                                                               editItem && (
-                                                              <div className="d-flex justify-content-center">
+                                                              <div className="d-flex justify-content-center dlt-btn ">
                                                                 <button
                                                                   type="button"
-                                                                  className="btn btn-primary btn-sm mt-2"
+                                                                  className="btn btn-primary btn-sm mt-2 "
                                                                   onClick={() =>
                                                                     handleRemoveImage(
                                                                       dataIndex,

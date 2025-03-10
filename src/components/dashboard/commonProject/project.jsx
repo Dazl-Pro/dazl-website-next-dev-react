@@ -77,6 +77,9 @@ const Commonproject = ({
     newCheckboxValues[index] = !newCheckboxValues[index];
     setCheckboxValues(newCheckboxValues);
   };
+
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     if (addAnotherRoomState || projectValue) {
       let val;
@@ -730,7 +733,7 @@ const Commonproject = ({
                         {presentImages(_.id).map((item, imgIndex) => {
                           console.log(imgIndex, "==>", item);
                           return (
-                            <div className="mb-2">
+                            <div className="mb-2 position-relative float-start me-4">
                               <img
                                 alt="img"
                                 src={item}
@@ -739,7 +742,7 @@ const Commonproject = ({
                                 style={{ resize: "" }}
                               />
                               <span
-                                className="ml-2 text-danger"
+                                className="ml-2 text-danger dlt-btn-2"
                                 onClick={() => deleteImage(_.id, imgIndex)}
                               >
                                 <DeleteIcon />
@@ -751,6 +754,7 @@ const Commonproject = ({
                       <div className="col-md-6 mt-3">
                         <div className="d-flex align-items-start gap-2 d-none">
                           <input
+                          ref={fileInputRef}
                             id="image_upload"
                             type="file"
                             className={`form-control ${
@@ -771,9 +775,7 @@ const Commonproject = ({
                       <button
                         type="button"
                         className="btn btn-primary my-3"
-                        onClick={() =>
-                          document.getElementById("image_upload").click()
-                        }
+                        onClick={() => fileInputRef.current.click()}
                       >
                         Upload Image
                       </button>

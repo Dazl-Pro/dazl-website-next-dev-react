@@ -62,7 +62,7 @@
 
 }
 header{
-  z-index: 1 !important;
+  z-index: 2 !important;
 }
 
  /* Hide the desktop menu on screens with a width of 600 pixels or smaller */

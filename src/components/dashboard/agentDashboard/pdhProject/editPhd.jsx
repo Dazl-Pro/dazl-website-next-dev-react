@@ -828,7 +828,7 @@ const EditPhd = (props) => {
                         (image, imageIndex) => (
                           <div key={imageIndex}>
                             {image && (
-                              <div>
+                              <div className="float-start me-4 position-relative">
                                 <img
                                   alt="img"
                                   src={image}
@@ -842,10 +842,10 @@ const EditPhd = (props) => {
                                   style={{ cursor: "pointer" }}
                                 />
 
-                                <div className="d-flex justify-content-center">
+                                <div className="d-flex justify-content-center dlt-btn-3">
                                   <button
                                     type="button"
-                                    className="btn btn-primary btn-sm mt-2"
+                                    className="btn btn-primary btn-sm mt-2 "
                                     onClick={() =>
                                       handleRemoveImage(
                                         roomImagesObject[index].room_id,
@@ -853,7 +853,7 @@ const EditPhd = (props) => {
                                       )
                                     }
                                   >
-                                    Remove
+                                    <DeleteIcon />
                                   </button>
                                 </div>
                               </div>
@@ -1337,7 +1337,7 @@ const EditPhd = (props) => {
                                 ]?.images?.map((image, imageIndex) => (
                                   <div key={imageIndex}>
                                     {image && (
-                                      <div>
+                                      <div className="float-start me-4 position-relative">
                                         <img
                                           alt="img"
                                           src={image}
@@ -1351,10 +1351,10 @@ const EditPhd = (props) => {
                                           style={{ cursor: "pointer" }}
                                         />
 
-                                        <div className="d-flex justify-content-center">
+                                        <div className="d-flex justify-content-center dlt-btn-3">
                                           <button
                                             type="button"
-                                            className="btn btn-primary btn-sm mt-2"
+                                            className="btn btn-primary btn-sm mt-2 "
                                             onClick={() =>
                                               handleRemoveCheckBoxImage(
                                                 roomImagesObjectCheckbox[index]
@@ -1364,7 +1364,7 @@ const EditPhd = (props) => {
                                               )
                                             }
                                           >
-                                            Remove
+                                           <DeleteIcon />
                                           </button>
                                         </div>
                                       </div>
