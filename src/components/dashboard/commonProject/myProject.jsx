@@ -719,7 +719,7 @@ const MyProject = () => {
                                                     ) => (
                                                       <div>
                                                         <input
-                                                          id="Choose_File"
+                                                          id={`Choose_File${index}`}
                                                           className="w-100"
                                                           type="file"
                                                           accept=".png, .jpg, .jpeg"
@@ -750,7 +750,7 @@ const MyProject = () => {
                                                           onClick={() =>
                                                             document
                                                               .getElementById(
-                                                                "Choose_File"
+                                                                `Choose_File${index}`
                                                               )
                                                               .click()
                                                           }

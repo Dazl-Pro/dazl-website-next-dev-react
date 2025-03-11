@@ -100,6 +100,11 @@ const EditPhd = (props) => {
 
   const [input, setInput] = React.useState([]);
 
+  console.log("viewPhdData =>", viewPhdData);
+  console.log("roomIds =>", roomIds);
+  console.log("roomData =>", roomData);
+
+  console.log("input data  ==>", JSON.stringify(input));
   const handleChangeValue = (event, id) => {
     setInput((prevState) =>
       prevState?.map((room) => {
@@ -247,6 +252,8 @@ const EditPhd = (props) => {
   const [photoFields, setPhotoFields] = useState([]);
   const [photoFieldsCheckBox, setPhotoFieldsCheckBox] = useState([]);
 
+  console.log("+++>", photoFieldsCheckBox);
+
   useEffect(() => {
     if (roomIds.length > 0) {
       const initialPhotoFields = roomIds?.map((roomId) => [{ file: null }]);
@@ -299,11 +306,11 @@ const EditPhd = (props) => {
   };
 
   const removePhoto = (roomId, index, mainIndex) => {
-    setPhotoFields((prevPhotoFields) =>
-      prevPhotoFields?.map((fields, i) =>
-        i === mainIndex ? fields.filter((data, j) => j !== index) : fields
-      )
-    );
+    // setPhotoFields((prevPhotoFields) =>
+    //   prevPhotoFields?.map((fields, i) =>
+    //     i === mainIndex ? fields.filter((data, j) => j !== index) : fields
+    //   )
+    // );
     setInput((prevState) =>
       prevState?.map((room) => {
         if (room.roomId === roomId) {
@@ -381,7 +388,7 @@ const EditPhd = (props) => {
                 id: existingImagesCount + index,
                 responseImage: image,
               })),
-            ];
+            ].filter((image) => image.responseImage !== null);
 
             return {
               ...room,
@@ -389,9 +396,13 @@ const EditPhd = (props) => {
             };
           }
 
-          return room; // If no corresponding roomImages found, return the original room object
+          return {
+            ...room,
+            mainImages: room.mainImages.filter(
+              (image) => image.responseImage !== null
+            ), // Remove null responseImages if no roomImages found
+          }; // If no corresponding roomImages found, return the original room object
         });
-
         const updatedInputFinal = updatedInput.map((room) => {
           // Find the corresponding roomImages for the current room
           const roomImages = roomImagesObjectCheckbox.find(
@@ -400,27 +411,34 @@ const EditPhd = (props) => {
 
           if (roomImages) {
             // Append images from roomImages to roadBlockImages for each road block
-            const updatedRoadBlocks = room?.roadBlocks?.map((block) => {
-              const matchingImages = roomImages?.roadBlocks?.find(
-                (imageBlock) => imageBlock.roadBlock_id === block.id
-              );
+            const updatedRoadBlocks = room?.roadBlocks
+              ?.map((block) => {
+                const matchingImages = roomImages?.roadBlocks?.find(
+                  (imageBlock) => imageBlock.roadBlock_id === block.id
+                );
 
-              if (matchingImages) {
-                const existingImagesCount = block.roadBlockImages?.length;
-                const mergedImages = [
-                  ...block.roadBlockImages, // Keep existing images
-                  ...(matchingImages?.images?.map((image, index) => ({
-                    id: existingImagesCount + index, // Assuming you have an ID for each image
-                    responseImage: image, // Assuming image structure contains responseImage
-                  })) || []),
-                ];
+                if (matchingImages) {
+                  const existingImagesCount = block.roadBlockImages?.length;
+                  const mergedImages = [
+                    ...block.roadBlockImages, // Keep existing images
+                    ...(matchingImages?.images?.map((image, index) => ({
+                      id: existingImagesCount + index, // Assuming you have an ID for each image
+                      responseImage: image, // Assuming image structure contains responseImage
+                    })) || []),
+                  ].filter((image) => image.responseImage !== null);
+                  return {
+                    ...block,
+                    roadBlockImages: mergedImages,
+                  };
+                }
                 return {
                   ...block,
-                  roadBlockImages: mergedImages,
+                  roadBlockImages: block.roadBlockImages.filter(
+                    (image) => image.responseImage !== null
+                  ), // Remove null responseImages
                 };
-              }
-              return block;
-            });
+              })
+              .filter((block) => block.roadBlockDescription.trim() !== "");
 
             return {
               ...room,
@@ -428,9 +446,22 @@ const EditPhd = (props) => {
             };
           }
 
-          return room; // If no corresponding roomImages found, return the original room object
+          return {
+            ...room,
+            mainImages: room.mainImages.filter(
+              (image) => image.responseImage !== null
+            ), // Remove null responseImages
+            roadBlocks: room.roadBlocks
+              .map((block) => ({
+                ...block,
+                roadBlockImages: block.roadBlockImages.filter(
+                  (image) => image.responseImage !== null
+                ), // Remove null responseImages
+              }))
+              .filter((block) => block.roadBlockDescription.trim() !== ""), // Remove empty roadBlockDescriptions
+          }; // If no corresponding roomImages found, return the original room object
         });
-
+        console.log("updatedInputFinal ==>", updatedInputFinal);
         dispatch(
           updatePhd({
             data: updatedInputFinal,
@@ -462,6 +493,19 @@ const EditPhd = (props) => {
     }
   };
 
+  function getMainImages(roomId) {
+    const room = input?.find((item) => item.roomId === roomId);
+    return room ? room.mainImages : [];
+  }
+
+  function getRoadBlockImages(roomId, roadBlockId) {
+    const room = input?.find((item) => item.roomId === roomId);
+    if (!room) return [];
+
+    const roadBlock = room.roadBlocks.find((block) => block.id === roadBlockId);
+    return roadBlock ? roadBlock.roadBlockImages : [];
+  }
+
   const handleImage = (roomId, name, index, e, roadBlockIndex) => {
     const file = e.target.files[0];
 
@@ -483,7 +527,10 @@ const EditPhd = (props) => {
                   // Update the existing image or add a new one
                   updatedValues[existingIndex].responseImage = res.image; // Use res.image instead of responseImage
                 } else {
-                  updatedValues.push({ id: index, responseImage: res.image }); // Use res.image instead of responseImage
+                  updatedValues.push({
+                    id: (updatedValues[updatedValues.length - 1]?.id || 0) + 1,
+                    responseImage: res.image,
+                  }); // Use res.image instead of responseImage
                 }
                 return { ...room, mainImages: updatedValues }; // Change additionalValues to mainImages
               }
@@ -501,7 +548,13 @@ const EditPhd = (props) => {
                     if (rbIndex === roadBlockIndex) {
                       const updatedImages = [
                         ...(block.roadBlockImages || []),
-                        { id: index, responseImage: res.image },
+                        {
+                          id:
+                            (block?.roadBlockImages[
+                              block?.roadBlockImages?.length
+                            ] || 0) + 1,
+                          responseImage: res.image,
+                        },
                       ];
                       return { ...block, roadBlockImages: updatedImages };
                     }
@@ -559,7 +612,6 @@ const EditPhd = (props) => {
           updatedRoadBlocks[index] = {
             ...updatedRoadBlocks[index],
             [name]: value,
-            roadBlockImages: [],
           };
           return {
             ...room,
@@ -570,6 +622,28 @@ const EditPhd = (props) => {
       });
       return updatedRooms;
     });
+  };
+
+  const removeRoadBlockImage = (roomId, roadBlockId, imageIndex) => {
+    setInput((prevData) =>
+      prevData.map((room) =>
+        room.roomId === roomId
+          ? {
+              ...room,
+              roadBlocks: room.roadBlocks.map((block) =>
+                block.id === roadBlockId
+                  ? {
+                      ...block,
+                      roadBlockImages: block.roadBlockImages.filter(
+                        (_, index) => index !== imageIndex
+                      ),
+                    }
+                  : block
+              ),
+            }
+          : room
+      )
+    );
   };
 
   // const handleValueChange = (roomId, valueId, isChecked, name) => {
@@ -654,7 +728,12 @@ const EditPhd = (props) => {
           if (isChecked) {
             // Add the roadblock if not already there
             if (existingIndex === -1) {
-              updatedRoadBlocks.push({ id: valueId, isChecked: true });
+              updatedRoadBlocks.push({
+                id: valueId,
+                isChecked: true,
+                roadBlockDescription: "",
+                roadBlockImages: [],
+              });
               currentValue += phdRoomsArray[index]?.points || 0;
             }
           } else {
@@ -786,6 +865,7 @@ const EditPhd = (props) => {
       {viewPhdData?.[0]?.roominfo?.map((items, index) => {
         const roomIdIn = items?.room_id;
 
+        console.log("Main map ==>", items);
         return (
           <div key={index} className="mb-5">
             <h4 className="mb-4 text-danger">
@@ -861,19 +941,73 @@ const EditPhd = (props) => {
                           </div>
                         )
                       )}
+                      {getMainImages(items?.room_id)?.map((image, index) => (
+                        <div key={image?.id}>
+                          {image && (
+                            <div className="float-start me-4 position-relative">
+                              <img
+                                alt="img"
+                                src={image?.responseImage}
+                                className="object-fit-cover border"
+                                width={"100px"}
+                                height={"100px"}
+                                onClick={() => {
+                                  setSelectedImageUrl(image.responseImage);
+                                  setShowModal(true);
+                                }}
+                                style={{ cursor: "pointer" }}
+                              />
+
+                              <div className="d-flex justify-content-center dlt-btn-3">
+                                <button
+                                  type="button"
+                                  className="btn btn-primary btn-sm mt-2 "
+                                  onClick={() =>
+                                    removePhoto(
+                                      items?.room_id,
+                                      image?.id,
+                                      index
+                                    )
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   <div className="row form-row ">
-                    {photoFields[index]?.map((item, photoIndex) => (
+                    <input
+                      id={`ImageUploadMain${index}`}
+                      type="file"
+                      className={`form-control mb-3 `}
+                      style={{ display: "none" }}
+                      accept="image/*"
+                      onChange={(e) => {
+                        console.log("1234=");
+                        handleImage(items.room_id, "main", -1, e);
+                      }}
+                    />
+                    {/* {photoFields[index]?.map((item, photoIndex) => (
                       <div className="col-md-6" key={photoIndex}>
                         <div className="d-flex align-items-start gap-2">
                           <input
                             type="file"
                             className={`form-control mb-3`}
                             accept="image/*"
-                            onChange={(e) =>
-                              handleImage(items.room_id, "main", photoIndex, e)
-                            }
+                            onChange={(e) => {
+                              console.log(
+                                "image data => ",
+                                items.room_id,
+                                "main",
+                                photoIndex,
+                                e
+                              );
+                              handleImage(items.room_id, "main", photoIndex, e);
+                            }}
                           />
                           {photoFields[index].length > 1 && (
                             <button
@@ -888,16 +1022,19 @@ const EditPhd = (props) => {
                           )}
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
                 <div className="d-flex justify-content-start align-items-center mt-3">
                   <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={() => appendPhoto(index)}
+                    // onClick={() => appendPhoto(index)}
+                    onClick={() =>
+                      document.getElementById(`ImageUploadMain${index}`).click()
+                    }
                   >
-                    Upload more
+                    Upload Image
                   </button>
                 </div>
               </div>
@@ -1364,22 +1501,86 @@ const EditPhd = (props) => {
                                               )
                                             }
                                           >
-                                           <DeleteIcon />
+                                            <DeleteIcon />
                                           </button>
                                         </div>
                                       </div>
                                     )}
                                   </div>
                                 ))}
+
+                                {getRoadBlockImages(roomIdIn, data?.id).map(
+                                  (addedImage, addedImageIndex) => (
+                                    <div key={addedImageIndex}>
+                                      {addedImage && (
+                                        <div className="float-start me-4 position-relative">
+                                          <img
+                                            alt="img"
+                                            src={addedImage?.responseImage}
+                                            className="object-fit-cover border"
+                                            width={"100px"}
+                                            height={"100px"}
+                                            onClick={() => {
+                                              setSelectedImageUrl(
+                                                addedImage?.responseImage
+                                              );
+                                              setShowModal(true);
+                                            }}
+                                            style={{ cursor: "pointer" }}
+                                          />
+
+                                          <div className="d-flex justify-content-center dlt-btn-3">
+                                            <button
+                                              type="button"
+                                              className="btn btn-primary btn-sm mt-2 "
+                                              onClick={() =>
+                                                // handleRemoveCheckBoxImage(
+                                                //   roomImagesObjectCheckbox[
+                                                //     index
+                                                //   ].room_id,
+                                                //   matchingRoadBlockIndex,
+                                                //   imageIndex
+                                                // )
+                                                removeRoadBlockImage(
+                                                  roomIdIn,
+                                                  data?.id,
+                                                  addedImageIndex
+                                                )
+                                              }
+                                            >
+                                              <DeleteIcon />
+                                            </button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )
+                                )}
                               </div>
                             </div>
-                            <div className="form-row bg-light rounded-2">
+                            <input
+                              id={`upload_room_${roadBlockIndex}`}
+                              type="file"
+                              className={`form-control`}
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={(e) =>
+                                handleImage(
+                                  roomIdIn,
+                                  "checkbox",
+                                  0,
+                                  e,
+                                  matchingRoadBlockIndex
+                                )
+                              }
+                            />
+                            {/* <div className="form-row bg-light rounded-2">
                               <div className="row">
                                 {photoFieldsCheckBox?.[index]?.roadBlocks?.[
                                   matchingRoadBlockIndex
                                 ]?.images?.map((field, imgIndex) => (
                                   <div className="col-md-6 mt-3" key={imgIndex}>
-                                    <div className="d-flex align-items-start gap-2">
+                                    <div className="d-flex align-items-start gap-2 ">
                                       <input
                                         type="file"
                                         className={`form-control`}
@@ -1416,19 +1617,24 @@ const EditPhd = (props) => {
                                   </div>
                                 ))}
                               </div>
-                            </div>
+                            </div> */}
                             <button
                               type="button"
                               className="btn btn-success btn btn-primary my-3"
                               onClick={() =>
-                                appendCheckBoxImages(
-                                  index,
-                                  matchingRoadBlockIndex,
-                                  null
-                                )
+                                // appendCheckBoxImages(
+                                //   index,
+                                //   matchingRoadBlockIndex,
+                                //   null
+                                // )
+                                document
+                                  .getElementById(
+                                    `upload_room_${roadBlockIndex}`
+                                  )
+                                  .click()
                               }
                             >
-                              upload more
+                              upload Image
                             </button>
                           </>
                         )}

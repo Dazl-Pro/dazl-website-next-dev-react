@@ -77,9 +77,6 @@ const Commonproject = ({
     newCheckboxValues[index] = !newCheckboxValues[index];
     setCheckboxValues(newCheckboxValues);
   };
-
-  const fileInputRef = useRef(null);
-
   useEffect(() => {
     if (addAnotherRoomState || projectValue) {
       let val;
@@ -754,8 +751,7 @@ const Commonproject = ({
                       <div className="col-md-6 mt-3">
                         <div className="d-flex align-items-start gap-2 d-none">
                           <input
-                          ref={fileInputRef}
-                            id="image_upload"
+                            id={`image_upload${index}`}
                             type="file"
                             className={`form-control ${
                               errors.photos && errors?.photos[imgIndex]?.file
@@ -775,7 +771,11 @@ const Commonproject = ({
                       <button
                         type="button"
                         className="btn btn-primary my-3"
-                        onClick={() => fileInputRef.current.click()}
+                        onClick={() =>
+                          document
+                            .getElementById(`image_upload${index}`)
+                            .click()
+                        }
                       >
                         Upload Image
                       </button>
