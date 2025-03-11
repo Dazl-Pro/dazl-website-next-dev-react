@@ -127,7 +127,7 @@ const RoomsInformation = (props) => {
     level: "",
   });
 
-  console.log("outerImage ==>", outerImage);
+  // console.log("outerImage ==>", outerImage);
 
   const defaultValues = {
     photos: [{ file: null }],
@@ -157,6 +157,8 @@ const RoomsInformation = (props) => {
   const [selectedOptionValue, setSelectedOptionValue] = useState("yes");
   const [selectedPrice, setSelectedPrice] = useState("");
   const [customPrice, setCustomPrice] = useState("");
+
+  // console.log("phdCheckbox ==>", phdCheckbox);
 
   const handleChangeValue = (event) => {
     setSelectedOptionValue(event.target.value);
@@ -266,7 +268,7 @@ const RoomsInformation = (props) => {
     setPhdCheckbox((prev) => {
       const existingIndex = prev.findIndex((item) => item.checkbox === id.id);
       let updatedCheckbox = [...prev];
-      console.log(state.textArea[index]);
+      // console.log(state.textArea[index]);
 
       const currentSliderValue =
         parseFloat(localStorage.getItem("blocksliderValue")) || 0;
@@ -278,7 +280,7 @@ const RoomsInformation = (props) => {
         setVal(newValue); // Update state
 
         localStorage.setItem("blocksliderValue", newValue); // Update localStorage
-        console.log(newValue);
+        // console.log(newValue);
       } else if (!prev.some((item) => item.checkbox === id.id)) {
         // If the id is not present, add it
         updatedCheckbox = [...prev, { checkbox: id.id }];
@@ -320,7 +322,7 @@ const RoomsInformation = (props) => {
   }
   const save = (e, value) => {
     e.preventDefault();
-    console.log(phdCheckbox);
+    // console.log(phdCheckbox);
 
     // phdCheckbox.forEach((item , index)=>{
     //   item["description"] = state.textArea[index]
@@ -588,7 +590,7 @@ const RoomsInformation = (props) => {
             if (!updated) {
               newArray.push({
                 checkbox: phd.id,
-                description: textArray[index],
+                description: description,
                 images: [responseImage],
               });
             }
@@ -666,8 +668,8 @@ const RoomsInformation = (props) => {
   // };
 
   const onChange = (e) => {
-    console.log("CheckBox ", e.target.value);
-    console.log("CheckBox ", e.target.name);
+    // console.log("CheckBox ", e.target.value);
+    // console.log("CheckBox ", e.target.name);
     const name = e.target.name;
     const value = e.target.value;
     setInput({ ...input, [name]: value });
@@ -711,7 +713,27 @@ const RoomsInformation = (props) => {
     setErrorborder1(false);
   };
 
-  console.log("val", val);
+  const getImagesByCheckboxId = (checkboxId) => {
+    const foundItem = phdCheckbox?.find((item) => item.checkbox === checkboxId);
+    return foundItem ? foundItem.images : []; // Return images if found, otherwise return an empty array
+  };
+
+  const removeImageByCheckboxId = (checkboxId, imageIndex) => {
+    setPhdCheckbox((prev) => {
+      return prev.map((item) => {
+        if (item.checkbox === checkboxId) {
+          const updatedImages = [...item.images]; // Copy images array
+          if (imageIndex >= 0 && imageIndex < updatedImages.length) {
+            updatedImages.splice(imageIndex, 1); // Remove image at index
+          }
+          return { ...item, images: updatedImages }; // Return updated object
+        }
+        return item; // Return unchanged item if checkboxId doesn't match
+      });
+    });
+  };
+
+  // console.log("val", val);
 
   // function ValueLabelComponent(props) {
   //   const { children, value } = props;
@@ -918,7 +940,7 @@ const RoomsInformation = (props) => {
                 document.getElementById("OuterImage").click();
               }}
             >
-              Upload more
+              Upload Image
             </button>
           )}
           {/* onClick={handleAppendPhoto} */}
@@ -1184,6 +1206,7 @@ const RoomsInformation = (props) => {
         <div className="bg-light rounded-2 py-2 px-3">
           <div className="">
             {phdRooms.map((_, index) => {
+              // console.log(_);
               if (
                 _.name === "Light Fixtures" ||
                 _.name === "Plumbing Issues (Leaks)"
@@ -1226,7 +1249,58 @@ const RoomsInformation = (props) => {
                         <div className="fw-semibold">
                           Add pictures of the issue or inspiration here
                         </div>
-                        <div className="row">
+                        <div className="d-flex gap-3">
+                          {getImagesByCheckboxId(_.id)?.length > 0 &&
+                            getImagesByCheckboxId(_.id)?.map(
+                              (image, indexToRemove) => (
+                                <div key={image}>
+                                  {image && (
+                                    <div className="float-start me-4 position-relative">
+                                      <img
+                                        alt="img"
+                                        src={image}
+                                        className="object-fit-cover border"
+                                        width={"100px"}
+                                        height={"100px"}
+                                        style={{ cursor: "pointer" }}
+                                      />
+
+                                      <div className="d-flex justify-content-center dlt-btn-3">
+                                        <button
+                                          type="button"
+                                          className="btn btn-primary btn-sm mt-2 "
+                                          onClick={() =>
+                                            removeImageByCheckboxId(
+                                              _?.id,
+                                              indexToRemove
+                                            )
+                                          }
+                                        >
+                                          <DeleteIcon />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              )
+                            )}
+                          <input
+                            id={`upploadItemImage${index}`}
+                            type="file"
+                            accept=".png, .jpg, .jpeg"
+                            style={{ display: "none" }}
+                            onChange={(e) =>
+                              handleCheckboxImage(
+                                _,
+                                0,
+                                getValues("textArea")[index],
+                                e
+                              )
+                            }
+                          />
+                        </div>
+
+                        {/* <div className="row">
                           {fields?.map((field, imgIndex) => {
                             return field.indexId === index ? (
                               <div className="col-md-6 mt-2" key={imgIndex}>
@@ -1266,19 +1340,21 @@ const RoomsInformation = (props) => {
                               ""
                             );
                           })}
-                        </div>
+                        </div> */}
                       </div>
 
-                      {fields.filter((field) => field.indexId === index)
-                        .length < 5 && (
-                        <button
-                          type="button"
-                          className="btn btn-success mt-3"
-                          onClick={() => append({ indexId: index, file: null })}
-                        >
-                          upload more
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        className="btn btn-success mt-3"
+                        onClick={() =>
+                          document
+                            .getElementById(`upploadItemImage${index}`)
+                            .click()
+                        }
+                      >
+                        upload more
+                      </button>
+
                       {/* <button
                         type="button"
                         className="btn btn-success btn btn-primary my-3"
