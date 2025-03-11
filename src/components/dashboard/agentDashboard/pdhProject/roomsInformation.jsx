@@ -127,6 +127,8 @@ const RoomsInformation = (props) => {
     level: "",
   });
 
+  console.log("outerImage ==>", outerImage);
+
   const defaultValues = {
     photos: [{ file: null }],
     textArea: [],
@@ -790,8 +792,55 @@ const RoomsInformation = (props) => {
             2.Add photos of exceptional features or selling advantages
           </p>
           <div className="bg-light p-3 rounded-2">
-            <div className="row form-row ">
-              {photoFields.map((item, index) => (
+            <div className="ps-0 mb-3 mt-2">
+              <div className="d-flex gap-1 flex-wrap">
+                <div className="d-flex gap-3">
+                  {outerImage.length > 0 &&
+                    outerImage?.map((image, indexToRemove) => (
+                      <div key={image}>
+                        {image && (
+                          <div className="float-start me-4 position-relative">
+                            <img
+                              alt="img"
+                              src={image}
+                              className="object-fit-cover border"
+                              width={"100px"}
+                              height={"100px"}
+                              style={{ cursor: "pointer" }}
+                            />
+
+                            <div className="d-flex justify-content-center dlt-btn-3">
+                              <button
+                                type="button"
+                                className="btn btn-primary btn-sm mt-2 "
+                                onClick={() =>
+                                  setOuterimage((prev) =>
+                                    prev.filter(
+                                      (_, index) => index !== indexToRemove
+                                    )
+                                  )
+                                }
+                              >
+                                <DeleteIcon />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  <input
+                    id="OuterImage"
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleImage(0, e)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <div> */}
+          {/* {photoFields.map((item, index) => (
                 <div className="col-md-6" key={item.id}>
                   <div className="d-flex align-items-start gap-2">
                     <input
@@ -821,29 +870,64 @@ const RoomsInformation = (props) => {
                     )}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-          <div className="d-flex justify-content-start align-items-center mt-3">
-            {photoFields.length < 5 && (
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  appendPhoto({ description: "", file: null });
-                }}
-              >
-                Upload more
-              </button>
-            )}
-            {/* onClick={handleAppendPhoto} */}
+              ))} */}
+          {/* {outerImage?.map((image, index) => (
+              <div key={image?.id}>
+                {image && (
+                  <div className="float-start me-4 position-relative">
+                    <img
+                      alt="img"
+                      src={image}
+                      className="object-fit-cover border"
+                      width={"100px"}
+                      height={"100px"}
+                      style={{ cursor: "pointer" }}
+                    />
 
-            {/* onClick={() => {
+                    <div className="d-flex justify-content-center dlt-btn-3">
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-sm mt-2 "
+                        onClick={() =>
+                          removePhoto(items?.room_id, image?.id, index)
+                        }
+                      >
+                        <DeleteIcon />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+            <input
+              id="OuterImage"
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              style={{ display: "none" }}
+              onChange={(e) => handleImage(0, e)}
+            />
+          </div> */}
+        </div>
+        <div className="d-flex justify-content-start align-items-center mt-3">
+          {photoFields.length < 5 && (
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={() => {
+                // appendPhoto({ description: "", file: null });
+                document.getElementById("OuterImage").click();
+              }}
+            >
+              Upload more
+            </button>
+          )}
+          {/* onClick={handleAppendPhoto} */}
+
+          {/* onClick={() => {
                 if (isLastFieldComplete()) {
                   appendPhoto({ description: "", file: null });
                 }
               }} */}
-          </div>
         </div>
         {roomtype?.length > 0 ? (
           <Grid container spacing={2}>
