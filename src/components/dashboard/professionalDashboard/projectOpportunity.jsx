@@ -44,6 +44,19 @@ const ProjectOpportunity = () => {
       .unwrap()
       .then((res) => {
         setData(res.reports.original.final);
+        if (
+          res.reports.original.final?.projectopportunities?.[0]
+            ?.is_interested === 1
+        ) {
+          setCheckboxName("yes");
+        } else if (
+          res.reports.original.final?.projectopportunities?.[0]
+            ?.is_interested === 0
+        ) {
+          setCheckboxName("no");
+        } else {
+          setCheckboxName("");
+        }
       });
   }, [id]);
 
@@ -141,7 +154,6 @@ const ProjectOpportunity = () => {
                       type="checkbox"
                       checked={checkboxName === "yes"}
                       onChange={() => {
-                        // setInterested(true);
                         setCheckboxName((prev) => {
                           const newValue = prev === "yes" ? "" : "yes";
                           if (newValue === "yes") {
