@@ -702,6 +702,7 @@ export const viewServicePhd = createAsyncThunk(
 export const sendMailHomeOwner = createAsyncThunk(
   "dashboard/sendMailHomeOwner",
   async (value) => {
+    console.log("11111111value", value);
     try {
       const response = await http.post(`/sendtestnote`, value);
       if (response.status === 200) {
