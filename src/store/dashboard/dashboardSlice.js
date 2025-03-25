@@ -139,9 +139,10 @@ export const changeCustomerPassword = createAsyncThunk(
 export const createphdStepone = createAsyncThunk(
   "dashboard/createphdStepone",
   async (values) => {
+    console.log("-----dfgfldo-----", values);
     try {
       const response = await http.get(
-        `/home-diagnostic-reports/house-data?score=100&address=${values.location}&first_name=${values.firstName}&last_name=${values.lastName}&client_email=${values.email}&type=1&year_built=2021&bedrooms=1&bathrooms=1&structure_type=1&lot_size=1&location=${values.location}&foundation_type=1&tax_accessed_value=1&sale_date=1`
+        `/home-diagnostic-reports/house-data?score=100&address=${values.location}&first_name=${values.firstName}&last_name=${values.lastName}&client_email=${values.email}&type=1&year_built=2021&bedrooms=1&bathrooms=1&structure_type=1&lot_size=1&location=${values.location}&foundation_type=1&tax_accessed_value=1&sale_date=1&number=${values.number}`
       );
 
       if (response.status === 200) {

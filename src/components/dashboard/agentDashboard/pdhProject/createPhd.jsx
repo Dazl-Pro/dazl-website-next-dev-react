@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -15,6 +14,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import "./style.css";
+import PhoneInput from "react-phone-input-2";
 
 const defaultValues = {
   photos: [{ file: null }],
@@ -22,6 +22,7 @@ const defaultValues = {
   lastName: "",
   email: "",
   location: "",
+  number: "",
 };
 
 const CreatePhd = () => {
@@ -48,6 +49,11 @@ const CreatePhd = () => {
       .string()
       .required("Location is required")
       .min(1, "Location have atleast 1 character")
+      .trim(),
+    number: yup
+      .string()
+      // .matches(/^[0-12]+$/, "Mobile Number is required")
+      .required("Mobile Number is required")
       .trim(),
   });
 
@@ -88,6 +94,7 @@ const CreatePhd = () => {
   const [email, setEmail] = useState("");
 
   const onSubmit = (value) => {
+    console.log("value------", value);
     setFirstName(value.firstName);
     setLastName(value.lastName);
     setEmail(value.email);
@@ -416,6 +423,74 @@ const CreatePhd = () => {
                             </p>
                           )}
                         </div>
+                        {/* ****************************** */}
+
+                        <div className={`form-row col-md-6 mb-3`}>
+                          <Controller
+                            name="number"
+                            control={control}
+                            render={({ field }) => (
+                              <>
+                                <PhoneInput
+                                  country={"us"}
+                                  enableSearch={true}
+                                  value={field.value}
+                                  // onChange={(phone) => {
+                                  //   setPhone(phone);
+                                  //   setValue("mobilenumber", phone, {
+                                  //     shouldValidate: true,
+                                  //   });
+                                  // }}
+                                  onChange={(e) => {
+                                    console.log("====>", e);
+                                    const formattedValue = e
+                                      .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
+                                      .replace(
+                                        /(\d{3})(\d{3})(\d{4})/,
+                                        "$1-$2-$3"
+                                      );
+                                    field.onChange({
+                                      target: { value: formattedValue },
+                                    });
+                                  }}
+                                  placeholder="+1 (545) 674-3543"
+                                  inputStyle={{
+                                    paddingTop: 8,
+                                    paddingBottom: 8,
+                                    width: "100%",
+                                    border: 0,
+
+                                    color: "black",
+                                    background: "#fff",
+                                    borderRadius: "6px",
+                                    height: "40px",
+                                  }}
+                                  buttonStyle={{
+                                    borderTopLeftRadius: "10px",
+                                    borderBottomLeftRadius: "10px",
+                                  }}
+                                  containerStyle={{
+                                    border: "1px solid #e5e7eb",
+                                    borderRadius: "6px",
+                                  }}
+                                  inputProps={{
+                                    id: "mobile",
+                                    name: "mobile",
+                                    required: true,
+                                  }}
+                                />
+
+                                {errors.number && (
+                                  <p className="text-danger">
+                                    {errors.number.message}
+                                  </p>
+                                )}
+                              </>
+                            )}
+                          />
+                        </div>
+
+                        {/* ****************************** */}
                       </div>
                       <div className="d-flex justify-content-center align-items-center">
                         <button
@@ -437,8 +512,6 @@ const CreatePhd = () => {
                   <>
                     <Box sx={{ width: 300 }} className="w-100">
                       <div className="position-relative cs-price-slider-main">
-                      
-
                         {/* Inputs First */}
                         <div className="d-flex justify-content-between">
                           <div>
@@ -477,7 +550,10 @@ const CreatePhd = () => {
                         </div>
                         <br />
                         <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges slider-value">
-                          <Typography gutterBottom className="start-n40px text-white ">
+                          <Typography
+                            gutterBottom
+                            className="start-n40px text-white "
+                          >
                             $ {formatNumberWithCommas(lowValue)}
                           </Typography>
                           <Typography
