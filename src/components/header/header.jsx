@@ -117,17 +117,17 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginRight: -drawerWidth,
+    width: "100%", // Default width when Drawer is closed
     ...(open && {
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginRight: 0,
+      width: `calc(100% - ${drawerWidth}px)`,
     }),
     position: "relative",
   })
@@ -136,17 +136,18 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
+  position: "fixed",
+  transition: theme.transitions.create(["left", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
+    left: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(["left", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    marginRight: drawerWidth,
   }),
 }));
 
@@ -202,7 +203,11 @@ const Header = () => {
 
   const handleListItemClick = (route, page) => {
     handleDrawerClose(); // Call handleDrawerClose instead of setOpen(false)
-    navigate(route);
+    setTimeout(() => {
+      navigate(route);
+    }, 0);
+
+    setOpen(false);
     console.log("=====first");
     if (page === "LOG OUT") localStorage.clear();
   };
