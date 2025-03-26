@@ -878,7 +878,7 @@ const RoomsInformation = (props) => {
               }}
             >
               {/* {outerImage.length === 0 ? "Add Image" : "Upload Image"} */}
-              Add Photo
+              Add Photos
             </button>
           )}
         </div>

@@ -192,6 +192,9 @@ const CreatePhd = () => {
     if (lowValue === 0 || lowValue === "") {
       setErrorLow("Please set minimum value first.");
     }
+    if (e.target.value >= 999999999) {
+      return;
+    }
     const newValue =
       e.target.value === ""
         ? ""
@@ -523,6 +526,7 @@ const CreatePhd = () => {
                             <input
                               maxValue={999999999}
                               type="number"
+                              maxLength={9}
                               onChange={handleLowValueChange}
                               valueLabelDisplay="on"
                               valueLabelFormat={(value) =>
