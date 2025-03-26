@@ -811,12 +811,12 @@ const RoomsInformation = (props) => {
         <div className="mb-3">
           <p className="mb-1">
             {" "}
-            2.Add photos of exceptional features or selling advantages
+            2.Add photos of exceptional features or selling advantages......
           </p>
           <div
             // className="bg-light p-3 rounded-2"
-            className={`p-3 rounded-2 ${
-              outerImage.length === 0 ? "bg-white" : "bg-light"
+            className={` ${
+              outerImage.length === 0 ? "bg-white" : "bg-light p-3 rounded-2"
             }`}
           >
             <div className="ps-0 mb-3 mt-2">
@@ -878,7 +878,7 @@ const RoomsInformation = (props) => {
               }}
             >
               {/* {outerImage.length === 0 ? "Add Image" : "Upload Image"} */}
-              Add Image
+              Add Photo
             </button>
           )}
         </div>

@@ -15,7 +15,7 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 import "./style.css";
 import PhoneInput from "react-phone-input-2";
-
+import "react-phone-input-2/lib/bootstrap.css";
 const defaultValues = {
   photos: [{ file: null }],
   firstName: "",
