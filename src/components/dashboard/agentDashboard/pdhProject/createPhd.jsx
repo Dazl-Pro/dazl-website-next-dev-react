@@ -155,7 +155,9 @@ const CreatePhd = () => {
     if (maxValue === 0 || maxValue === "") {
       setErrorHigh("Please set maximum value first.");
     }
-
+    if (e.target.value >= 999999999) {
+      return;
+    }
     const newValue =
       e.target.value === ""
         ? ""
@@ -519,28 +521,39 @@ const CreatePhd = () => {
                               Set Low Value:{"$ "}
                             </Typography>
                             <input
-                              type="text"
+                              maxValue={999999999}
+                              type="number"
                               onChange={handleLowValueChange}
                               valueLabelDisplay="on"
                               valueLabelFormat={(value) =>
                                 formatNumberWithCommas(value)
+                              }
+                              onKeyDown={(e) =>
+                                (e.target.value =
+                                  e.target.value.match(/^([^e+-]{0,8})/)[0])
                               }
                             />
                             {errorLow && (
                               <div style={{ color: "red" }}>{errorLow}</div>
                             )}
                           </div>
-
                           <div>
                             <Typography variant="body">
                               Set High Value: {"$ "}
                             </Typography>
                             <input
-                              type="text"
+                              maxValue={999999999}
+                              type="number"
+                              maxLength={9}
+                              inputMode="numeric"
                               onChange={handleMaxValueChange}
                               valueLabelDisplay="on"
                               valueLabelFormat={(value) =>
                                 formatNumberWithCommas(value)
+                              }
+                              onKeyDown={(e) =>
+                                (e.target.value =
+                                  e.target.value.match(/^([^e+-]{0,8})/)[0])
                               }
                             />
                             {errorHigh && (
@@ -576,6 +589,18 @@ const CreatePhd = () => {
                             valueLabelFormat={(value) =>
                               formatNumberWithCommas(value)
                             }
+                            sx={{
+                              "& .MuiSlider-thumb": {
+                                backgroundColor: "green", // Customize thumb color
+                              },
+                              "& .MuiSlider-valueLabel": {
+                                backgroundColor: "white", // Background for better visibility
+                                color: "black", // Text color
+                                fontSize: "12px", // Adjust font size
+                                transform: "translateX(-50%)", // Center align text
+                                whiteSpace: "nowrap", // Prevent text wrapping
+                              },
+                            }}
                           />
                         </div>
                       </div>
