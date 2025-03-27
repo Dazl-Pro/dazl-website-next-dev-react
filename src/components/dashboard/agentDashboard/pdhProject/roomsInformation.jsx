@@ -391,6 +391,7 @@ const RoomsInformation = (props) => {
       formData.append("score", 100);
       formData.append("address", phdUserDetail?.location);
       formData.append("first_name", phdUserDetail?.firstName);
+      formData.append("phone_number", phdUserDetail?.phone_number);
       formData.append("last_name", phdUserDetail?.lastName);
       formData.append("client_email", phdUserDetail?.email);
       formData.append("type", phdvalue?.type);
@@ -487,7 +488,7 @@ const RoomsInformation = (props) => {
             formData.append(imageKey, image);
           });
         });
-      // console.log(formData)
+      // console.log("ihgri357348957_____fromdata====", formData);
       dispatch(createPhd(formData))
         .unwrap()
         .then((response) => {

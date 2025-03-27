@@ -94,7 +94,7 @@ const CreatePhd = () => {
   const [email, setEmail] = useState("");
 
   const onSubmit = (value) => {
-    console.log("value------", value);
+    // console.log("value------", value);
     setFirstName(value.firstName);
     setLastName(value.lastName);
     setEmail(value.email);
