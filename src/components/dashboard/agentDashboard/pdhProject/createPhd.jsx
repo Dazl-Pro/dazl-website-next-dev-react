@@ -22,7 +22,7 @@ const defaultValues = {
   lastName: "",
   email: "",
   location: "",
-  number: "",
+  phone_number: "",
 };
 
 const CreatePhd = () => {
@@ -50,7 +50,7 @@ const CreatePhd = () => {
       .required("Location is required")
       .min(1, "Location have atleast 1 character")
       .trim(),
-    number: yup
+    phone_number: yup
       .string()
       // .matches(/^[0-12]+$/, "Mobile Number is required")
       .required("Mobile Number is required")
@@ -432,7 +432,7 @@ const CreatePhd = () => {
 
                         <div className={`form-row col-md-6 mb-3`}>
                           <Controller
-                            name="number"
+                            name="phone_number"
                             control={control}
                             render={({ field }) => (
                               <>
