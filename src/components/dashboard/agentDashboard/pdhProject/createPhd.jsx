@@ -432,8 +432,7 @@ const CreatePhd = () => {
                       <input
                         type="text"
                         onChange={handleLowValueChange}
-                        className="bg-white text-black"
-                        style={{ borderRadius: "5px" }}
+                        className="bg-white text-black rounded-2 border-dark"
                         valueLabelDisplay="on"
                         valueLabelFormat={(value) =>
                           formatNumberWithCommas(value)
@@ -450,8 +449,7 @@ const CreatePhd = () => {
                       </Typography>
                       <input
                         type="text"
-                        className="bg-white text-black"
-                        style={{ borderRadius: "5px" }}
+                        className="bg-white text-black rounded-2 border-dark"
                         onChange={handleMaxValueChange}
                         valueLabelDisplay="on"
                         valueLabelFormat={(value) =>
