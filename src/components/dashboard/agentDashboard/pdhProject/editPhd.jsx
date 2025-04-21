@@ -1034,7 +1034,7 @@ const EditPhd = (props) => {
                       document.getElementById(`ImageUploadMain${index}`).click()
                     }
                   >
-                    Upload Image
+                    Add Photos
                   </button>
                 </div>
               </div>
@@ -1620,13 +1620,13 @@ const EditPhd = (props) => {
                             </div> */}
                             <button
                               type="button"
-                              className="btn btn-success btn btn-primary my-3"
+                              className="btn btn-danger btn btn-primary my-3"
                               onClick={() =>
                                 // appendCheckBoxImages(
                                 //   index,
                                 //   matchingRoadBlockIndex,
                                 //   null
-                                // )
+                                // )s
                                 document
                                   .getElementById(
                                     `upload_room_${roadBlockIndex}`
@@ -1634,7 +1634,7 @@ const EditPhd = (props) => {
                                   .click()
                               }
                             >
-                              upload Image
+                              Add Photos
                             </button>
                           </>
                         )}

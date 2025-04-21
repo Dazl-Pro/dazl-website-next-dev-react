@@ -934,13 +934,13 @@ const RoomsInformation = (props) => {
           {photoFields.length < 5 && (
             <button
               type="button"
-              className="btn btn-success"
+              className="btn btn-danger"
               onClick={() => {
                 // appendPhoto({ description: "", file: null });
                 document.getElementById("OuterImage").click();
               }}
             >
-              Upload Image
+              Add Photos
             </button>
           )}
           {/* onClick={handleAppendPhoto} */}
@@ -1345,14 +1345,14 @@ const RoomsInformation = (props) => {
 
                       <button
                         type="button"
-                        className="btn btn-success mt-3"
+                        className="btn btn-danger mt-3"
                         onClick={() =>
                           document
                             .getElementById(`upploadItemImage${index}`)
                             .click()
                         }
                       >
-                        upload more
+                        Add Photos
                       </button>
 
                       {/* <button

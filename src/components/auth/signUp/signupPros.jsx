@@ -17,6 +17,10 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import "./signUp.css";
 import PhoneInput from "react-phone-input-2";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
 import "react-phone-input-2/lib/bootstrap.css";
 
@@ -220,6 +224,7 @@ const services = [
 const SignupPros = () => {
   const [images, setImages] = useState([null, null, null, null]);
   const [key, setKey] = React.useState(0);
+  const [streetAddress, setStreetAddress] = React.useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -488,13 +493,79 @@ const SignupPros = () => {
                     name="streetAddress"
                     control={control}
                     render={({ field }) => (
-                      <input
-                        {...field}
-                        className={` width-input form-control ${
-                          errors.streetAddress ? "error" : ""
-                        }`}
-                        placeholder="Company street address"
-                      />
+                      <PlacesAutocomplete
+                        value={field.value || ""}
+                        onChange={(val) => {
+                          field.onChange(val);
+                          setStreetAddress(val);
+                        }}
+                        onSelect={async (val) => {
+                          field.onChange(val);
+                          setStreetAddress(val);
+                          try {
+                            const results = await geocodeByAddress(val);
+                            const latLng = await getLatLng(results[0]);
+                            // You can use `latLng` if needed later
+                            const addressComponents =
+                              results[0].address_components;
+                            const cityComp = addressComponents.find((comp) =>
+                              comp.types.includes("locality")
+                            );
+                            const stateComp = addressComponents.find((comp) =>
+                              comp.types.includes("administrative_area_level_1")
+                            );
+
+                            if (cityComp) setValue("city", cityComp.long_name);
+                            if (stateComp)
+                              setValue("state", stateComp.short_name);
+                          } catch (error) {
+                            console.error("Error selecting address:", error);
+                          }
+                        }}
+                        searchOptions={{
+                          types: ["address"],
+                          componentRestrictions: { country: ["us"] },
+                        }}
+                      >
+                        {({
+                          getInputProps,
+                          suggestions,
+                          getSuggestionItemProps,
+                          loading,
+                        }) => (
+                          <div>
+                            <input
+                              {...getInputProps({
+                                placeholder: "Street Address*",
+                                className: `form-control width-input ${
+                                  errors.streetAddress ? "error" : ""
+                                }`,
+                              })}
+                            />
+                            {/* Show dropdown only if user has typed something and suggestions exist */}
+                            {field.value && suggestions.length > 0 && (
+                              <div className="autocomplete-dropdown-container z-3 position-absolute w-auto bg-white">
+                                {loading && <div>Loading...</div>}
+                                {suggestions.map((suggestion, index) => {
+                                  const className = suggestion.active
+                                    ? "suggestion-item--active"
+                                    : "suggestion-item";
+                                  return (
+                                    <div
+                                      key={index}
+                                      {...getSuggestionItemProps(suggestion, {
+                                        className,
+                                      })}
+                                    >
+                                      <span>{suggestion.description}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </PlacesAutocomplete>
                     )}
                   />
                   {errors.streetAddress && (

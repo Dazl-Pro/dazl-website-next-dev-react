@@ -225,317 +225,309 @@ const CreatePhd = () => {
 
   return (
     <div className="py-0">
-      <div className="">
+      {/* <div className=""> */}
+      {/* <div className=""> */}
+      {/* <div className=""> */}
+      <div className="content-full">
+        <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
+          {steponeCompleted
+            ? "Pre-Listing Home Dionostic"
+            : "PROPERTY ADDRESS and Details"}
+        </h2>
         <div className="">
-          <div className="">
-            <div className="content-full">
-              <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
-                {steponeCompleted
-                  ? "Pre-Listing Home Dionostic"
-                  : "PROPERTY ADDRESS and Details"}
-              </h2>
-              <div className="">
-                <h5 className="mb-4">
-                  {steponeCompleted && (
-                    <>
-                      <div className="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                          <div className="mb-2 " style={{ fontSize: "24px" }}>
-                            Client Name: {firstName} {lastName}
-                          </div>
-                          <h4>Client Email: {email}</h4>
-                        </div>
-                        <div className="header-logo me-md-5 me-0">
-                          <LazyLoadImage
-                            alt="img"
-                            src="/images/footerImages/footer.png"
-                            width={"70px"}
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  <lable className="fs-5">
-                    {steponeCompleted
-                      ? "Incorporate both a low and high price range reflective of your expertise and understanding of the local real estate market. Your pre-listing home diagnostic should consider various factors such as comparable property prices, recent market trends, and any unique characteristics of the property."
-                      : "Seller's Information"}
-                  </lable>
-                </h5>
-                {!steponeCompleted ? (
+          <h5 className="mb-4">
+            {steponeCompleted && (
+              <>
+                <div className="d-flex justify-content-between align-items-center mb-4">
                   <div>
-                    <p className="mb-1 fs-5 fw-bold">Client's name and Email</p>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <div className="row mt-2 mb-2">
-                        <div className={`form-row mb-3 col-md-6`}>
-                          <Controller
-                            name="firstName"
-                            control={control}
-                            render={({ field }) => (
-                              <input
-                                {...field}
-                                className={`form-control width-input ${
-                                  errors.firstName ? "error" : ""
-                                }`}
-                                placeholder="First Name"
-                                onKeyPress={(e) => {
-                                  const isValidInput = /^[a-zA-Z]+$/.test(
-                                    e.key
-                                  );
-                                  if (!isValidInput) {
-                                    e.preventDefault();
-                                  }
-                                }}
-                              />
-                            )}
-                          />
-                          {errors.firstName && (
-                            <p className="text-danger mt-2">
-                              {errors.firstName.message}
-                            </p>
-                          )}
-                        </div>
-                        <div className={`form-row mb-3 col-md-6 `}>
-                          <Controller
-                            name="lastName"
-                            control={control}
-                            render={({ field }) => (
-                              <input
-                                {...field}
-                                className={`form-control width-input ${
-                                  errors.lastName ? "error" : ""
-                                }`}
-                                placeholder="Last Name"
-                                onKeyPress={(e) => {
-                                  const isValidInput = /^[a-zA-Z]+$/.test(
-                                    e.key
-                                  );
-                                  if (!isValidInput) {
-                                    e.preventDefault();
-                                  }
-                                }}
-                              />
-                            )}
-                          />
-                          {errors.lastName && (
-                            <p className="text-danger mt-2">
-                              {errors.lastName.message}
-                            </p>
-                          )}
-                        </div>
-                        <div className={`form-row mb-3 col-md-6 `}>
-                          <Controller
-                            name="email"
-                            control={control}
-                            render={({ field }) => (
-                              <input
-                                {...field}
-                                className={`form-control width-input ${
-                                  errors.email ? "error" : ""
-                                }`}
-                                placeholder="Email address"
-                              />
-                            )}
-                          />
-                          {errors.email && (
-                            <p className="text-danger mt-2">
-                              {errors.email.message}
-                            </p>
-                          )}
-                        </div>
-                        <div
-                          className={`form-row mb-3 col-md-6 position-relative`}
-                        >
-                          <Controller
-                            name="location"
-                            control={control}
-                            defaultValue=""
-                            rules={{ required: "Location is required" }}
-                            render={({ field }) => (
-                              <PlacesAutocomplete
-                                value={field.value}
-                                onChange={handleChangeLocation}
-                                onSelect={handleSelect}
-                              >
-                                {({
-                                  getInputProps,
-                                  suggestions,
-                                  getSuggestionItemProps,
-                                }) => (
-                                  <div>
-                                    <input
-                                      {...getInputProps({
-                                        placeholder: "Enter Seller's address",
-                                        className: "location-search-input",
-                                      })}
-                                      className={`form-control width-input ${
-                                        errors.location ? "error" : ""
-                                      }`}
-                                    />
-                                    <div
-                                      className={
-                                        field.value.length > 0 &&
-                                        !loading &&
-                                        !select
-                                          ? "autocomplete-dropdown-container"
-                                          : ""
-                                      }
-                                    >
-                                      {/* {loading && <div>Loading...</div>} */}
-                                      {suggestions.map((suggestion, index) => {
-                                        const style = {
-                                          backgroundColor: suggestion.active
-                                            ? "#dc3545"
-                                            : "#fff",
-                                          color: suggestion.active
-                                            ? "white"
-                                            : "black",
-                                        };
-                                        return (
-                                          <div
-                                            {...getSuggestionItemProps(
-                                              suggestion,
-                                              {
-                                                style,
-                                              }
-                                            )}
-                                            key={index}
-                                          >
-                                            {suggestion.description}
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                )}
-                              </PlacesAutocomplete>
-                            )}
-                          />
-                          {errors.location && (
-                            <p className="text-danger mt-2">
-                              {errors.location.message}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-center align-items-center">
-                        <button
-                          type="submit"
-                          className="btn btn-primary mw-200px w-100"
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </form>
-                    <p className="mt-4 mb-0 pt-3 border-top">
-                      Your clients will receive an email from dazlpro.com asking
-                      them if they would like to sign up for a free user
-                      account. This will allow them to create projects and
-                      receive the phd report.
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <Box sx={{ width: 300 }} className="w-100">
-                      <div className="position-relative cs-price-slider-main">
-                      
-
-                        {/* Inputs First */}
-                        <div className="d-flex justify-content-between">
-                          <div>
-                            <Typography variant="body">
-                              Set Low Value:{"$ "}
-                            </Typography>
-                            <input
-                              type="text"
-                              onChange={handleLowValueChange}
-                              valueLabelDisplay="on"
-                              valueLabelFormat={(value) =>
-                                formatNumberWithCommas(value)
-                              }
-                            />
-                            {errorLow && (
-                              <div style={{ color: "red" }}>{errorLow}</div>
-                            )}
-                          </div>
-
-                          <div>
-                            <Typography variant="body">
-                              Set High Value: {"$ "}
-                            </Typography>
-                            <input
-                              type="text"
-                              onChange={handleMaxValueChange}
-                              valueLabelDisplay="on"
-                              valueLabelFormat={(value) =>
-                                formatNumberWithCommas(value)
-                              }
-                            />
-                            {errorHigh && (
-                              <div style={{ color: "red" }}>{errorHigh}</div>
-                            )}
-                          </div>
-                        </div>
-                        <br />
-                        <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges slider-value">
-                          <Typography gutterBottom className="start-n40px text-white ">
-                            $ {formatNumberWithCommas(lowValue)}
-                          </Typography>
-                          <Typography
-                            gutterBottom
-                            className="end-n40px text-black "
-                          >
-                            $ {formatNumberWithCommas(maxValue)}
-                          </Typography>
-                        </div>
-                        {/* Slider Below */}
-                        <div className="slider-container position-relative">
-                          <Slider
-                            value={sliderValue}
-                            aria-label="Default"
-                            min={lowValue}
-                            max={maxValue}
-                            className="cs-price-slider"
-                            onChange={handleChange}
-                            valueLabelDisplay="on"
-                            valueLabelFormat={(value) =>
-                              formatNumberWithCommas(value)
-                            }
-                          />
-                        </div>
-                      </div>
-                    </Box>
-
-                    <div className="">
-                      <div className="row justify-content-between py-3 text-start">
-                        <div className="container">
-                          <div className="row">
-                            <div className="d-grid gap-3 col"></div>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="mb-2 " style={{ fontSize: "24px" }}>
+                      Client Name: {firstName} {lastName}
                     </div>
-                    <button
-                      className="btn btn-primary mw-200px w-70 mt-4"
-                      style={{ textTransform: "none" }}
-                      onClick={letStart}
-                      disabled={
-                        errorLow !== "" ||
-                        maxValue === 0 ||
-                        lowValue === 0 ||
-                        maxValue === "" ||
-                        lowValue === "" ||
-                        errorHigh !== ""
-                      }
-                    >
-                      Let's get Started
-                    </button>
-                  </>
-                )}
-              </div>
+                    <h4>Client Email: {email}</h4>
+                  </div>
+                  <div className="header-logo me-md-5 me-0">
+                    <LazyLoadImage
+                      alt="img"
+                      src="/images/footerImages/footer.png"
+                      width={"70px"}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            <lable className="fs-5">
+              {steponeCompleted
+                ? "Incorporate both a low and high price range reflective of your expertise and understanding of the local real estate market. Your pre-listing home diagnostic should consider various factors such as comparable property prices, recent market trends, and any unique characteristics of the property."
+                : "Seller's Information"}
+            </lable>
+          </h5>
+          {!steponeCompleted ? (
+            <div>
+              <p className="mb-1 fs-5 fw-bold">Client's name and Email</p>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row mt-2 mb-2">
+                  <div className={`form-row mb-3 col-md-6`}>
+                    <Controller
+                      name="firstName"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className={`form-control width-input ${
+                            errors.firstName ? "error" : ""
+                          }`}
+                          placeholder="First Name"
+                          onKeyPress={(e) => {
+                            const isValidInput = /^[a-zA-Z]+$/.test(e.key);
+                            if (!isValidInput) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.firstName && (
+                      <p className="text-danger mt-2">
+                        {errors.firstName.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className={`form-row mb-3 col-md-6 `}>
+                    <Controller
+                      name="lastName"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className={`form-control width-input ${
+                            errors.lastName ? "error" : ""
+                          }`}
+                          placeholder="Last Name"
+                          onKeyPress={(e) => {
+                            const isValidInput = /^[a-zA-Z]+$/.test(e.key);
+                            if (!isValidInput) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.lastName && (
+                      <p className="text-danger mt-2">
+                        {errors.lastName.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className={`form-row mb-3 col-md-6 `}>
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          className={`form-control width-input ${
+                            errors.email ? "error" : ""
+                          }`}
+                          placeholder="Email address"
+                        />
+                      )}
+                    />
+                    {errors.email && (
+                      <p className="text-danger mt-2">{errors.email.message}</p>
+                    )}
+                  </div>
+                  <div className={`form-row mb-3 col-md-6 position-relative`}>
+                    <Controller
+                      name="location"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: "Location is required" }}
+                      render={({ field }) => (
+                        <PlacesAutocomplete
+                          value={field.value}
+                          onChange={handleChangeLocation}
+                          onSelect={handleSelect}
+                        >
+                          {({
+                            getInputProps,
+                            suggestions,
+                            getSuggestionItemProps,
+                          }) => (
+                            <div>
+                              <input
+                                {...getInputProps({
+                                  placeholder: "Enter Seller's address",
+                                  className: "location-search-input",
+                                })}
+                                className={`form-control width-input ${
+                                  errors.location ? "error" : ""
+                                }`}
+                              />
+                              <div
+                                className={
+                                  field.value.length > 0 && !loading && !select
+                                    ? "autocomplete-dropdown-container"
+                                    : ""
+                                }
+                              >
+                                {/* {loading && <div>Loading...</div>} */}
+                                {suggestions.map((suggestion, index) => {
+                                  const style = {
+                                    backgroundColor: suggestion.active
+                                      ? "#dc3545"
+                                      : "#fff",
+                                    color: suggestion.active
+                                      ? "white"
+                                      : "black",
+                                  };
+                                  return (
+                                    <div
+                                      {...getSuggestionItemProps(suggestion, {
+                                        style,
+                                      })}
+                                      key={index}
+                                    >
+                                      {suggestion.description}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </PlacesAutocomplete>
+                      )}
+                    />
+                    {errors.location && (
+                      <p className="text-danger mt-2">
+                        {errors.location.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="d-flex justify-content-center align-items-center">
+                  <button
+                    type="submit"
+                    className="btn btn-primary mw-200px w-100"
+                  >
+                    Next
+                  </button>
+                </div>
+              </form>
+              <p className="mt-4 mb-0 pt-3 border-top">
+                Your clients will receive an email from dazlpro.com asking them
+                if they would like to sign up for a free user account. This will
+                allow them to create projects and receive the phd report.
+              </p>
             </div>
-          </div>
+          ) : (
+            <>
+              <Box sx={{ width: 300 }} className="w-100">
+                <div className="position-relative cs-price-slider-main">
+                  {/* Inputs First */}
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <Typography variant="body">
+                        Set Low Value:{"$ "}
+                      </Typography>
+                      <input
+                        type="text"
+                        onChange={handleLowValueChange}
+                        className="bg-white text-black"
+                        style={{ borderRadius: "5px" }}
+                        valueLabelDisplay="on"
+                        valueLabelFormat={(value) =>
+                          formatNumberWithCommas(value)
+                        }
+                      />
+                      {errorLow && (
+                        <div style={{ color: "red" }}>{errorLow}</div>
+                      )}
+                    </div>
+
+                    <div>
+                      <Typography variant="body">
+                        Set High Value: {"$ "}
+                      </Typography>
+                      <input
+                        type="text"
+                        className="bg-white text-black"
+                        style={{ borderRadius: "5px" }}
+                        onChange={handleMaxValueChange}
+                        valueLabelDisplay="on"
+                        valueLabelFormat={(value) =>
+                          formatNumberWithCommas(value)
+                        }
+                      />
+                      {errorHigh && (
+                        <div style={{ color: "red" }}>{errorHigh}</div>
+                      )}
+                    </div>
+                  </div>
+                  <br />
+
+                  {/* Slider Below */}
+                  <div className="slider-container position-relative">
+                    <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges ">
+                      <Typography
+                        gutterBottom
+                        className="start-n40px text-white "
+                      >
+                        $ {formatNumberWithCommas(lowValue)}
+                      </Typography>
+                      <Typography
+                        gutterBottom
+                        className="end-n40px text-black "
+                      >
+                        $ {formatNumberWithCommas(maxValue)}
+                      </Typography>
+                    </div>
+                    <Slider
+                      value={sliderValue}
+                      aria-label="Default"
+                      min={lowValue}
+                      max={maxValue}
+                      className="cs-price-slider"
+                      onChange={handleChange}
+                      valueLabelDisplay="on"
+                      valueLabelFormat={(value) =>
+                        formatNumberWithCommas(value)
+                      }
+                    />
+                  </div>
+                </div>
+              </Box>
+
+              <div className="">
+                <div className="row justify-content-between py-3 text-start">
+                  <div className="container">
+                    <div className="row">
+                      <div className="d-grid gap-3 col"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                className="btn btn-primary mw-200px w-70 mt-4"
+                style={{ textTransform: "none" }}
+                onClick={letStart}
+                disabled={
+                  errorLow !== "" ||
+                  maxValue === 0 ||
+                  lowValue === 0 ||
+                  maxValue === "" ||
+                  lowValue === "" ||
+                  errorHigh !== ""
+                }
+              >
+                Let's get Started
+              </button>
+            </>
+          )}
         </div>
       </div>
+      {/* </div> */}
+      {/* </div> */}
+      {/* </div> */}
     </div>
   );
 };

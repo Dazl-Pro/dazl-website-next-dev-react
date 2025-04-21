@@ -381,13 +381,79 @@ const SignupAgent = () => {
                     name="streetAddress"
                     control={control}
                     render={({ field }) => (
-                      <input
-                        {...field}
-                        className={` width-input form-control ${
-                          errors.streetAddress ? "error" : ""
-                        }`}
-                        placeholder="Company street address"
-                      />
+                      <PlacesAutocomplete
+                        value={field.value || ""}
+                        onChange={(val) => {
+                          field.onChange(val);
+                          setAddress(val);
+                        }}
+                        onSelect={async (val) => {
+                          field.onChange(val);
+                          setAddress(val);
+                          try {
+                            const results = await geocodeByAddress(val);
+                            const latLng = await getLatLng(results[0]);
+
+                            // OPTIONAL: Auto-fill city and state
+                            const addressComponents =
+                              results[0].address_components;
+                            const cityComp = addressComponents.find((comp) =>
+                              comp.types.includes("locality")
+                            );
+                            const stateComp = addressComponents.find((comp) =>
+                              comp.types.includes("administrative_area_level_1")
+                            );
+
+                            if (cityComp) setValue("city", cityComp.long_name);
+                            if (stateComp)
+                              setValue("state", stateComp.short_name);
+                          } catch (error) {
+                            console.error("Error selecting address:", error);
+                          }
+                        }}
+                        searchOptions={{
+                          types: ["address"],
+                          componentRestrictions: { country: ["us"] },
+                        }}
+                      >
+                        {({
+                          getInputProps,
+                          suggestions,
+                          getSuggestionItemProps,
+                          loading,
+                        }) => (
+                          <div>
+                            <input
+                              {...getInputProps({
+                                placeholder: "Company street address",
+                                className: `form-control width-input ${
+                                  errors.streetAddress ? "error" : ""
+                                }`,
+                              })}
+                            />
+                            {field.value && suggestions.length > 0 && (
+                              <div className="autocomplete-dropdown-container z-3 position-absolute w-auto bg-white">
+                                {loading && <div>Loading...</div>}
+                                {suggestions.map((suggestion, index) => {
+                                  const className = suggestion.active
+                                    ? "suggestion-item--active"
+                                    : "suggestion-item";
+                                  return (
+                                    <div
+                                      key={index}
+                                      {...getSuggestionItemProps(suggestion, {
+                                        className,
+                                      })}
+                                    >
+                                      <span>{suggestion.description}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </PlacesAutocomplete>
                     )}
                   />
                   {errors.streetAddress && (

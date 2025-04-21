@@ -564,7 +564,8 @@ const MyProject = () => {
                                                   index
                                                 ]?.images?.map(
                                                   (img, imageIdx) => (
-                                                    <div className="col-lg-4 img-box"
+                                                    <div
+                                                      className="col-lg-4 img-box"
                                                       key={imageIdx}
                                                       style={{
                                                         // width: "200px",
@@ -572,9 +573,13 @@ const MyProject = () => {
                                                       }}
                                                     >
                                                       {img && (
-                                                        <div style={{width : "100px",
-                                                               position: "relative",
-                                                        }}>
+                                                        <div
+                                                          style={{
+                                                            width: "100px",
+                                                            position:
+                                                              "relative",
+                                                          }}
+                                                        >
                                                           <img
                                                             alt="img"
                                                             src={img}
@@ -755,7 +760,7 @@ const MyProject = () => {
                                                               .click()
                                                           }
                                                         >
-                                                          Choose File
+                                                          Add Photos
                                                         </button>
                                                       </div>
                                                     )
