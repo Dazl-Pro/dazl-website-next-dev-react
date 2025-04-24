@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./professional.css";
-import SendIcon from "@mui/icons-material/Send";
 import { useDispatch, useSelector } from "react-redux";
-
+import { Card, CardBody } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Toastify } from "../../../services/toastify/toastContainer";
@@ -14,20 +13,14 @@ import {
 import "./style.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import ModalImage from "react-modal-image";
 const ProjectOpportunity = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  // console.log(id);
 
   const [data, setData] = useState(null);
-  // const [roomIds, setRoomIds] = useState([]);
-  // const [message, setMessage] = useState("");
-  const [interested, setInterested] = useState(null);
+  console.log("----Data", data?.projectopportunities?.[0]?.is_interested);
   const [showModal, setShowModal] = useState(false);
   const [isModalOptionSelected, setIsModalOptionSelected] = useState(false);
-  const [delShow, setDelShow] = React.useState(false);
-  const [chooseShow, setChooseShow] = React.useState(false);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [checkboxName, setCheckboxName] = useState("");
@@ -37,17 +30,11 @@ const ProjectOpportunity = () => {
   const [selectedRoomIds, setSelectedRoomIds] = useState(null);
 
   const navigate = useNavigate();
-  // console.log(message);
 
   const openModal = (image) => {
     setSelectedImage(image);
-    // setIsViewerOpen(true);
   };
 
-  // const closeViewer = () => {
-  //   setSelectedImage(null);
-  //   setIsViewerOpen(false);
-  // };
   const closeModal = () => {
     setSelectedImage(null);
     setIsViewerOpen(false);
@@ -56,82 +43,42 @@ const ProjectOpportunity = () => {
     dispatch(viewServicePhd(id))
       .unwrap()
       .then((res) => {
-        console.log(res.reports.original.final);
-        console.log(res.reports.original.final.roominfo[0].room_id);
-        // const roomIdsArray = res.reports.original.final.roominfo
-        //   .map((item) => item.room_id)
-        //   .flat();
-        // console.log(roomIdsArray);
-        // setRoomIds(roomIdsArray);
         setData(res.reports.original.final);
+        if (
+          res.reports.original.final?.projectopportunities?.[0]
+            ?.is_interested === 1
+        ) {
+          setCheckboxName("yes");
+        } else if (
+          res.reports.original.final?.projectopportunities?.[0]
+            ?.is_interested === 0
+        ) {
+          setCheckboxName("no");
+        } else {
+          setCheckboxName("");
+        }
       });
   }, [id]);
 
-  // const handleSendMail = () => {
-  //   if (selectedRoomIds.length === 0) {
-  //     console.log("No rooms selected.");
-  //     return; // Prevent dispatch if no rooms are selected
-  //   }
-  //   dispatch(
-  //     sendMailHomeOwner({
-  //       projectId: selectedRoomIds,
-  //       // message,
-  //       isInterested: interested,
-  //       homeOwnerMail: data.customer.email,
-  //       homeOwnerName: data.customer.first_name + " " + data.customer.last_name,
-  //     })
-  //   );
-  //   if (dispatch) {
-  //     Toastify({
-  //       data: "success",
-  //       msg: "Response Sent  successfully",
-  //     });
-  //     return;
-  //   }
-  //   // navigate("/company/projectOpportunities");
-  // };
-
-  const handleSendMail = (ids, interested) => {
-    // console.log(ids);
-    if (ids) {
-      dispatch(
-        sendMailHomeOwner({
-          projectId: id, // Use selected room id
-          roomId: ids,
-          isInterested: interested,
-          homeOwnerMail: data.customer.email,
-          homeOwnerName:
-            data.customer.first_name + " " + data.customer.last_name,
-        })
-      );
-      Toastify({
-        data: "success",
-        msg: "Response Sent successfully",
-      });
-    } else {
-      console.log("No room selected or room IDs are missing");
-    }
+  const handleSendMail = (interested) => {
+    dispatch(
+      sendMailHomeOwner({
+        projectId: id,
+        isInterested: interested,
+        homeOwnerMail: data.customer.email,
+        homeOwnerName: data.customer.first_name + " " + data.customer.last_name,
+      })
+    );
+    Toastify({
+      data: "success",
+      msg: "Response Sent successfully",
+    });
+    // } else {
+    //   console.log("No room selected or room IDs are missing");
+    // }
   };
 
-  // const deleteProject = (project_id) => {
-  //   console.log("-----------", project_id);
-  //   dispatch(
-  //     deleteProfessionalProjects({
-  //       project_id: project_id,
-  //     })
-  //   );
-  //   navigate("/company/projectOpportunities");
-  //   if (dispatch) {
-  //     Toastify({
-  //       data: "success",
-  //       msg: "Project delete  successfully",
-  //     });
-  //     return;
-  //   }
-  // };
   const deleteProject = (ids, project_id) => {
-    console.log("-----------", ids);
-    console.log("##############################", project_id);
     dispatch(
       deleteProfessionalProjects({
         roomId: ids,
@@ -147,37 +94,11 @@ const ProjectOpportunity = () => {
       return;
     }
   };
-  const handleAnotherClick = (ids) => {
-    // if (isModalOptionSelected) {
-    handleSendMail(ids);
-    // }
-    // setShowModal(true);
-  };
 
-  const handleButtonClick = (ids, interested) => {
-    console.log("Button clicked, interested:", interested);
-    // Call the appropriate function based on the value of 'interested'
-    // if (interested === true) {
-    handleSendMail(ids, interested);
-    // }
-    // else if (interested === false) {
-    // setShowModal(true);
-    // handleAnotherClick(ids);
-    // }
+  const handleButtonClick = (interested) => {
+    // setInterested();
+    handleSendMail(interested);
   };
-  // const handleButtonClick = (roomId, isInterested = true) => {
-  //   setSelectedRoomIds((prevSelectedRoomIds) => {
-  //     if (isInterested) {
-  //       // Add the roomId if it's not already in the list
-  //       handleSendMail();
-  //       return [...prevSelectedRoomIds, roomId];
-  //     } else {
-  //       // Remove the roomId from the list if it's already there
-  //       return prevSelectedRoomIds.filter((id) => id !== roomId);
-  //     }
-  //   });
-  // };
-  console.log(data);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -206,10 +127,6 @@ const ProjectOpportunity = () => {
                   {data?.customer?.first_name + " " + data?.customer?.last_name}
                 </span>
               </p>
-              {/* <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start">
-                <span className="fw-semibold">Email Address:</span>{" "}
-                <span className="w-50">{data?.customer?.email}</span>
-              </p> */}
               {data?.customer?.house?.address && (
                 <p className="report-detaill d-flex flex-lg-nowrap flex-wrap flex-column flex-md-row align-items-md-center justify-content-between align-items-start mb-0">
                   <span className="fw-semibold">Property Address: </span>
@@ -224,6 +141,57 @@ const ProjectOpportunity = () => {
               </div>
             </div>
           </div>
+
+          {/* *************  interest card */}
+
+          <div className="row p-4">
+            <Card className="shadow-lg m-2 p-4 border-0 bg-danger text-white ">
+              <CardBody>
+                <h5 className="mb-3">Are you interested?</h5>
+                <div className="d-flex flex-column gap-3">
+                  <label className="d-flex align-items-center">
+                    <input
+                      type="checkbox"
+                      checked={checkboxName === "yes"}
+                      onChange={() => {
+                        setCheckboxName((prev) => {
+                          const newValue = prev === "yes" ? "" : "yes";
+                          if (newValue === "yes") {
+                            handleButtonClick(true);
+                          }
+                          return newValue;
+                        });
+                      }}
+                    />
+                    <span className="fw-bold fs-6 ms-2">YES</span>, I'm
+                    interested.
+                  </label>
+
+                  <label className="d-flex align-items-center">
+                    <input
+                      type="checkbox"
+                      checked={checkboxName === "no"}
+                      onChange={() => {
+                        // setInterested(false);
+                        setCheckboxName((prev) => {
+                          const newValue = prev === "no" ? "" : "no";
+                          if (newValue === "no") {
+                            handleButtonClick(false);
+                          }
+                          return newValue;
+                        });
+                      }}
+                    />
+                    <span className="fw-bold fs-6 ms-2">NO</span>, I'm not
+                    interested.
+                  </label>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+
+          {/* **************************** */}
+
           <div className="pt-3 flex w-full">
             {data?.roominfo.map((room, index) => (
               <div key={index} className="mb-4 col-lg-12">
@@ -237,37 +205,10 @@ const ProjectOpportunity = () => {
                     </h5>
                   </div>
 
-                  <div>
-                    {/* {
-                      room?.images?.filter(
-                        (image) => image.room_id === roomId
-                      )[0]?.description
-                    } */}
-                  </div>
+                  <div></div>
                   <div className="ps-0 mb-4 mt-2">
                     <div key={index}>
-                      <div className="d-flex gap-1 flex-wrap">
-                        {/*
-                            {imagesGroup?.map((image, imageIndex) => (
-                              <div key={imageIndex}>
-                                {image?.url && (
-                                  <a
-                                    href={image.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <img
-                                      alt="img"
-                                      src={image.url}
-                                      className="object-fit-cover border"
-                                      width={"100px"}
-                                      height={"100px"}
-                                    />
-                                  </a>
-                                )}{" "}
-                              </div>
-                            ))} */}
-                      </div>
+                      <div className="d-flex gap-1 flex-wrap"></div>
                     </div>
                   </div>
                   {room?.feature?.length !== 0 &&
@@ -340,108 +281,9 @@ const ProjectOpportunity = () => {
                         })}
                       </div>
                     )}
+
                   <div className="row ">
-                    {/* <div className="col-md-3">
-                      <div className="inner-text">
-                        <label htmlFor="checkbox" className="fw-bold fs-3">
-                          Your Response
-                        </label>
-                      </div>
-                    </div> */}
-                    <div className="col-md-6">
-                      <div className="inner-text pt-3 flex gap-4">
-                        <div className="ms-2">
-                          <div>
-                            <input
-                              type="checkbox"
-                              id="checkbox"
-                              style={{ background: "#fff" }}
-                              checked={checkboxName == "yes" ? true : false}
-                              // checked={interested === true}
-                              // checked={selectedRoomIds(room.room_id)}
-                              // onChange={() => {
-                              //   // setInterested(true);
-                              //   handleButtonClick();
-                              // }}
-                              // onChange={() => handleCheckboxChange(room.room_id)}
-                              // onClick={() => setShowModal(false)}
-                              onChange={() => {
-                                setCheckboxName((prev) => {
-                                  const newValue = prev === "yes" ? "" : "yes";
-
-                                  // If newValue is "yes", call the function
-                                  if (newValue === "yes") {
-                                    handleButtonClick(room.room_id, true);
-                                  }
-
-                                  return newValue;
-                                });
-                              }}
-                            />
-                            <span className="fw-bold fs-6 ms-2"> YES </span>,
-                            I'm interseted.
-                          </div>
-
-                          <div>
-                            {" "}
-                            <input
-                              type="checkbox"
-                              id="checkbox"
-                              // checked={interested === false}
-                              // onChange={() => setInterested(false)}
-                              checked={checkboxName == "no" ? true : false}
-                              // onClick={() => setShowModal(true)}
-                              // checked={isModalOptionSelected}
-                              // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
-
-                              onChange={() => {
-                                setCheckboxName((prev) => {
-                                  const newValue = prev === "no" ? "" : "no";
-
-                                  // If newValue is "yes", call the function
-                                  if (newValue === "no") {
-                                    handleButtonClick(room.room_id, false);
-                                  }
-
-                                  return newValue;
-                                });
-                              }}
-                              // setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
-                              // handleButtonClick(room.room_id, false);
-                            />
-                            <span className="fw-bold fs-6 ms-2"> NO </span>, I'm
-                            not interseted.{" "}
-                          </div>
-                        </div>
-                        {/* <div>
-                          <input
-                            type="checkbox"
-                            id="checkbox"
-                            // checked={interested === false}
-                            // onChange={() => setInterested(false)}
-
-                            // onClick={() => setShowModal(true)}
-                            // checked={isModalOptionSelected}
-                            // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
-                            onChange={() => {
-                              setSelectedRoomIds(room.room_id); // Set the room_id of the selected room
-                              handleButtonClick(room.room_id, false);
-                            }}
-                          />
-                          <span className="fw-bold fs-6"> NO </span>, I'm not
-                          interseted.{" "}
-                        </div> */}
-                      </div>
-                    </div>
                     <div className="col-md-3 text-end">
-                      {/* <button
-                        className="inner-text send-message d-flex align-items-center gap-2"
-                        // onClick={handleSendMail}
-                        onClick={handleButtonClick}
-                      >
-                        Send
-                        <SendIcon />
-                      </button> */}
                       <Modal
                         show={showModal}
                         onHide={() => setShowModal(false)}
@@ -492,127 +334,12 @@ const ProjectOpportunity = () => {
               </div>
             ))}
           </div>
-
-          {/* <div className="col-md-4">
-            <div className="colinner-image text-end">
-              <img
-                src="/src/assets/image.jpg"
-                className=" img-fluid rounded"
-              ></img>
-            </div>
-            <p className="pt-3  text-end">Lorem ipsum dolor sit amet.</p>
-          </div> */}
         </div>
-        {/* <div
-          className=" border-top p-3 mt-4 w-100 bg-lightgrey rounded message-box"
-          id="MessageBox"
-        > */}
-        {/* <div className="row ">
-            <div className="col-md-3">
-              <div className="inner-text">
-                <label htmlFor="checkbox" className="fw-bold fs-3">
-                  Your Response
-                </label>
-              </div>
-            </div> */}
-        {/* <div className="col-md-6">
-              <div className="inner-text pt-3 flex gap-4"> */}
-        {/* <div>
-                  <input
-                    type="checkbox"
-                    id="checkbox"
-                    checked={interested === true}
-                    onChange={() => setInterested(true)}
-                    // onClick={() => setShowModal(false)}
-                  />
-                  <span className="fw-bold fs-6"> YES </span>, I'm interseted.
-                </div> */}
-        {/* <div>
-                  <input
-                    type="checkbox"
-                    id="checkbox"
-                    checked={interested === false}
-                    onChange={() => setInterested(false)}
-
-                    // onClick={() => setShowModal(true)}
-                    // checked={isModalOptionSelected}
-                    // onChange={(e) => setIsModalOptionSelected(e.target.checked)}
-                  />
-                  <span className="fw-bold fs-6"> NO </span>, I'm not
-                  interseted.{" "}
-                </div> */}
-        {/* </div>
-            </div> */}
-        {/* <div className="col-md-3 text-end">
-              <button
-                className="inner-text send-message d-flex align-items-center gap-2"
-                // onClick={handleSendMail}
-                onClick={handleButtonClick}
-              >
-                Send
-                <SendIcon />
-              </button>
-              <Modal
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                centered
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>Delete Project</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <div className="text-center fs-5">
-                    Are you sure you want to delete this project?
-                  </div>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      deleteProject(data.project_id);
-                      setShowModal(false);
-                    }}
-                    checked={isModalOptionSelected}
-                    onChange={(e) => setIsModalOptionSelected(e.target.checked)}
-                    className="px-4"
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      handleSendMail();
-                      setShowModal(false);
-                    }}
-                    checked={isModalOptionSelected}
-                    onChange={(e) => setIsModalOptionSelected(e.target.checked)}
-                    className="px-4"
-                  >
-                    No
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            </div> */}
-        {/* </div> */}
-
-        {/* </div> */}
       </div>
-      {/* <div className="message-box pt-4 " id="messageBox">
-            <label htmlFor="message ">
-              <span className="fw-bold fs-5">Message:</span>
-            </label>
-            <input
-              type="text"
-              id="message"
-              onChange={(e) => setMessage(e.target.value)}
-            />
-          </div> */}
+
       <Modal show={showModal2} onHide={() => setShowModal2(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Show Image</Modal.Title>
-          {/* <Button variant="link" onClick={() => handleDownload(image)}>
-            Download
-          </Button> */}
         </Modal.Header>
         <Modal.Body>
           <img
