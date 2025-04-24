@@ -30,17 +30,41 @@ const AgentDashboard = () => {
           welcome to Agent Dashboard
         </h2>
         <div className="text-start shadow-lg bg-white rounded-4 p-4 p-xl-5 text-center">
-          <h3 className="text-uppercase text-danger fw-bold">
+          <h3 className="text-uppercase  text-danger fw-bold">
             Welcome to Agent Dashboard
           </h3>
-          <p className="mb-0">
-            At DAZL, we're here to help you
-            <strong> maximize your seller’s home value</strong>, and{" "}
-            <strong> reduce time on the market</strong>. By streamlining the
-            process and
-            <strong> eliminating buyer roadblocks</strong>, you can focus on
-            getting top dollar for your listings—fast and efficiently.
-          </p>
+          For sellers' agents particularly, we know the work you do requires you
+          to pivot quickly and to call on all your resources to craft and
+          finalize the deal. Property roadblocks, like needed repairs or
+          improvements, can impact the number of days on-market as well as the
+          contract value. And it can consume your time and your resources.
+          {/* <span
+            style={{ cursor: "pointer" }}
+            className="text-primary fw-bold"
+            onClick={() => (localStorage.clear(), navigate("/"))}
+          >
+            Log Out
+          </span> */}
+          {/* <div className="row">
+              <div className="col-md-4 mb-4">
+                <div className="btn btn-primary w-100" onClick={()=>navigate("/agent/createPhd")} style={{cursor:"pointer"}}>Create a phd</div>
+              </div>
+              <div className="col-md-4 mb-4">
+                <div className="btn btn-primary w-100" onClick={()=>(dispatch(filterProject()),navigate("/agent/phdproject"))} style={{cursor:"pointer"}}>Complete  phd</div>
+              </div>
+              <div className="col-md-4 mb-4">
+                <div className="btn btn-primary w-100" onClick={()=>(dispatch(getAgentProfiledata(userId)),navigate("/agent/agentprofile"))} style={{cursor:"pointer"}}>Agent Profile</div>
+              </div>
+              <div className="col-md-4 mb-4 mb-md-0">
+                <div className="btn btn-primary w-100" onClick={openProject} >Project Creation</div>
+              </div>
+              <div className="col-md-4 mb-4 mb-md-0">
+                <div className="btn btn-primary w-100" onClick={()=>navigate("/agent/saveproject")}>Saved  phd</div>
+              </div>
+              <div className="col-md-4 mb-0">
+                <div className="btn btn-primary w-100" onClick={()=> navigate("/agent/my-project")}>My project Agent</div>
+              </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -120,7 +120,7 @@ const RoomsInformation = (props) => {
   );
   const [active, setActive] = React.useState(false);
   const [outerImage, setOuterimage] = React.useState([]);
-  const [checkboxImages, setCheckboximages] = React.useState([]);
+  console.log("''''''first''''''", outerImage);
   const [input, setInput] = React.useState({
     phd_description: "",
     options: "",
@@ -813,7 +813,12 @@ const RoomsInformation = (props) => {
             {" "}
             2.Add photos of exceptional features or selling advantages
           </p>
-          <div className="bg-light p-3 rounded-2">
+          <div
+            // className="bg-light p-3 rounded-2"
+            className={`p-3 rounded-2 ${
+              outerImage.length === 0 ? "bg-white" : "bg-light"
+            }`}
+          >
             <div className="ps-0 mb-3 mt-2">
               <div className="d-flex gap-1 flex-wrap">
                 <div className="d-flex gap-3">
@@ -861,74 +866,6 @@ const RoomsInformation = (props) => {
               </div>
             </div>
           </div>
-          {/* <div> */}
-          {/* {photoFields.map((item, index) => (
-                <div className="col-md-6" key={item.id}>
-                  <div className="d-flex align-items-start gap-2">
-                    <input
-                      type="file"
-                      {...register(`photos[${index}].file`)}
-                      className={`form-control mb-3 ${
-                        (errors.photos && errors?.photos[index]?.file) ||
-                        errorBorder2
-                          ? "error"
-                          : ""
-                      }`}
-                      accept=".png, .jpg, .jpeg"
-                      onChange={(e) => handleImage(index, e)}
-                    />
-
-                    {photoFields.length > 1 && (
-                      <button
-                        type="button"
-                        className="btn btn-light bg-light-red border-danger space"
-                        onClick={() => removePhoto(index)}
-                      >
-                        <DeleteIcon />
-                      </button>
-                    )}
-                    {errors.file && (
-                      <p className="text-danger mt-2">{errors.file.message}</p>
-                    )}
-                  </div>
-                </div>
-              ))} */}
-          {/* {outerImage?.map((image, index) => (
-              <div key={image?.id}>
-                {image && (
-                  <div className="float-start me-4 position-relative">
-                    <img
-                      alt="img"
-                      src={image}
-                      className="object-fit-cover border"
-                      width={"100px"}
-                      height={"100px"}
-                      style={{ cursor: "pointer" }}
-                    />
-
-                    <div className="d-flex justify-content-center dlt-btn-3">
-                      <button
-                        type="button"
-                        className="btn btn-primary btn-sm mt-2 "
-                        onClick={() =>
-                          removePhoto(items?.room_id, image?.id, index)
-                        }
-                      >
-                        <DeleteIcon />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-            <input
-              id="OuterImage"
-              type="file"
-              accept=".png, .jpg, .jpeg"
-              style={{ display: "none" }}
-              onChange={(e) => handleImage(0, e)}
-            />
-          </div> */}
         </div>
         <div className="d-flex justify-content-start align-items-center mt-3">
           {photoFields.length < 5 && (
@@ -940,16 +877,10 @@ const RoomsInformation = (props) => {
                 document.getElementById("OuterImage").click();
               }}
             >
-              Add Photos
+              {/* {outerImage.length === 0 ? "Add Image" : "Upload Image"} */}
+              Add Image
             </button>
           )}
-          {/* onClick={handleAppendPhoto} */}
-
-          {/* onClick={() => {
-                if (isLastFieldComplete()) {
-                  appendPhoto({ description: "", file: null });
-                }
-              }} */}
         </div>
         {roomtype?.length > 0 ? (
           <Grid container spacing={2}>
@@ -992,38 +923,6 @@ const RoomsInformation = (props) => {
           ""
         )}
 
-        {/* {addValueData?.length > 0 ? (
-          <>
-            <p component="legend" className="mt-3 mb-1">
-              {" "}
-              3. Are there any additional value added items
-            </p>
-            <div className="row">
-              {addValueData.map((valueItem, index) => {
-                return (
-                  <div className="col-md-4 d-flex align-items-center">
-                    <Checkbox
-                      checked={
-                        checked.find((item) => item.id === valueItem.id)
-                          ?.isChecked
-                      }
-                      onChange={(e) => handleChange(e, index, valueItem.id)}
-                      inputProps={{ "aria-label": "controlled" }}
-                    />
-                    {valueItem?.name}
-                    {valueItem.price && (
-                      <div className="fst-italic text-danger ms-2 text-decoration-underline">
-                        ${valueItem.price}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        ) : (
-          ""
-        )} */}
         {selector?.data?.roomtype[0]?.room_id === 7 && (
           <div className="mt-2 mb-2">
             <FormLabel className="text-body">
@@ -1085,68 +984,6 @@ const RoomsInformation = (props) => {
             <h4>Overall first impressions:</h4>
           </FormLabel>
 
-          {/* <Box sx={{ width: "full", padding: 3 }}>
-            <div className="slider-container position-relative">
-              <div className="d-flex justify-content-between w-100">
-                <p>0pts</p>
-                <p>110pts</p>
-              </div>
-
-              <Slider
-                marks={marks}
-                // slots={{
-                //   valueLabel: ValueLabelComponent,
-                // }}
-                step={1}
-                value={val}
-                valueLabelDisplay="on"
-                min={0}
-                max={110}
-                // onChange={handleChangee}
-                disabled={true}
-                className="cs-price-slider "
-                // onChange={handleChange}
-
-                // valueLabelFormat={(value) => formatNumberWithCommas(value)}
-              />
-            </div>
-
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography
-                variant="body2"
-                onClick={() => setVal(1)}
-                sx={{ cursor: "pointer" }}
-              >
-                NEEDS DAZL
-              </Typography>
-              <Typography
-                variant="body2"
-                onClick={() => setVal(35)}
-                sx={{ cursor: "pointer" }}
-              >
-                MARKET READY
-              </Typography>
-              <Typography
-                variant="body2"
-                onClick={() => setVal(35)}
-                sx={{ cursor: "pointer" }}
-              >
-                DAZLING
-              </Typography>
-              <Typography
-                variant="body2"
-                onClick={() => setVal(110)}
-                sx={{ cursor: "pointer" }}
-              >
-                DAZL PLUS
-              </Typography>
-            </Box>
-            {errorBorder1 && (
-              <div className="text-primary">
-                Please Select Impressions Value*
-              </div>
-            )}
-          </Box> */}
           <RadioGroup
             aria-label="options"
             name="options"
@@ -1299,69 +1136,19 @@ const RoomsInformation = (props) => {
                             }
                           />
                         </div>
-
-                        {/* <div className="row">
-                          {fields?.map((field, imgIndex) => {
-                            return field.indexId === index ? (
-                              <div className="col-md-6 mt-2" key={imgIndex}>
-                                <div className="d-flex align-items-start gap-2">
-                                  <input
-                                    type="file"
-                                    className={`form-control ${
-                                      errors?.checkbox_photos &&
-                                      errors?.checkbox_photos[imgIndex]?.file
-                                        ? "error"
-                                        : ""
-                                    }`}
-                                    accept=".png, .jpg, .jpeg"
-                                    onChange={(e) =>
-                                      handleCheckboxImage(
-                                        _,
-                                        imgIndex,
-                                        getValues("textArea")[index],
-                                        e
-                                      )
-                                    }
-                                  />
-                                  {fields.filter(
-                                    (field) => field.indexId === index
-                                  ).length > 1 && (
-                                    <button
-                                      type="button"
-                                      onClick={() => remove(imgIndex)}
-                                      className="btn btn-light bg-light-red border-danger space"
-                                    >
-                                      <DeleteIcon />
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            ) : (
-                              ""
-                            );
-                          })}
-                        </div> */}
                       </div>
 
                       <button
                         type="button"
-                        className="btn btn-danger mt-3"
+                        className="btn btn-success mt-3"
                         onClick={() =>
                           document
                             .getElementById(`upploadItemImage${index}`)
                             .click()
                         }
                       >
-                        Add Photos
-                      </button>
-
-                      {/* <button
-                        type="button"
-                        className="btn btn-success btn btn-primary my-3"
-                        onClick={() => append({ indexId: index, file: null })}
-                      >
                         upload more
-                      </button> */}
+                      </button>
                     </>
                   )}
                 </div>
@@ -1376,7 +1163,6 @@ const RoomsInformation = (props) => {
               type="submit"
               className="btn btn-danger m-2"
               onClick={(e) => save(e, "save")}
-              // disabled={input.phd_description && input.options ? false : true}
             >
               Add another room
             </button>

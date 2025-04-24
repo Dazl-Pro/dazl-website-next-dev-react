@@ -61,6 +61,10 @@ const ProjectOpportunities = () => {
   const [searchInput, setSearchInput] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
+  console.log(
+    "---------filter",
+    filteredData?.[0]?.projectopportunities?.[0]?.is_interested
+  );
   const [project, setProject] = useState("");
 
   const deleteProject = (project_id) => {
@@ -148,41 +152,43 @@ const ProjectOpportunities = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item, index) => (
-                  <tr key={index} className="align-middle">
-                    <td>{index + 1}</td>
-                    <td>{item.created_at}</td>
-                    <td className="w-75">{item.customer?.house?.address}</td>
-                    <td className="ps-2">
-                      <button
-                        className="btn btn-outline-success mx-1 btn-sm"
-                        onClick={() => viewPhdHandler(item.project_id)}
-                      >
-                        <PreviewIcon />
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-outline-danger mx-1 btn-sm"
-                        // onClick={() => {
-                        //   setShowModal(true);
-                        // }}
-                        onClick={() => {
-                          setShowModal(true);
-                          setProject(item.project_id);
-                        }}
+                {filteredData.map((item, index) => {
+                  const isInterested =
+                    item?.projectopportunities?.[0]?.is_interested;
+                  let rowClass = "table-white"; // Default gray
 
-                        // dispatch(
-                        //   deleteProfessionalProjects({
-                        //     project_id: project_id,
-                        //   })
-                        // );
-                      >
-                        <DeleteIcon />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                  if (isInterested === 0) {
+                    rowClass = "table-danger"; // Red row with red border
+                  } else if (isInterested === 1) {
+                    rowClass = "table-success"; // Green row with green border
+                  }
+                  return (
+                    <tr key={index} className={`align-middle ${rowClass}`}>
+                      <td>{index + 1}</td>
+                      <td>{item.created_at}</td>
+                      <td className="w-75">{item.customer?.house?.address}</td>
+                      <td className="ps-2">
+                        <button
+                          className="btn btn-outline-success mx-1 btn-sm"
+                          onClick={() => viewPhdHandler(item.project_id)}
+                        >
+                          <PreviewIcon />
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-outline-danger mx-1 btn-sm"
+                          onClick={() => {
+                            setShowModal(true);
+                            setProject(item.project_id);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </Table>
           ) : (
