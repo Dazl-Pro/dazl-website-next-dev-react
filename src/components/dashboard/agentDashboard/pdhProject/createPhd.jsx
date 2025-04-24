@@ -52,7 +52,7 @@ const CreatePhd = () => {
       .trim(),
     phone_number: yup
       .string()
-      // .matches(/^[0-12]+$/, "Mobile Number is required")
+      .matches(/^\+[\d\s]+$/, "Mobile Number is required")
       .required("Mobile Number is required")
       .trim(),
   });
@@ -234,6 +234,8 @@ const CreatePhd = () => {
     if (number === "" || isNaN(number)) return "";
     return new Intl.NumberFormat().format(number);
   };
+
+  console.log("==>", errors.phone_number);
 
   return (
     <div className="py-0">
@@ -427,19 +429,19 @@ const CreatePhd = () => {
                             country={"us"}
                             enableSearch={true}
                             value={field.value}
-                            // onChange={(phone) => {
-                            //   setPhone(phone);
-                            //   setValue("mobilenumber", phone, {
-                            //     shouldValidate: true,
-                            //   });
-                            // }}
-                            onChange={(e) => {
-                              console.log("====>", e);
-                              const formattedValue = e
-                                .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
-                                .replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
-                              field.onChange({
-                                target: { value: formattedValue },
+                            onChange={(phone, country) => {
+                              // Format the phone number with a space after country code
+                              const formattedPhone = phone.startsWith(
+                                country.dialCode
+                              )
+                                ? `+${country.dialCode} ${phone.slice(
+                                    country.dialCode.length
+                                  )}`
+                                : phone;
+
+                              console.log(formattedPhone);
+                              setValue("phone_number", formattedPhone, {
+                                shouldValidate: true,
                               });
                             }}
                             placeholder="+1 (545) 674-3543"
@@ -447,7 +449,7 @@ const CreatePhd = () => {
                               paddingTop: 8,
                               paddingBottom: 8,
                               width: "100%",
-                              border: 0,
+                              border: errors.phone_number ? "2px solid red" : 0,
 
                               color: "black",
                               background: "#fff",
@@ -469,9 +471,9 @@ const CreatePhd = () => {
                             }}
                           />
 
-                          {errors.number && (
+                          {errors.phone_number && (
                             <p className="text-danger">
-                              {errors.number.message}
+                              {errors.phone_number.message}
                             </p>
                           )}
                         </>
@@ -556,7 +558,7 @@ const CreatePhd = () => {
                   {/* Slider Below */}
 
                   <div className="slider-container position-relative">
-                    <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges slider-value">
+                    <div className="d-flex flex-wrap align-items-center justify-content-between cs-price-ranges ">
                       <Typography
                         gutterBottom
                         className="start-n40px text-white "
@@ -587,7 +589,7 @@ const CreatePhd = () => {
                         },
                         "& .MuiSlider-valueLabel": {
                           backgroundColor: "white", // Background for better visibility
-                          color: "black", // Text color
+                          color: "white", // Text color
                           fontSize: "12px", // Adjust font size
                           transform: "translateX(-50%)", // Center align text
                           whiteSpace: "nowrap", // Prevent text wrapping
