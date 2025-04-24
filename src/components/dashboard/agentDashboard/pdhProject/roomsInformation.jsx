@@ -393,6 +393,7 @@ const RoomsInformation = (props) => {
       formData.append("first_name", phdUserDetail?.firstName);
       formData.append("last_name", phdUserDetail?.lastName);
       formData.append("client_email", phdUserDetail?.email);
+      formData.append("phone_number", phdUserDetail?.number);
       formData.append("type", phdvalue?.type);
       formData.append(
         "selectedOptionValue",
