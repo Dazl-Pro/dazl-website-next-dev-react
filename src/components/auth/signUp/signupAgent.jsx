@@ -18,7 +18,6 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 import "./signUp.css";
 import PhoneInput from "react-phone-input-2";
-
 import "react-phone-input-2/lib/bootstrap.css";
 
 const defaultValues = {

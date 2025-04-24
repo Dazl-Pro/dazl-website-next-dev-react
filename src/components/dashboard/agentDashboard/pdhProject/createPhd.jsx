@@ -15,7 +15,7 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 import "./style.css";
 import PhoneInput from "react-phone-input-2";
-
+import "react-phone-input-2/lib/bootstrap.css";
 const defaultValues = {
   photos: [{ file: null }],
   firstName: "",
@@ -52,7 +52,7 @@ const CreatePhd = () => {
       .trim(),
     number: yup
       .string()
-      // .matches(/^[0-12]+$/, "Mobile Number is required")
+      .matches(/^\+[\d\s]+$/, "Mobile Number is required")
       .required("Mobile Number is required")
       .trim(),
   });
@@ -437,22 +437,20 @@ const CreatePhd = () => {
                                   country={"us"}
                                   enableSearch={true}
                                   value={field.value}
-                                  // onChange={(phone) => {
-                                  //   setPhone(phone);
-                                  //   setValue("mobilenumber", phone, {
-                                  //     shouldValidate: true,
-                                  //   });
-                                  // }}
-                                  onChange={(e) => {
-                                    console.log("====>", e);
-                                    const formattedValue = e
-                                      .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
-                                      .replace(
-                                        /(\d{3})(\d{3})(\d{4})/,
-                                        "$1-$2-$3"
-                                      );
-                                    field.onChange({
-                                      target: { value: formattedValue },
+                                  onChange={(phone, country) => {
+                                    // Format the phone number with a space after country code
+                                    const formattedPhone = phone.startsWith(
+                                      country.dialCode
+                                    )
+                                      ? `+${country.dialCode} ${phone.slice(
+                                          country.dialCode.length
+                                        )}`
+                                      : phone;
+
+                                    console.log(formattedPhone);
+                                    setPhone(formattedPhone);
+                                    setValue("number", formattedPhone, {
+                                      shouldValidate: true,
                                     });
                                   }}
                                   placeholder="+1 (545) 674-3543"
