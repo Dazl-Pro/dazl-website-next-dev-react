@@ -1,5 +1,5 @@
 import * as React from "react";
-import { lazy } from "react";
+import { lazy, useState, useEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -10,7 +10,6 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import CloseIcon from "@mui/icons-material/Close";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -22,7 +21,6 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import PinterestIcon from "@mui/icons-material/Pinterest";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { useState, useEffect } from "react";
 import "./header.css";
 import {
   NavLink,
@@ -34,6 +32,7 @@ import {
 } from "react-router-dom";
 import CommonSidebar from "../dashboard/commonSidebar/commonSidebar";
 import CommonProfile from "../dashboard/commonSidebar/commonProfile.jsx";
+
 const CustomerCreateProject = lazy(() =>
   import(
     "../dashboard/customerDashboard/createProject/customerCreateProject.jsx"
@@ -104,7 +103,6 @@ const EditAddRoom = lazy(() =>
 const ProjectOpportunities = lazy(() =>
   import("../dashboard/professionalDashboard/projectOpportunities")
 );
-
 const ProjectOpportunity = lazy(() =>
   import("../dashboard/professionalDashboard/projectOpportunity")
 );
@@ -112,21 +110,24 @@ const companyProfile = lazy(() =>
   import("../dashboard/professionalDashboard/profile/companyProfile")
 );
 
+// const drawerWidth = 240;
+
+// Styled components (unchanged)
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginRight: -drawerWidth,
+    width: "100%", // Default width when Drawer is closed
     ...(open && {
-      transition: theme.transitions.create("margin", {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginRight: 0,
+      width: `calc(100% - ${drawerWidth}px)`,
     }),
     position: "relative",
   })
@@ -135,17 +136,18 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
+  position: "fixed",
+  transition: theme.transitions.create(["left", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
+    left: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(["left", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    marginRight: drawerWidth,
   }),
 }));
 
@@ -159,18 +161,14 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Header = () => {
   const [isActive, setIsActive] = useState(false);
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleShowMenuClick = () => {
-    setIsActive(true);
-  };
-
-  const handleCloseMenuClick = () => {
-    setIsActive(false);
-  };
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("userType");
-  const location = useLocation();
-  const routeNavigate = useNavigate();
+
   const sideItems = [
     { page: token ? "DAZL ON TREND" : "HOME", route: "/" },
     // { page: "BLOG", route: "/blogs" },
@@ -188,33 +186,50 @@ const Header = () => {
     token
       ? { page: "LOG OUT", route: "/" }
       : { page: "LOG IN", route: "/login-users" },
-    token ? "" : { page: "SIGN UP", route: "/signup-users" },
-  ];
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+    token ? null : { page: "SIGN UP", route: "/signup-users" },
+  ].filter(Boolean);
 
-  const handleDrawerOpen = () => {
+  const handleDrawerOpen = (e) => {
+    e.stopPropagation();
     setOpen(true);
+    console.log("Drawer opening, open state:", true);
   };
 
   const handleDrawerClose = () => {
+    // Removed e parameter since it's not passed from ListItemButton
     setOpen(false);
+    console.log("Drawer closing, open state:", false);
   };
-  const navigate = useNavigate();
 
-  const clicktoChange = ({ isActive }) => {
-    return {
-      color: isActive ? "#dc3545" : "#000",
-      textDecoration: isActive ? "none" : "none",
-    };
+  const handleListItemClick = (route, page) => {
+    handleDrawerClose(); // Call handleDrawerClose instead of setOpen(false)
+    setTimeout(() => {
+      navigate(route);
+    }, 0);
+
+    setOpen(false);
+    console.log("=====first");
+    if (page === "LOG OUT") localStorage.clear();
   };
+
+  const handleShowMenuClick = () => setIsActive(true);
+  const handleCloseMenuClick = () => setIsActive(false);
+
+  const clicktoChange = ({ isActive }) => ({
+    color: isActive ? "#dc3545" : "#000",
+    textDecoration: "none",
+  });
 
   const [showSidebar, setShowSidebar] = useState(true);
-
   useEffect(() => {
     const currentPath = location.pathname;
     setShowSidebar(!currentPath.startsWith("/agent/viewPhdAlt"));
   }, [location.pathname]);
+
+  // Debug useEffect to track open state
+  useEffect(() => {
+    console.log("Current open state:", open);
+  }, [open]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -222,8 +237,8 @@ const Header = () => {
       <AppBar
         position="fixed"
         open={open}
-        className="header header-mainn"
         sx={{ backgroundColor: "#2d2d2d" }}
+        className="header header-mainn"
       >
         <div className="header-topp py-1 bg-primary">
           <div className="header-topp-inner container d-flex flex-wrap align-items-center justify-content-between">
@@ -234,22 +249,22 @@ const Header = () => {
             </p>
             <div className="social-links-footer d-flex gap-0 gap-md-1">
               <a href="" target="_blank" className="social-icon-item">
-                <FacebookIcon></FacebookIcon>
+                <FacebookIcon />
               </a>
               <a href="" target="_blank" className="social-icon-item">
-                <LinkedInIcon></LinkedInIcon>
+                <LinkedInIcon />
               </a>
               <a href="" target="_blank" className="social-icon-item">
-                <XIcon></XIcon>
+                <XIcon />
               </a>
               <a href="" target="_blank" className="social-icon-item">
-                <InstagramIcon></InstagramIcon>
+                <InstagramIcon />
               </a>
               <a href="" target="_blank" className="social-icon-item">
-                <PinterestIcon></PinterestIcon>
+                <PinterestIcon />
               </a>
               <a href="" target="_blank" className="social-icon-item">
-                <YouTubeIcon></YouTubeIcon>
+                <YouTubeIcon />
               </a>
             </div>
           </div>
@@ -261,25 +276,20 @@ const Header = () => {
                 <LazyLoadImage
                   alt="img"
                   src="/images/footerImages/footer.png"
-                  width={"70px"}
+                  width="70px"
                 />
               </div>
-              <div className=" w-100 desktop-menu heading-font fw-semibold">
+              <div className="w-100 desktop-menu heading-font fw-semibold">
                 <ul
                   className="d-flex justify-content-end align-items-center text-uppercase fw-medium mb-0"
                   style={{ listStyle: "none" }}
                 >
-                  <li className="">
+                  <li>
                     <NavLink to="/" style={clicktoChange} className="mx-3">
                       {token ? "DAZL ON TREND" : "Home"}
                     </NavLink>
                   </li>
-                  {/* <li className="">
-                    <NavLink to="/blogs" style={clicktoChange} >
-                      BLOG
-                    </NavLink>
-                  </li> */}
-                  <li className="">
+                  <li>
                     <NavLink
                       to={
                         token
@@ -295,7 +305,7 @@ const Header = () => {
                       {token ? "DASHBOARD" : "TERMS & CONDITIONS"}
                     </NavLink>
                   </li>
-                  <li className="">
+                  <li>
                     <NavLink
                       to="/contact-us"
                       style={clicktoChange}
@@ -305,24 +315,22 @@ const Header = () => {
                     </NavLink>
                   </li>
                   {token ? (
-                    <li className="">
+                    <li>
                       <NavLink
                         style={clicktoChange}
-                        onClick={() => (
-                          localStorage.clear(), routeNavigate("/")
-                        )}
+                        onClick={() => (localStorage.clear(), navigate("/"))}
                       >
                         LOG OUT
                       </NavLink>
                     </li>
                   ) : (
                     <>
-                      <li className="">
+                      <li>
                         <NavLink to="/login-users" style={clicktoChange}>
                           LOG IN
                         </NavLink>
                       </li>
-                      <li className="">
+                      <li>
                         <NavLink
                           to="/signup-users"
                           style={clicktoChange}
@@ -351,12 +359,13 @@ const Header = () => {
           </div>
         </Toolbar>
       </AppBar>
+
       <Main open={open} sx={{ padding: 0 }} className="main-content-main">
         <DrawerHeader />
         {token &&
         location.pathname !== "/" &&
         location.pathname !== "/contact-us" ? (
-          <div className={showSidebar && `bg-light-red`}>
+          <div className={showSidebar ? "bg-light-red" : ""}>
             <div
               className={`d-flex flex-wrap ${
                 showSidebar ? "dashboard-main" : ""
@@ -410,47 +419,13 @@ const Header = () => {
                 >
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    {/* <Route path="/signup-users" element={<CommonSignup />} />
-                    <Route
-                      exact
-                      path="/signup-users/agent"
-                      element={<SignupAgent />}
-                    />
-                    <Route
-                      exact
-                      path="/signup-users/professional"
-                      element={<SignupPros />}
-                    />
-                    <Route
-                      exact
-                      path="/signup-users/customer"
-                      element={<SignupCostumer />}
-                    /> */}
                     <Route exact path="/contact-us" element={<ContactUs />} />
-                    {/* <Route exact path="/login-users" element={<SignInUser />} /> */}
-                    {/* <Route
-                      exact
-                      path="/login/realtor"
-                      element={<LoginRealtor />}
-                    /> */}
-                    {/* <Route
-                      exact
-                      path="/login/professional"
-                      element={<LoginProfessional />}
-                    /> 
-                    <Route
-                      exact
-                      path="/login/customer"
-                      element={<LoginCustomer />}
-                    />
-                    */}
                     <Route
                       exact
                       path="/termsandconditions"
                       element={<TermsandConditions />}
                     />
                     <Route exact path="/blogs" element={<Blog />} />
-
                     <Route path="*" element={<Navigate to="/" />} />
                     {token ? (
                       userType === "agent" ? (
@@ -592,17 +567,13 @@ const Header = () => {
                           />
                         </Route>
                       )
-                    ) : (
-                      ""
-                    )}
+                    ) : null}
                   </Routes>
                 </div>
               </div>
             </div>
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
         {token ? (
           <Routes>
             <Route path="/" element={<Home />} />
@@ -648,11 +619,13 @@ const Header = () => {
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
+            boxSizing: "border-box",
           },
         }}
-        variant="persistent"
+        variant="temporary" // Changed to temporary
         anchor="right"
         open={open}
+        onClose={handleDrawerClose} // Added onClose for temporary drawer
         className="header1 header-sidebarr"
       >
         <DrawerHeader
@@ -663,32 +636,23 @@ const Header = () => {
             onClick={handleDrawerClose}
             className="btn bg-primary rounded"
           >
-            {theme.direction === "rtl" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <CloseIcon sx={{ color: "white" }} />
-            )}
+            <CloseIcon sx={{ color: "white" }} />
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-          {sideItems.map((items, index) => {
-            return (
-              <ListItem key={index} disablePadding>
-                <ListItemButton>
-                  <ListItemText
-                    className="head-font fw-semibold text-center text-sm-start"
-                    primary={items.page}
-                    onClick={() => (
-                      navigate(`${items.route}`),
-                      setOpen(false),
-                      items.page === "LOG OUT" ? localStorage.clear() : ""
-                    )}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
+          {sideItems.map((items, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton
+                onClick={() => handleListItemClick(items.route, items.page)}
+              >
+                <ListItemText
+                  className="head-font fw-semibold text-center text-sm-start"
+                  primary={items.page}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
         <Divider />
       </Drawer>

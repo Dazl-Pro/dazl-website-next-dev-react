@@ -49,9 +49,9 @@
       top: 0;
       width: 280px !important;
     }
-    .header-sidebarr > div {
+    /* .header-sidebarr > div {
       width: 280px !important;
-    }
+    } */
 
   }
 @media (max-width: 991.98px) {
