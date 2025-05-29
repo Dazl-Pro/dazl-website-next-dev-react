@@ -386,18 +386,21 @@ const Header = () => {
                         isActive ? "active" : ""
                       }`}
                     >
-                      <div
-                        className="icon-show-menu btn btn-primary lh-1 px-2"
-                        onClick={handleShowMenuClick}
-                      >
-                        <MenuIcon />
-                      </div>
-                      <div
-                        className="icon-close-menu btn btn-primary lh-1 px-2"
-                        onClick={handleCloseMenuClick}
-                      >
-                        <CloseIcon />
-                      </div>
+                      {isActive ? (
+                        <div
+                          className="icon-close-menu btn btn-primary lh-1 px-2"
+                          onClick={handleCloseMenuClick}
+                        >
+                          <CloseIcon />
+                        </div>
+                      ) : (
+                        <div
+                          className="icon-show-menu btn btn-primary lh-1 px-2"
+                          onClick={handleShowMenuClick}
+                        >
+                          <MenuIcon />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <CommonSidebar
