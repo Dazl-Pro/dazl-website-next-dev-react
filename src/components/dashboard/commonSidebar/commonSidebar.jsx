@@ -18,21 +18,20 @@ import TaskIcon from "@mui/icons-material/Task";
 import "./commonSidebar.css";
 import CommonProfile from "./commonProfile";
 
-const CommonSidebar = () => {
+const CommonSidebar = ({ callback }) => {
   const userType = localStorage.getItem("userType");
 
-  const clicktoChange = ({ isActive }) => {
-    return {
-      color: isActive ? "#dc3545" : "#000",
-      textDecoration: isActive ? "none" : "none",
-    };
+  const handleClick = () => {
+    callback();
   };
+
   return (
     <div className="dashboard-sidebar-main-inner rounded-4">
       <div className="col-inner dashboard-sidebar position-relative h-100">
         <div className="profile-infoo-side px-3 pb-4 d-flex align-items-center">
           <CommonProfile />
         </div>
+
         {userType === "agent" ? (
           <div className="flex-column">
             <Link
@@ -40,10 +39,11 @@ const CommonSidebar = () => {
                 location.pathname === "/agent/createPhd" ? "active-link" : ""
               }`}
               to="/agent/createPhd"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <AddBoxIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Create a phd</span>
             </Link>
             <Link
@@ -51,10 +51,11 @@ const CommonSidebar = () => {
                 location.pathname === "/agent/phdproject" ? "active-link" : ""
               }`}
               to="/agent/phdproject"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <TaskIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Completed phds</span>
             </Link>
             <Link
@@ -62,10 +63,11 @@ const CommonSidebar = () => {
                 location.pathname === "/agent/agentprofile" ? "active-link" : ""
               }`}
               to="/agent/agentprofile"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <PersonIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Agent Profile</span>
             </Link>
             <Link
@@ -75,10 +77,11 @@ const CommonSidebar = () => {
                   : ""
               }`}
               to="/agent/createProject"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <PostAddIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Project Creation</span>
             </Link>
             <Link
@@ -86,10 +89,11 @@ const CommonSidebar = () => {
                 location.pathname === "/agent/saveproject" ? "active-link" : ""
               }`}
               to="/agent/saveproject"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <FolderSpecialIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Saved phds</span>
             </Link>
             <Link
@@ -97,10 +101,11 @@ const CommonSidebar = () => {
                 location.pathname === "/agent/my-project" ? "active-link" : ""
               }`}
               to="/agent/my-project"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <GradingIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">My project Agent</span>
             </Link>
           </div>
@@ -113,10 +118,11 @@ const CommonSidebar = () => {
                   : ""
               }`}
               to="/company/projectOpportunities"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <CreateNewFolderIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Project Opportunities</span>
             </Link>
             <Link
@@ -126,10 +132,11 @@ const CommonSidebar = () => {
                   : ""
               }`}
               to="/company/companyProfile"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <PeopleIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">My Company Profile</span>
             </Link>
           </div>
@@ -142,10 +149,11 @@ const CommonSidebar = () => {
                   : ""
               }`}
               to="/homeOwner/create-project"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <CreateNewFolderIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">Project Creation</span>
             </Link>
             <Link
@@ -155,10 +163,11 @@ const CommonSidebar = () => {
                   : ""
               }`}
               to="/homeOwner/my-project"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <FolderIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">My Projects</span>
             </Link>
             <Link
@@ -166,10 +175,11 @@ const CommonSidebar = () => {
                 location.pathname === "/homeOwner/my-info" ? "active-link" : ""
               }`}
               to="/homeOwner/my-info"
+              onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
                 <PersonIcon />
-              </span>{" "}
+              </span>
               <span className="text-linkk">My Info</span>
             </Link>
           </div>
@@ -178,4 +188,5 @@ const CommonSidebar = () => {
     </div>
   );
 };
+
 export default CommonSidebar;

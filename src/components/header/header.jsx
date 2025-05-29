@@ -400,7 +400,11 @@ const Header = () => {
                       </div>
                     </div>
                   </div>
-                  <CommonSidebar />
+                  <CommonSidebar
+                    callback={() => {
+                      handleCloseMenuClick();
+                    }}
+                  />
                 </div>
               )}
               <div

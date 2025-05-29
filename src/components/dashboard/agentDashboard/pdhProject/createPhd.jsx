@@ -383,6 +383,7 @@ const CreatePhd = () => {
                                     ? "autocomplete-dropdown-container"
                                     : ""
                                 }
+                                style={{ zIndex: 1000 }}
                               >
                                 {/* {loading && <div>Loading...</div>} */}
                                 {suggestions.map((suggestion, index) => {

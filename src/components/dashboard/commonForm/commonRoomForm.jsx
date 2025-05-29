@@ -31,7 +31,6 @@ const CommonRoomform = (props) => {
     { value: 13, name: "Breakfast Area" },
     { value: 17, name: "Dining room" },
     { value: 8, name: "Exterior Front,Sides & Rear" },
-    { value: 27, name: "Exterior Sides& Rear" },
     { value: 28, name: "Foyery Entry" },
     { value: 6, name: "Garage/Carport" },
     { value: 26, name: "Hearth Room" },
