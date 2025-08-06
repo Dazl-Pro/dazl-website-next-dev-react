@@ -133,16 +133,33 @@ const schema = yup.object().shape({
     .required("Zip Code is required")
     .trim()
     .min(3, "Zip Name have atleast 3 characters"),
+  // number: yup
+  //   .string()
+  //   .matches(/^[0-9-]+$/, "Please enter a valid number")
+  //   .required(" company Number is required")
+  //   .trim(),
+  // mobilenumber: yup
+  //   .string()
+  //   .matches(/^[0-9]+$/, "Mobile Number is required")
+  //   .required("Mobile Number is required")
+  //   .trim(),
   number: yup
-    .string()
-    .matches(/^[0-9-]+$/, "Please enter a valid number")
-    .required(" company Number is required")
-    .trim(),
-  mobilenumber: yup
-    .string()
-    .matches(/^[0-9]+$/, "Mobile Number is required")
-    .required("Mobile Number is required")
-    .trim(),
+  .string()
+  .matches(
+    /^\+?[0-9\s-()]+$/,
+    "Please enter a valid phone number (international format accepted)"
+  )
+  .required("Company Number is required")
+  .trim(),
+
+// mobilenumber: yup
+//   .string()
+//   .matches(
+//     /^\+?[0-9\s-()]+$/,
+//     "Please enter a valid mobile number"
+//   )
+//   .required("Mobile Number is required")
+//   .trim(),
   yearofbusiness: yup
     .string()
     .matches(/^[0-9]+$/, "Please enter a valid year")
@@ -151,6 +168,7 @@ const schema = yup.object().shape({
   websiteLink: yup.string().url("Invalid website link").trim(),
   facebookLink: yup.string().url("Invalid Facebook link").trim(),
   Xlink: yup.string().url("Invalid X link").trim(),
+ 
   insuranceCompany: yup.string().trim(),
   contactPerson: yup
     .string()
@@ -163,6 +181,13 @@ const schema = yup.object().shape({
     .oneOf([true], "Please accept the terms and conditions"),
   subscription: yup.string().required("Please select a subscription option"),
   photos: photosSchema,
+  zipCode: yup
+  .string()
+  .required("Zip Code is required")
+  .trim()
+  .min(3, "Zip Name have atleast 3 characters"),
+  serviceRadius: yup.string().required('Service radius is required'),
+
 });
 const defaultValues = {
   firstName: "",
@@ -180,13 +205,15 @@ const defaultValues = {
   websiteLink: "",
   facebookLink: "",
   Xlink: "",
-  insuranceCompany: "",
+ insuranceCompany: "",
   contactPerson: "",
   insuranceNumber: "",
   agreeToTerms: false,
   subscription: "",
   selectServices: [],
   photos: Array.from({ length: 4 }, (_, index) => ({ image: null })),
+  zipCode: "",
+  serviceRadius:""
 };
 const services = [
   { id: 12, name: "Appliances & Repair" },
@@ -253,14 +280,19 @@ const SignupPros = () => {
 
   const [phone, setPhone] = React.useState("");
 
+
+
   const onSubmit = (data) => {
+  
+
     setError();
     dispatch(professionalSignUp({ data, images }))
       .unwrap()
       .then((data) => {
+      
         if (data === undefined) {
         } else {
-          console.log(data);
+        
           localStorage.setItem("token", data.data.token);
           localStorage.setItem("userType", "professional");
           Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
@@ -346,9 +378,8 @@ const SignupPros = () => {
                     render={({ field }) => (
                       <input
                         {...field}
-                        className={` width-input form-control ${
-                          errors.firstName ? "error" : ""
-                        }`}
+                        className={` width-input form-control ${errors.firstName ? "error" : ""
+                          }`}
                         placeholder="First Name*"
                       />
                     )}
@@ -366,9 +397,8 @@ const SignupPros = () => {
                     render={({ field }) => (
                       <input
                         {...field}
-                        className={` width-input form-control ${
-                          errors.lastName ? "error" : ""
-                        }`}
+                        className={` width-input form-control ${errors.lastName ? "error" : ""
+                          }`}
                         placeholder="Last Name*"
                       />
                     )}
@@ -387,9 +417,8 @@ const SignupPros = () => {
                     render={({ field }) => (
                       <input
                         {...field}
-                        className={` width-input form-control ${
-                          errors.email ? "error" : ""
-                        }`}
+                        className={` width-input form-control ${errors.email ? "error" : ""
+                          }`}
                         placeholder="Email address*"
                       />
                     )}
@@ -407,9 +436,8 @@ const SignupPros = () => {
                       <>
                         <input
                           {...field}
-                          className={` width-input form-control ${
-                            errors.password ? "error" : ""
-                          }`}
+                          className={` width-input form-control ${errors.password ? "error" : ""
+                            }`}
                           placeholder="Create Password*"
                           type={showPassword ? "text" : "password"}
                         />
@@ -439,12 +467,11 @@ const SignupPros = () => {
                       <>
                         <input
                           {...field}
-                          className={` width-input form-control ${
-                            errors.confirmPassword &&
-                            watch("password") !== watch("confirmPassword")
+                          className={` width-input form-control ${errors.confirmPassword &&
+                              watch("password") !== watch("confirmPassword")
                               ? "error"
                               : ""
-                          }`}
+                            }`}
                           placeholder="Confirm Password*"
                           type={showConfirmPassword ? "text" : "password"}
                         />
@@ -475,9 +502,8 @@ const SignupPros = () => {
                     render={({ field }) => (
                       <input
                         {...field}
-                        className={` width-input form-control  ${
-                          errors.companyName ? "error" : ""
-                        }`}
+                        className={` width-input form-control  ${errors.companyName ? "error" : ""
+                          }`}
                         placeholder="Company Name *"
                       />
                     )}
@@ -537,9 +563,8 @@ const SignupPros = () => {
                             <input
                               {...getInputProps({
                                 placeholder: "Street Address*",
-                                className: `form-control width-input ${
-                                  errors.streetAddress ? "error" : ""
-                                }`,
+                                className: `form-control width-input ${errors.streetAddress ? "error" : ""
+                                  }`,
                               })}
                             />
                             {/* Show dropdown only if user has typed something and suggestions exist */}
@@ -582,9 +607,8 @@ const SignupPros = () => {
                     render={({ field }) => (
                       <input
                         {...field}
-                        className={` width-input form-control ${
-                          errors.city ? "error" : ""
-                        }`}
+                        className={` width-input form-control ${errors.city ? "error" : ""
+                          }`}
                         placeholder="Company City*"
                       />
                     )}
@@ -600,9 +624,8 @@ const SignupPros = () => {
                     render={({ field }) => (
                       <input
                         {...field}
-                        className={` width-input form-control ${
-                          errors.state ? "error" : ""
-                        }`}
+                        className={` width-input form-control ${errors.state ? "error" : ""
+                          }`}
                         placeholder="State*"
                       />
                     )}
@@ -622,9 +645,8 @@ const SignupPros = () => {
                           pattern="[0-9]*"
                           inputMode="numeric"
                           {...field}
-                          className={` width-input form-control ${
-                            errors.zip ? "error" : ""
-                          }`}
+                          className={` width-input form-control ${errors.zip ? "error" : ""
+                            }`}
                           placeholder="Zip Code*"
                           maxLength={6}
                           onKeyPress={(e) => {
@@ -709,7 +731,7 @@ const SignupPros = () => {
                           //   });
                           // }}
                           onChange={(e) => {
-                            console.log("====>", e);
+                            // console.log("====>", e);
                             // Allow only numbers and dashes
                             const formattedValue = e
                               .replace(/[^0-9-]/g, "") // Remove all non-numeric and non-dash characters
@@ -740,8 +762,8 @@ const SignupPros = () => {
                             borderRadius: "6px",
                           }}
                           inputProps={{
-                            id: "mobile",
-                            name: "mobile",
+                            id: "number", // make sure this matches your schema
+                            name: "number",
                             required: true,
                           }}
                         />
@@ -808,9 +830,8 @@ const SignupPros = () => {
                         <input
                           type="text"
                           {...field}
-                          className={` form-control  ${
-                            errors.yearofbusiness ? "error" : ""
-                          }`}
+                          className={` form-control  ${errors.yearofbusiness ? "error" : ""
+                            }`}
                           placeholder="Year in business*"
                           onKeyPress={(e) => {
                             // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
@@ -843,9 +864,8 @@ const SignupPros = () => {
                           <input
                             type="text"
                             {...field}
-                            className={`form-control ${
-                              errors.websiteLink ? "error" : ""
-                            }`}
+                            className={`form-control ${errors.websiteLink ? "error" : ""
+                              }`}
                             placeholder="Website Link"
                           />
                           {errors.websiteLink && (
@@ -868,9 +888,8 @@ const SignupPros = () => {
                           <input
                             type="text"
                             {...field}
-                            className={`form-control ${
-                              errors.facebookLink ? "error" : ""
-                            }`}
+                            className={`form-control ${errors.facebookLink ? "error" : ""
+                              }`}
                             placeholder="Facebook Link"
                           />
                           {errors.facebookLink && (
@@ -893,14 +912,45 @@ const SignupPros = () => {
                           <input
                             type="text"
                             {...field}
-                            className={`form-control ${
-                              errors.Xlink ? "error" : ""
-                            }`}
+                            className={`form-control ${errors.Xlink ? "error" : ""
+                              }`}
                             placeholder="X Link"
                           />
                           {errors.Xlink && (
                             <p className="text-danger">
                               {errors.Xlink.message}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    />
+                  </div>
+                  {/* zip code */}
+                  <div className={`form-row mb-3`}>
+                    <Controller
+                      name="zipCode"
+                      control={control}
+                      render={({ field }) => (
+                        <>
+                          <input
+                            type="text"
+                             pattern="[0-9]*"
+                          inputMode="numeric"
+                            {...field}
+                            className={`form-control ${errors.zipCode ? "error" : ""
+                              }`}
+                            placeholder="Zip Code"
+                            maxLength={6}
+                            onKeyPress={(e) => {
+                              const isValidKey = /^[0-9]$/i.test(e.key);
+                              if (!isValidKey) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                          {errors.zipCode && (
+                            <p className="text-danger">
+                              {errors.zipCode.message}
                             </p>
                           )}
                         </>
@@ -919,9 +969,8 @@ const SignupPros = () => {
                           <input
                             type="text"
                             {...field}
-                            className={`form-control ${
-                              errors.insuranceCompany ? "error" : ""
-                            }`}
+                            className={`form-control ${errors.insuranceCompany ? "error" : ""
+                              }`}
                             placeholder="Insurance Company"
                           />
                           {/* {errors.number && <p className='text-danger'>{errors.number.message}</p>} */}
@@ -938,9 +987,8 @@ const SignupPros = () => {
                           <input
                             type="text"
                             {...field}
-                            className={`form-control ${
-                              errors.contactPerson ? "error" : ""
-                            }`}
+                            className={`form-control ${errors.contactPerson ? "error" : ""
+                              }`}
                             placeholder="Contact Person or Agent"
                             onKeyPress={(e) => {
                               const isValidInput = /^[a-zA-Z0-9]*$/.test(e.key);
@@ -964,9 +1012,8 @@ const SignupPros = () => {
                             country={"us"}
                             type="text"
                             {...field}
-                            className={` ${
-                              errors.insuranceNumber ? "error" : ""
-                            }`}
+                            className={` ${errors.insuranceNumber ? "error" : ""
+                              }`}
                             placeholder="Contact Number "
                             onKeyPress={(e) => {
                               // Allow only numeric values and specific keys (e.g., Backspace, Delete, Arrow keys)
@@ -1004,6 +1051,29 @@ const SignupPros = () => {
                         </>
                       )}
                     />
+                  </div>
+                  <div className={`form-row mb-3 `}>
+                    <Controller
+                      name="serviceRadius"
+                      control={control}
+                      render={({ field }) => (
+                        <select
+                          {...field}
+                          className={`form-control ${errors.serviceRadius ? "error" : ""}`}
+                        >
+                          <option value="">Select Radius*</option>
+                          <option value="10">10 miles</option>
+                          <option value="20">20 miles</option>
+                          <option value="30">30 miles</option>
+                          <option value="50">50 miles</option>
+                          <option value="100">100 miles</option>
+                          <option value="0">No radius (serve all areas)</option>
+                        </select>
+                      )}
+                    />
+                    {errors.serviceRadius && (
+                      <p className="text-danger mt-2">{errors.serviceRadius.message}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1046,11 +1116,10 @@ const SignupPros = () => {
                         Photo {index + 1}
                         <input
                           type="file"
-                          className={`form-control ${
-                            errors.photos && errors?.photos[index]?.file
+                          className={`form-control ${errors.photos && errors?.photos[index]?.file
                               ? "error"
                               : ""
-                          }`}
+                            }`}
                           {...register(`photos.${index}.file`)}
                           accept="image/*"
                           onChange={(e) => {
@@ -1074,9 +1143,8 @@ const SignupPros = () => {
                         control={
                           <Checkbox
                             {...field}
-                            className={`p-0 me-2 ${
-                              errors.agreeToTerms ? "errorTerm" : ""
-                            } `}
+                            className={`p-0 me-2 ${errors.agreeToTerms ? "errorTerm" : ""
+                              } `}
                           />
                         }
                         label="Click here to accept"
@@ -1117,9 +1185,8 @@ const SignupPros = () => {
                           value="monthly"
                           control={
                             <Radio
-                              className={`p-0 me-2  ${
-                                errors.subscription ? "errorSub" : ""
-                              }`}
+                              className={`p-0 me-2  ${errors.subscription ? "errorSub" : ""
+                                }`}
                             />
                           }
                           label="$50 per month"

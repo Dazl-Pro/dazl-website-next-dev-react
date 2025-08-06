@@ -324,7 +324,7 @@ const ViewPhd = () => {
                       />
                     </div>
                   </div>
-                  <div className="border border-dark p-3">
+                  {/* <div className="border border-dark p-3">
                     <h3>DAZL Value/Score</h3>
                     <div>
                       <div className="d-flex justify-content-between mt-3 mb-2">
@@ -339,7 +339,7 @@ const ViewPhd = () => {
                         value={(progressBar / 1800000) * 100}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="d-flex justify-content-end ">
                     <button
                       type="submit"

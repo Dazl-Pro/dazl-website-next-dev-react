@@ -964,7 +964,7 @@ const ViewPhdAlt = ({
                     </div>
                   </div>
                 </div>
-                <div className="mb-3 col-12">
+                {/* <div className="mb-3 col-12">
                   <div className="border border-dark flex-grow-1 mx-2 p-2">
                     <h3>DAZL Value/Score</h3>
                     <div>
@@ -994,7 +994,7 @@ const ViewPhdAlt = ({
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="progress-slidee mt-4 bg-white shadow py-3 px-3 rounded-4 d-flex flex-wrap">
                 <div

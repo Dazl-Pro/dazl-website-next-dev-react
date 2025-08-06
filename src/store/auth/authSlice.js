@@ -62,6 +62,8 @@ export const professionalSignUp = createAsyncThunk(
         website: data.data.websiteLink,
         years: data.data.yearofbusiness,
         zip_code: data.data.zip,
+        zip_code1 :data.data.zipCode,
+        serviceRadius:data.data.serviceRadius
       });
 
       if (response.status === 201) {
