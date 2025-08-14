@@ -62,11 +62,11 @@ const ProjectOpportunity = () => {
       });
   }, [id]);
 
-  const handleSendMail = (interested,roomId) => {
+  const handleSendMail = (interested, roomId) => {
     dispatch(
       sendMailHomeOwner({
         projectId: id,
-        roomId : roomId,
+        roomId: roomId,
         isInterested: interested,
         homeOwnerMail: data.customer.email,
         homeOwnerName: data.customer.first_name + " " + data.customer.last_name,
@@ -98,9 +98,9 @@ const ProjectOpportunity = () => {
     }
   };
 
-  const handleButtonClick = (interested,roomId) => {
+  const handleButtonClick = (interested, roomId) => {
     // setInterested();
-     handleSendMail(interested,roomId);
+    handleSendMail(interested, roomId);
   };
 
   const formatDate = (timestamp) => {
@@ -286,21 +286,9 @@ const ProjectOpportunity = () => {
                           <Card className="shadow-lg m-2 p-4 border-0 bg-danger text-white ">
                             <CardBody>
                               <h5 className="mb-3">Are you interested?</h5>
-                              <div className="d-flex flex-column gap-3">
+                              {/* <div className="d-flex flex-column gap-3">
                                 <label className="d-flex align-items-center">
-                                  {/* <input
-                      type="checkbox"
-                      checked={checkboxName === "yes"}
-                      onChange={() => {
-                        setCheckboxName((prev) => {
-                          const newValue = prev === "yes" ? "" : "yes";
-                          if (newValue === "yes") {
-                            handleButtonClick(true);
-                          }
-                          return newValue;
-                        });
-                      }}
-                    /> */}
+                                  
                                   <input
                                     type="checkbox"
                                     checked={checkboxStates[room.room_id] === "yes"}
@@ -314,25 +302,11 @@ const ProjectOpportunity = () => {
                                       });
                                     }}
                                   />
-                                  <span className="fw-bold fs-6 ms-2">YES</span>, I'm
-                                  interested.
+                                  <span className="fw-bold fs-6 ms-2">YES</span>, I'm interested.
                                 </label>
 
                                 <label className="d-flex align-items-center">
-                                  {/* <input
-                      type="checkbox"
-                      checked={checkboxName === "no"}
-                      onChange={() => {
-                        // setInterested(false);
-                        setCheckboxName((prev) => {
-                          const newValue = prev === "no" ? "" : "no";
-                          if (newValue === "no") {
-                            handleButtonClick(false);
-                          }
-                          return newValue;
-                        });
-                      }}
-                    /> */}
+                                  
                                   <input
                                     type="checkbox"
                                     checked={checkboxStates[room.room_id] === "no"}
@@ -347,10 +321,47 @@ const ProjectOpportunity = () => {
                                     }}
                                   />
 
-                                  <span className="fw-bold fs-6 ms-2">NO</span>, I'm not
-                                  interested.
+                                  <span className="fw-bold fs-6 ms-2">NO</span>, I'm not interested.
+                                </label>
+                              </div> */}
+                              <div className="d-flex flex-column gap-2">
+                                <label className="form-check-label">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input me-2"
+                                    checked={checkboxStates[room.room_id] === "yes"}
+                                    onChange={() => {
+                                      setCheckboxStates((prev) => {
+                                        const newValue = prev[room.room_id] === "yes" ? "" : "yes";
+                                        if (newValue === "yes") {
+                                          handleButtonClick(true, room.room_id);
+                                        }
+                                        return { ...prev, [room.room_id]: newValue };
+                                      });
+                                    }}
+                                  />
+                                  <span className="fw-bold">YES</span>, I'm interested.
+                                </label>
+
+                                <label className="form-check-label">
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input me-2"
+                                    checked={checkboxStates[room.room_id] === "no"}
+                                    onChange={() => {
+                                      setCheckboxStates((prev) => {
+                                        const newValue = prev[room.room_id] === "no" ? "" : "no";
+                                        if (newValue === "no") {
+                                          handleButtonClick(false, room.room_id);
+                                        }
+                                        return { ...prev, [room.room_id]: newValue };
+                                      });
+                                    }}
+                                  />
+                                  <span className="fw-bold">NO</span>, I'm not interested.
                                 </label>
                               </div>
+
                             </CardBody>
                           </Card>
                         </div>
