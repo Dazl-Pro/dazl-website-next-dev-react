@@ -127,11 +127,11 @@ const CommonSidebar = ({ callback }) => {
             </Link>
             <Link
               className={`btn text-start sidebar-links ${
-                location.pathname === "/company/companyProfile"
+                location.pathname === "/company/companyProfile/company-profile-view"
                   ? "active-link"
                   : ""
               }`}
-              to="/company/companyProfile"
+              to="/company/companyProfile/company-profile-view"
               onClick={handleClick}
             >
               <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">

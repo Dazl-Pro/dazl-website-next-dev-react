@@ -109,7 +109,9 @@ const ProjectOpportunity = lazy(() =>
 const companyProfile = lazy(() =>
   import("../dashboard/professionalDashboard/profile/companyProfile")
 );
-
+const CompanyProfileView = lazy(() =>
+  import("../dashboard/professionalDashboard/edit-profile/edit-profile.jsx")
+);
 // const drawerWidth = 240;
 
 // Styled components (unchanged)
@@ -523,6 +525,11 @@ const Header = () => {
                             exact
                             path="/company/companyProfile"
                             element={<RouteGuard Components={companyProfile} />}
+                          />
+                           <Route
+                            exact
+                            path="/company/companyProfile/company-profile-view"
+                            element={<RouteGuard Components={CompanyProfileView} />}
                           />
                           <Route
                             exact

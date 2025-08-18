@@ -13,7 +13,7 @@ import {
 import { uploadImageAuth } from "../../../../store/auth/authSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PhoneInput from "react-phone-input-2";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import "react-phone-input-2/lib/bootstrap.css";
 
 const defaultValues = {
@@ -76,8 +76,14 @@ const CompanyProfile = () => {
   const dispatch = useDispatch();
   const Selector = useSelector((state) => state.dashboardSlice);
   const companydata = Selector.data.companydata;
+  const location = useLocation();
+  const isEditRoute = location.pathname === "/company/companyProfile";
 
-  const [disable, setDisable] = React.useState(false);
+  // const [disable, setDisable] = React.useState(false);
+  const [disable, setDisable] = React.useState(isEditRoute);
+  useEffect(() => {
+    setDisable(isEditRoute);
+  }, [isEditRoute]);
   const [images, setImages] = useState([]);
   const [phone, setPhone] = React.useState("");
 
@@ -103,10 +109,9 @@ const CompanyProfile = () => {
     defaultValues,
     resolver: yupResolver(schema),
   });
-
+   const navigate = useNavigate();
   const onSubmit = (data) => {
-    console.log("-------------ssss------", data);
-    console.log("-------------ssss------", images);
+  
 
     if (disable) {
       dispatch(UpdateCompanyProfile({ values: data, images }));
@@ -123,6 +128,8 @@ const CompanyProfile = () => {
       );
       reset();
       setDisable(false);
+      navigate("/company/companyProfile/company-profile-view");
+    
     } else {
       setDisable(true);
     }
@@ -136,6 +143,7 @@ const CompanyProfile = () => {
       setDisable(true); // Set disable to true when an image is deleted
     }
   };
+ 
 
   const uploadImage = (e, index) => {
     const file = e.target.files[0];
@@ -180,368 +188,365 @@ const CompanyProfile = () => {
   }, [companydata, disable]);
 
   return (
-    <div className="py-0">
-      <div className="">
-        <h2 className=" text-start mb-4 pb-4 border-bottom h3">
-          Company Profile
-        </h2>
-        <div className="">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="d-flex flex-row justify-content-between align-items-center">
+    <div className="container py-3">
+    <div className="card shadow-sm border-0 rounded-4">
+      <div className="card-header">
+      <h2 className="h4 mb-4 border-bottom pb-2">Company Profile</h2>
+      </div>
+      <div className="card-body">
+  
+  
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Row 1: Company Name + Insurance Contact */}
+          <div className="row g-3">
+            <div className="col-md-6">
               <Controller
                 name="company_name"
                 control={control}
                 render={({ field }) => (
-                  <label className="bg-light p-2 m-3 rounded-4 w-100">
-                    Name:
+                  <div className="form-group">
+                    <label className="fw-semibold">Company Name</label>
                     <input
                       {...field}
                       disabled={!disable}
-                      className={` form-control width-input ${
-                        errors.companydata?.company_name ? "error" : ""
+                      className={`form-control ${
+                        errors.companydata?.company_name ? "is-invalid" : ""
                       }`}
-                      placeholder="Enter your Company-name"
+                      placeholder="Enter your Company Name"
                     />
-                  </label>
+                  </div>
                 )}
               />
-
-              {/* <h3 className="text-capitalize">Name: {companydata?.company_name}</h3> */}
-              <div>
-                {companydata?.website && (
-                  <a
-                    href={companydata.website}
-                    target="_blank"
-                    className="btn btn-sm btn-danger m-1"
-                  >
-                    Website
-                  </a>
-                )}
-                {companydata?.facebook && (
-                  <a
-                    href={companydata.facebook}
-                    target="_blank"
-                    className="btn btn-sm btn-danger m-1"
-                  >
-                    <svg
-                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="FacebookIcon"
-                    >
-                      <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5A3.5 3.5 0 0 0 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9a1 1 0 0 1 1-1h2V5z"></path>
-                    </svg>
-                  </a>
-                )}
-                {companydata?.twitter && (
-                  <a
-                    href={companydata.twitter}
-                    target="_blank"
-                    className="btn btn-sm btn-danger m-1"
-                  >
-                    <svg
-                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-                      focusable="false"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-testid="XIcon"
-                    >
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                    </svg>
-                  </a>
-                )}
-              </div>
-            </div>
-
-            <div className="row">
-              <p className="col-md-4">
-                <div className="col-inner bg-light p-3 rounded-3">
-                  <Controller
-                    name="address"
-                    control={control}
-                    render={({ field }) => (
-                      <label className="bg-light p-2 rounded-4 w-100">
-                        Address:
-                        <input
-                          {...field}
-                          disabled={!disable}
-                          className={` form-control width-input ${
-                            errors.companydata?.address ? "error" : ""
-                          }`}
-                          placeholder="Enter your address"
-                        />
-                      </label>
-                    )}
-                  />
-                  {/* // <span className="d-block fw-bold">Address:</span>
-                  // <span>{companydata?.address}</span> */}
-                </div>
-              </p>
-              <p className="col-md-4">
-                <div className="col-inner bg-light p-3 rounded-3">
-                  <Controller
-                    name="company_city"
-                    control={control}
-                    render={({ field }) => (
-                      <label className="bg-light p-2 rounded-4 w-100">
-                        City:
-                        <input
-                          {...field}
-                          disabled={!disable}
-                          className={` form-control width-input ${
-                            errors.companydata?.company_city ? "error" : ""
-                          }`}
-                          placeholder="Enter your city"
-                        />
-                      </label>
-                    )}
-                  />
-                  {/* <span className="d-block fw-bold">City:</span>
-                  <span>{companydata?.city}</span> */}
-                </div>
-              </p>
-              <p className="col-md-4">
-                <div className="col-inner bg-light p-3 rounded-3">
-                  <Controller
-                    name="state"
-                    control={control}
-                    render={({ field }) => (
-                      <label className="bg-light p-2 rounded-4 w-100">
-                        State:
-                        <input
-                          {...field}
-                          disabled={!disable}
-                          className={` form-control width-input ${
-                            errors.companydata?.state ? "error" : ""
-                          }`}
-                          placeholder="Enter your state"
-                        />
-                      </label>
-                    )}
-                  />
-                  {/* <span className="d-block fw-bold">State:</span>
-                  <span>{companydata?.state}</span> */}
-                </div>
-              </p>
-            </div>
-            <div className="row mb-3 mt-3">
-              {images?.map((photo, index) => (
-                <div key={index} className="col-md-3 mb-3 text-center  ">
-                  <div
-                    className="col-inner rounded-3 bg-light d-flex flex-column align-items-center justify-content-center h-100 "
-                    style={{
-                      maxHeight: "100%",
-                      position: "relative",
-                    }}
-                  >
-                    {photo !== "undefined" ? (
-                      <>
-                        <img
-                          src={photo}
-                          alt="Profile"
-                          className="rounded-full"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                          }}
-                        />
-                        {disable && (
-                          <button
-                            type="button"
-                            class="btn btn-light bg-light-red border-danger p-1 space delete-button"
-                            onClick={() => handleDelete(index)}
-                            style={{
-                              position: "absolute",
-                              top: "10px",
-                              right: "10px",
-                            }}
-                          >
-                            <DeleteIcon />
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      ""
-                    )}
-                    {disable && (
-                      <>
-                        {photo === "undefined" ? "Image Not Uploaded" : ""}
-                        <input
-                          type="file"
-                          className={`form-control mt-2 form-image ${
-                            errors[`image${index + 1}`] &&
-                            errors[`image${index + 1}`].value
-                              ? "error"
-                              : ""
-                          }`}
-                          accept=".png, .jpg, .jpeg"
-                          onChange={(e) => {
-                            uploadImage(e, index);
-                          }}
-                        />
-                      </>
-                    )}
+                <div className="">
+              <Controller
+                name="address"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Address</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.companydata?.address ? "is-invalid" : ""
+                      }`}
+                      placeholder="Enter your address"
+                    />
                   </div>
+                )}
+              />
+            </div>
+            </div>
+  
+            <div className="col-md-6">
+              <Controller
+                name="insuranceContactNumber"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Insurance Contact</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.insuranceContactNumber ? "is-invalid" : ""
+                      }`}
+                      placeholder="Insurance Contact"
+                    />
+                  </div>
+                )}
+              />
+                    {/* Social Links */}
+          <div className="mb-4 mt-2">
+            <h6 className="fw-bold line">Company Links</h6>
+            <div className="d-flex flex-wrap gap-2">
+              {companydata?.website && (
+                <a
+                  href={companydata.website}
+                  target="_blank"
+                  className="btn btn-outline-primary btn-sm btn-bg"
+                >
+                  Website
+                </a>
+              )}
+              {companydata?.facebook && (
+                <a
+                  href={companydata.facebook}
+                  target="_blank"
+                  className="btn btn-outline-primary btn-sm btn-bg"
+                >
+
+                  <svg
+                     class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                     focusable="false"
+                     aria-hidden="true"
+                     viewBox="0 0 24 24"
+                     data-testid="FacebookIcon"
+                    >
+                     <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5A3.5 3.5 0 0 0 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9a1 1 0 0 1 1-1h2V5z"></path>
+                    </svg>
+
+                </a>
+              )}
+              {companydata?.twitter && (
+                <a
+                  href={companydata.twitter}
+                  target="_blank"
+                  className="btn btn-outline-primary btn-sm btn-bg"
+                >
+                    <svg
+                     class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                     focusable="false"
+                     aria-hidden="true"
+                     viewBox="0 0 24 24"
+                     data-testid="XIcon"
+                    >
+                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                    </svg>
+                </a>
+              )}
+            </div>
+          </div>
+            </div>
+          </div>
+  
+          {/* Row 2: Address + City + State */}
+          <div className="row g-3 mb-3">
+            {/* <div className="col-md-4">
+              <Controller
+                name="address"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Address</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.companydata?.address ? "is-invalid" : ""
+                      }`}
+                      placeholder="Enter your address"
+                    />
+                  </div>
+                )}
+              />
+            </div> */}
+  
+            <div className="col-md-6">
+              <Controller
+                name="company_city"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">City</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.companydata?.company_city ? "is-invalid" : ""
+                      }`}
+                      placeholder="Enter your city"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+  
+            <div className="col-md-6">
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">State</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.companydata?.state ? "is-invalid" : ""
+                      }`}
+                      placeholder="Enter your state"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+          </div>
+  
+          {/* Row 3: Business Years + Phone */}
+          <div className="row g-3 mb-3">
+            <div className="col-md-6">
+              <Controller
+                name="yearofbusiness"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Years in Business</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.yearofbusiness ? "is-invalid" : ""
+                      }`}
+                      placeholder="Years in Business"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+  
+            <div className="col-md-6">
+              <div className="form-group">
+                <label className="fw-semibold">Phone Number</label>
+                <PhoneInput
+                  disabled={!disable}
+                  country={"us"}
+                  enableSearch={true}
+                  value={phone}
+                  onChange={(phone) => {
+                    setPhone(phone);
+                    setValue("phoneNumber", phone, { shouldValidate: true });
+                  }}
+                  placeholder="+1 (545) 674-3543"
+                  inputStyle={{
+                    width: "100%",
+                    height: "40px",
+                  }}
+                  containerStyle={{
+                    border: "1px solid #ced4da",
+                    borderRadius: "6px",
+                  }}
+                />
+                {errors?.phoneNumber && (
+                  <p className="text-danger small">
+                    {errors?.phoneNumber?.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+  
+          {/* Row 4: Email + Insurance */}
+          <div className="row g-3 mb-3">
+            <div className="col-md-6">
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Email Address</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.email ? "is-invalid" : ""
+                      }`}
+                      placeholder="Email Address"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+  
+            <div className="col-md-6">
+              <Controller
+                name="insuranceCertificate"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Insurance Certificate</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.insuranceCertificate ? "is-invalid" : ""
+                      }`}
+                      placeholder="Insurance Certificate"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+          </div>
+  
+          {/* Row 5: Insurance Number */}
+          <div className="row g-3 mb-4">
+            <div className="col-md-12">
+              <Controller
+                name="insuranceNumber"
+                control={control}
+                render={({ field }) => (
+                  <div className="form-group">
+                    <label className="fw-semibold">Insurance Number</label>
+                    <input
+                      {...field}
+                      disabled={!disable}
+                      className={`form-control ${
+                        errors.insuranceNumber ? "is-invalid" : ""
+                      }`}
+                      placeholder="Insurance Number"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+          </div>
+  
+    
+  
+          {/* Images */}
+          <div className="row mb-4">
+            {images?.map((photo, index) => (
+              <div key={index} className="col-lg-3  col-md-4 col-sm-6 mb-3">
+                <div className="border rounded-3 p-2 text-center position-relative min-h">
+                  {photo !== "undefined" ? (
+                    <>
+                      <img
+                        src={photo}
+                        alt="Profile"
+                        className="img-fluid rounded-3"
+                      />
+                      {disable && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                          onClick={() => handleDelete(index)}
+                        >
+                          <DeleteIcon />
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    "Image Not Uploaded"
+                  )}
+                  {disable && (
+                    <input
+                      type="file"
+                      className="form-control mt-2"
+                      accept=".png, .jpg, .jpeg"
+                      onChange={(e) => uploadImage(e, index)}
+                    />
+                  )}
                 </div>
-              ))}
-            </div>
-
-            <div className="row">
-              <div className={`form-row mb-3 col-md-6`}>
-                <Controller
-                  name="yearofbusiness"
-                  control={control}
-                  render={({ field }) => (
-                    <label className="bg-light p-3 rounded-4 w-100">
-                      Years In Business
-                      <input
-                        {...field}
-                        disabled={!disable}
-                        className={` form-control width-input ${
-                          errors.firstName ? "error" : ""
-                        }`}
-                        placeholder="Years In Business"
-                      />
-                    </label>
-                  )}
-                />
               </div>
-              <div className={`form-row mb-3 col-md-6 `}>
-                <label className="bg-light p-3 rounded-4 w-100">
-                  Phone Number
-                  <PhoneInput
-                    disabled={!disable}
-                    country={"us"}
-                    enableSearch={true}
-                    value={phone}
-                    onChange={(phone) => {
-                      setPhone(phone);
-                      setValue("phoneNumber", phone, { shouldValidate: true });
-                    }}
-                    placeholder="+1 (545) 674-3543"
-                    inputStyle={{
-                      paddingTop: 8,
-                      paddingBottom: 8,
-                      width: "100%",
-                      border: 0,
-
-                      color: "black",
-                      background: disable ? "#fff" : "#e9ecef",
-                      borderRadius: "6px",
-                      height: "40px",
-                    }}
-                    buttonStyle={{
-                      borderTopLeftRadius: "10px",
-                      borderBottomLeftRadius: "10px",
-                    }}
-                    containerStyle={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                    }}
-                    inputProps={{
-                      id: "mobile",
-                      name: "mobile",
-                      required: true,
-                    }}
-                  />
-                  {errors?.phoneNumber && (
-                    <p className="text-danger">
-                      {errors?.phoneNumber?.message}
-                    </p>
-                  )}
-                </label>
-              </div>
-              <div className={`form-row mb-3 col-md-6 `}>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <label className="bg-light p-3 rounded-4 w-100">
-                      Email Address
-                      <input
-                        {...field}
-                        disabled={!disable}
-                        className={` form-control  width-input ${
-                          errors.email ? "error" : ""
-                        }`}
-                        placeholder="Email Address"
-                      />
-                    </label>
-                  )}
-                />
-              </div>
-              <div className={`form-row mb-3 col-md-6`}>
-                <Controller
-                  name="insuranceCertificate"
-                  control={control}
-                  render={({ field }) => (
-                    <label className="bg-light p-3 rounded-4 w-100">
-                      Company Name
-                      <input
-                        {...field}
-                        disabled={!disable}
-                        className={` form-control  width-input  ${
-                          errors.companyName ? "error" : ""
-                        }`}
-                        placeholder="Insurance Certificate"
-                      />
-                    </label>
-                  )}
-                />
-              </div>
-              <div className={`form-row mb-3 col-md-6 `}>
-                <Controller
-                  name="insuranceContactNumber"
-                  control={control}
-                  render={({ field }) => (
-                    <label className="bg-light p-3 rounded-4 w-100">
-                      Insurance Contact
-                      <input
-                        {...field}
-                        disabled={!disable}
-                        className={` form-control  width-input${
-                          errors.lastName ? "error" : ""
-                        }`}
-                        placeholder="Insurance Contact"
-                      />
-                    </label>
-                  )}
-                />
-              </div>
-              <div className={`form-row mb-3 col-md-6 `}>
-                <Controller
-                  name="insuranceNumber"
-                  control={control}
-                  render={({ field }) => (
-                    <label className="bg-light p-3 rounded-4 w-100">
-                      Insurance Number
-                      <input
-                        {...field}
-                        disabled={!disable}
-                        className={` form-control width-input${
-                          errors.lastName ? "error" : ""
-                        }`}
-                        placeholder="Agent Phone Number "
-                      />
-                    </label>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="d-flex justify-content-center align-items-center">
-              <button
-                type="submit"
-                className={`btn px-5 ${disable ? "btn-success" : "btn-danger"}`}
-              >
-                {disable ? "Save" : "Edit"}
-              </button>
-            </div>
-          </form>
-        </div>
+            ))}
+          </div>
+  
+          {/* Submit */}
+          <div className="text-center">
+            <button
+              type="submit"
+            
+              className={`btn px-5 ${disable ? "btn-success" : "btn-danger"}`}
+            >
+              {disable ? "Save" : "Edit"}
+            </button>
+          </div>
+        </form>
+        
       </div>
     </div>
+  </div>
   );
 };
 

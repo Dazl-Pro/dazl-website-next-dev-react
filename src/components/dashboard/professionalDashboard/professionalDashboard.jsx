@@ -60,7 +60,7 @@ const ProfessionalDashboard = () => {
               className="btn btn-primary mw-200px w-100  mx-1 mb"
               onClick={() => (
                 dispatch(getCompanyProfile(userId)),
-                navigate("/company/companyProfile")
+                navigate("/company/companyProfile/company-profile-view")
               )}
               style={{ color: "white" }}
             >
