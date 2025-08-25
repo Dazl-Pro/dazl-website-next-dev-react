@@ -185,6 +185,7 @@ const CompanyProfile = () => {
     if (companydata.length === 0) {
       dispatch(getCompanyProfile(userId));
     }
+    
   }, [companydata, disable]);
 
   return (
@@ -261,7 +262,7 @@ const CompanyProfile = () => {
             <h6 className="fw-bold line">Company Links</h6>
             <div className="d-flex flex-wrap gap-2">
               {companydata?.website && (
-                <a
+                <a 
                   href={companydata.website}
                   target="_blank"
                   className="btn btn-outline-primary btn-sm btn-bg"
@@ -448,7 +449,7 @@ const CompanyProfile = () => {
               />
             </div>
   
-            <div className="col-md-6">
+            {/* <div className="col-md-6">
               <Controller
                 name="insuranceCertificate"
                 control={control}
@@ -466,7 +467,7 @@ const CompanyProfile = () => {
                   </div>
                 )}
               />
-            </div>
+            </div> */}
           </div>
   
           {/* Row 5: Insurance Number */}

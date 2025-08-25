@@ -182,12 +182,14 @@ const schema = yup.object().shape({
   subscription: yup.string().required("Please select a subscription option"),
   photos: photosSchema,
   zipCode: yup
-  .string()
-  .required("Zip Code is required")
-  .trim()
-  .min(3, "Zip Name have atleast 3 characters"),
+  .string(),
+  // .required("Zip Code is required")
+  // .trim()
+  // .min(3, "Zip Name have atleast 3 characters"),
+  
   serviceRadius: yup.string().required('Service radius is required'),
-
+ zipCodeWorkArea: yup
+  .string(),
 });
 const defaultValues = {
   firstName: "",
@@ -213,6 +215,7 @@ const defaultValues = {
   selectServices: [],
   photos: Array.from({ length: 4 }, (_, index) => ({ image: null })),
   zipCode: "",
+  zipCodeWorkArea:"",
   serviceRadius:""
 };
 const services = [
@@ -289,15 +292,15 @@ const SignupPros = () => {
     dispatch(professionalSignUp({ data, images }))
       .unwrap()
       .then((data) => {
-      
         if (data === undefined) {
         } else {
+          console.log(data)
         
-          localStorage.setItem("token", data.data.token);
-          localStorage.setItem("userType", "professional");
-          Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
-          navigate("/company/professional");
-          window.open(data.data.payment_url);
+          // localStorage.setItem("token", data.data.token);
+          // localStorage.setItem("userType", "professional");
+          // Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
+          // navigate("/company/professional");
+          // window.open(data.data.payment_url);
         }
       });
 
@@ -358,7 +361,7 @@ const SignupPros = () => {
           <h6 className="text-center underline-red">
             <span>DAZL IS FOR</span>
           </h6>
-          <h2>Builders.Remodelers and Service Providers</h2>
+          <h2>  </h2>
           <p>
             Dazl is an online tool that enables service pros to streamline their
             project requests and to evaluate opportunities more selectively.
@@ -666,6 +669,7 @@ const SignupPros = () => {
                     <p className="text-danger mt-2">{errors.zip.message}</p>
                   )}
                 </div>
+                
                 <div className={`form-row col-md-4 mb-3`}>
                   <Controller
                     name="number"
@@ -951,6 +955,37 @@ const SignupPros = () => {
                           {errors.zipCode && (
                             <p className="text-danger">
                               {errors.zipCode.message}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    />
+                  </div>
+                  <div className={`form-row mb-3`}>
+                    <Controller
+                      name="zipCodeWorkArea"
+                      control={control}
+                      render={({ field }) => (
+                        <>
+                          <input
+                            type="text"
+                             pattern="[0-9]*"
+                          inputMode="numeric"
+                            {...field}
+                            className={`form-control ${errors.zipCodeWorkArea ? "error" : ""
+                              }`}
+                            placeholder="Work area Zip Code"
+                            maxLength={6}
+                            onKeyPress={(e) => {
+                              const isValidKey = /^[0-9]$/i.test(e.key);
+                              if (!isValidKey) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                          {errors.zipCodeWorkArea && (
+                            <p className="text-danger">
+                              {errors.zipCodeWorkArea.message}
                             </p>
                           )}
                         </>

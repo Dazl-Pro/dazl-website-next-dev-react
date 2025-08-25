@@ -48,7 +48,10 @@ const CompanyProfileView = () => {
         // setValue("insuranceCertificate", companydata?.insurance_certificate ?? "");
         if (companydata.length === 0) {
             dispatch(getCompanyProfile(userId));
+   
         }
+        {console.log('Facebook URL:', companydata?.facebook)}
+{console.log('Twitter URL:', companydata?.twitter)}
     }, [companydata, disable]);
     const navigate = useNavigate();
     const handleButtonClick = () => {
@@ -57,6 +60,23 @@ const CompanyProfileView = () => {
         navigate("/company/companyProfile");
 
     };
+    const formatPhoneNumber=(phone)=>{
+        if(!phone){
+            return "Not Provided"
+        }
+    const cleaned = phone.replace(/\D/g, '');
+    let formatted="";
+        for(let i =0;i<cleaned.length;i++){
+            if(i>0 && i%3===0){
+                formatted += "-";
+            }
+                    formatted += cleaned[i];
+
+
+        }
+            return formatted;
+
+    }
     return (
         <div className="container py-3">
             <div className="card shadow-sm border-0 rounded-4">
@@ -79,7 +99,6 @@ const CompanyProfileView = () => {
                                 <p className="mb-1  text-start">
                                     <span className="fw-semibold"> Insurance Contact Number:</span> {companydata?.insurance_contact_number}
                                 </p>
-
 
                                 <div className="mb-4 mt-2">
                                     <h6 className="fw-bold line d-flex align-items-center">Company Links <span className="ms-2">{companydata?.website && (
@@ -106,9 +125,10 @@ const CompanyProfileView = () => {
                                             <a
                                                 href={companydata.facebook}
                                                 target="_blank"
-                                                className="btn btn-outline-primary btn-sm btn-bg"
+                                                className="btn btn-outline-primary flex justify-center items-center
+ btn-sm btn-bg"
+                                                 
                                             >
-
                                                 <svg
                                                     class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
                                                     focusable="false"
@@ -155,7 +175,7 @@ const CompanyProfileView = () => {
                             </div>
                             <div className="col-md-4">
                                 <p className="mb-1">
-                                    <span className="fw-semibold">Number:</span> {companydata?.phone || "Not provided"}
+                                    <span className="fw-semibold">Number:</span>{formatPhoneNumber(companydata?.phone)}
                                 </p>
                             </div>
                             <div className="col-md-4">

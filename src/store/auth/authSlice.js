@@ -63,6 +63,7 @@ export const professionalSignUp = createAsyncThunk(
         years: data.data.yearofbusiness,
         zip_code: data.data.zip,
         zip_code1 :data.data.zipCode,
+        zip_code_Work:data.data.zipCodeWorkArea,
         serviceRadius:data.data.serviceRadius
       });
 
