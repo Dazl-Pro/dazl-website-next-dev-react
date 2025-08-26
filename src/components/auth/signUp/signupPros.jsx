@@ -294,13 +294,13 @@ const SignupPros = () => {
       .then((data) => {
         if (data === undefined) {
         } else {
-          console.log(data)
+       
         
-          // localStorage.setItem("token", data.data.token);
-          // localStorage.setItem("userType", "professional");
-          // Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
-          // navigate("/company/professional");
-          // window.open(data.data.payment_url);
+          localStorage.setItem("token", data.data.token);
+          localStorage.setItem("userType", "professional");
+          Toastify({ data: "success", msg: `Welcome ${data.data.first_name}` });
+          navigate("/company/professional");
+          window.open(data.data.payment_url);
         }
       });
 
