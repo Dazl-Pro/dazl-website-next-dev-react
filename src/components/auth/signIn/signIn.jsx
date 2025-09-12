@@ -9,7 +9,7 @@ const cardData = [
     bgImage: "/images/shrinkCardimages/realtorBG.jpg",
     link: "/login/realtor",
     title: "DAZL IS FOR",
-    subTitle: "real estate pros",
+    subTitle: "real estate agents",
     login: "Log-In",
     pTitle: "REAL ESTATE PROFESSIONALS",
     p1: "For sellers' agents particularly, we know the work you do requires you to pivot quickly and to call on all your resources to craft and finalize the deal. Property roadblocks, like needed repairs or improvements, can impact the number of days on-market as well as the contract value. And it can consume your time and your resources.",
@@ -22,7 +22,7 @@ const cardData = [
     subTitle: "service pros",
     login: "Log-In",
     pTitle: "SERVICE PROFESSIONALS",
-    p1: "Dazl is an online tool that enables service pros to streamline their project requests and to evaluate opportunities more selectively. Dazl's project opportunity pipeline is populated through two channels:",
+    p1: "Dazl is an online tool that enables service pros to streamline their project requests and to evaluate opportunities more selectively. Dazl's project opportunity pipeline is populated through two channels:real estate professionals & homeowners",
   },
 
   {
