@@ -28,6 +28,12 @@ const defaultValues = {
 const CreatePhd = () => {
   const [steponeCompleted, setSteponeCompleted] = React.useState(false);
   const dispatch = useDispatch();
+
+  const savedForm =
+    typeof window !== "undefined" && localStorage.getItem("phdUserDetail")
+      ? JSON.parse(localStorage.getItem("phdUserDetail") || "{}")
+      : null;
+
   const schema = yup.object().shape({
     firstName: yup
       .string()
@@ -38,7 +44,6 @@ const CreatePhd = () => {
       .string()
       .required("Last Name is required")
       .min(1, "Last Name have atleast 1 character")
-
       .trim(),
     email: yup
       .string()
@@ -62,11 +67,26 @@ const CreatePhd = () => {
     control,
     handleSubmit,
     setValue,
+    watch,
+    reset,
     formState: { errors },
   } = useForm({
-    defaultValues,
+    defaultValues: savedForm
+      ? { ...defaultValues, ...savedForm }
+      : defaultValues,
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      try {
+        localStorage.setItem("phdUserDetail", JSON.stringify(value));
+      } catch (err) {
+        console.warn("Could not persist phdUserDetail", err);
+      }
+    });
+    return () => subscription.unsubscribe?.();
+  }, [watch]);
 
   const { fields, append } = useFieldArray({
     control,
@@ -104,14 +124,31 @@ const CreatePhd = () => {
         if (typeof data === "string") {
         } else {
           setSteponeCompleted(true);
+          localStorage.setItem("steponeCompleted", "1");
           localStorage.setItem("phdUserDetail", JSON.stringify(value));
-          localStorage.setItem("midValue", 750);
-          localStorage.setItem("maxValue", 1000);
-          localStorage.setItem("lowestValue", 500);
+          if (!localStorage.getItem("midValue"))
+            localStorage.setItem("midValue", String(750));
+          if (!localStorage.getItem("maxValue"))
+            localStorage.setItem("maxValue", String(1000));
+          if (!localStorage.getItem("lowestValue"))
+            localStorage.setItem("lowestValue", String(500));
           localStorage.removeItem("saved1");
         }
       });
   };
+
+  const initialLow =
+    typeof window !== "undefined" && localStorage.getItem("lowestValue")
+      ? Number(localStorage.getItem("lowestValue"))
+      : 0;
+  const initialMax =
+    typeof window !== "undefined" && localStorage.getItem("maxValue")
+      ? Number(localStorage.getItem("maxValue"))
+      : 0;
+  const initialSlider =
+    typeof window !== "undefined" && localStorage.getItem("sliderValue")
+      ? Number(localStorage.getItem("sliderValue"))
+      : 300;
 
   const [loading, setLoading] = React.useState(false);
   const [select, setSelect] = React.useState(false);
@@ -119,9 +156,35 @@ const CreatePhd = () => {
   const [errorLow, setErrorLow] = useState("");
   const [errorHigh, setErrorHigh] = useState("");
 
-  const [lowValue, setLowValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
-  const [sliderValue, setSliderValue] = useState(300);
+  const [lowValue, setLowValue] = useState(initialLow || 0);
+  const [maxValue, setMaxValue] = useState(initialMax || 0);
+  const [sliderValue, setSliderValue] = useState(initialSlider || 300);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("lowestValue", String(lowValue ?? ""));
+      localStorage.setItem("maxValue", String(maxValue ?? ""));
+      localStorage.setItem("sliderValue", String(sliderValue ?? ""));
+    } catch (err) {
+      console.warn("Could not persist slider values", err);
+    }
+  }, [lowValue, maxValue, sliderValue]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("phdUserDetail");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        reset({ ...defaultValues, ...parsed });
+
+        setFirstName(parsed.firstName || "");
+        setLastName(parsed.lastName || "");
+        setEmail(parsed.email || "");
+      } catch (err) {}
+    }
+    const stepSaved = localStorage.getItem("steponeCompleted") === "1";
+    if (stepSaved) setSteponeCompleted(true);
+  }, [reset]);
 
   const handleSelect = async (selectedAddress) => {
     try {
@@ -135,7 +198,7 @@ const CreatePhd = () => {
     } catch (error) {
       console.error("Error selecting address", error);
     } finally {
-      setLoading(false); // Ensure loading is set to false regardless of success or failure.
+      setLoading(false);
     }
   };
 
@@ -239,9 +302,6 @@ const CreatePhd = () => {
 
   return (
     <div className="py-0">
-      {/* <div className="">
-        <div className="">
-          <div className=""> */}
       <div className="content-full">
         <h2 className="h3 text-uppercase text-start mb-4 pb-4 border-bottom">
           {steponeCompleted
@@ -610,21 +670,33 @@ const CreatePhd = () => {
                   </div>
                 </div>
               </div>
-              <button
-                className="btn btn-primary mw-200px w-70 mt-4"
-                style={{ textTransform: "none" }}
-                onClick={letStart}
-                disabled={
-                  errorLow !== "" ||
-                  maxValue === 0 ||
-                  lowValue === 0 ||
-                  maxValue === "" ||
-                  lowValue === "" ||
-                  errorHigh !== ""
-                }
-              >
-                Let's get Started
-              </button>
+              <div className="d-flex">
+                <button
+                  type="button"
+                  className="btn btn-secondary  mw-200px w-70 mt-4 me-3"
+                  onClick={() => {
+                    setSteponeCompleted(false);
+                    localStorage.removeItem("steponeCompleted");
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  className="btn btn-primary mw-200px w-70 mt-4"
+                  style={{ textTransform: "none" }}
+                  onClick={letStart}
+                  disabled={
+                    errorLow !== "" ||
+                    maxValue === 0 ||
+                    lowValue === 0 ||
+                    maxValue === "" ||
+                    lowValue === "" ||
+                    errorHigh !== ""
+                  }
+                >
+                  Let's get Started
+                </button>
+              </div>
             </>
           )}
         </div>
