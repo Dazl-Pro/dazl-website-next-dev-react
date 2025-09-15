@@ -60,18 +60,6 @@ const CommonSidebar = ({ callback }) => {
             </Link>
             <Link
               className={`btn text-start sidebar-links ${
-                location.pathname === "/agent/agentprofile" ? "active-link" : ""
-              }`}
-              to="/agent/agentprofile"
-              onClick={handleClick}
-            >
-              <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
-                <PersonIcon />
-              </span>
-              <span className="text-linkk">Agent Profile</span>
-            </Link>
-            <Link
-              className={`btn text-start sidebar-links ${
                 location.pathname === "/agent/createProject"
                   ? "active-link"
                   : ""
@@ -108,6 +96,19 @@ const CommonSidebar = ({ callback }) => {
               </span>
               <span className="text-linkk">My project Agent</span>
             </Link>
+
+            <Link
+              className={`btn text-start sidebar-links ${
+                location.pathname === "/agent/agentprofile" ? "active-link" : ""
+              }`}
+              to="/agent/agentprofile"
+              onClick={handleClick}
+            >
+              <span className="btn icon-linkk lh-1 px-2 py-1 btn-primary me-2">
+                <PersonIcon />
+              </span>
+              <span className="text-linkk">My Profile</span>
+            </Link>
           </div>
         ) : userType === "professional" ? (
           <div className="flex-column">
@@ -127,7 +128,8 @@ const CommonSidebar = ({ callback }) => {
             </Link>
             <Link
               className={`btn text-start sidebar-links ${
-                location.pathname === "/company/companyProfile/company-profile-view"
+                location.pathname ===
+                "/company/companyProfile/company-profile-view"
                   ? "active-link"
                   : ""
               }`}

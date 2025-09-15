@@ -47,15 +47,11 @@ export const updateAgentProfile = createAsyncThunk(
   "dashboard/updateAgentProfile",
   async (values) => {
     try {
-      const response = await http.patch(`/realtor/update/`, {
-        city_of_real_state_agency: values.city,
-        email: values.email,
-        first_name: values.firstName,
-        last_name: values.lastName,
-        phone_number: values.number,
-        real_state_agency_name: values.companyName,
-        state: values.state,
-        zip_code: values.zipCode,
+      console.log("values", values);
+      const response = await http.patch(`/realtor/update/`, values.formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       if (response.status === 200) {
         return response.data;

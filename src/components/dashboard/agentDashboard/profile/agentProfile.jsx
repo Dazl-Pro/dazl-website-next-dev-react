@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -62,6 +62,9 @@ const AgentProfile = () => {
   const agentData = Selector.data.agentData;
   const [phone, setPhone] = React.useState("");
   const [disable, setDisable] = React.useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
   const {
     control,
     reset,
@@ -72,15 +75,43 @@ const AgentProfile = () => {
     defaultValues,
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data) => {
+  // const onSubmit = (data) => {
+  //   if (disable) {
+  //     dispatch(updateAgentProfile(data));
+  //     reset();
+  //     setDisable(false);
+  //   } else {
+  //     setDisable(true);
+  //   }
+  // };
+  const onSubmit = async (data) => {
     if (disable) {
-      dispatch(updateAgentProfile(data));
+      // Build FormData for multipart
+      const formData = new FormData();
+      // append fields (use backend field names expected by API)
+      formData.append("first_name", data.firstName);
+      formData.append("last_name", data.lastName);
+      formData.append("email", data.email);
+      formData.append("real_state_agency_name", data.companyName || "");
+      formData.append("city_of_real_state_agency", data.city || "");
+      formData.append("state", data.state || "");
+      formData.append("zip_code", data.zipCode || "");
+      formData.append("phone_number", data.number || "");
+      // append file if selected
+      if (selectedFile) {
+        console.log("selected file");
+        formData.append("profile_image_url", selectedFile);
+      }
+      // dispatch - updateAgentProfile should accept FormData (see thunk example below)
+      console.log("11111111111", formData);
+      dispatch(updateAgentProfile({ userId, formData }));
       reset();
       setDisable(false);
     } else {
-      setDisable(true);
+      setDisable(true); // go into edit mode
     }
   };
+
   useEffect(() => {
     setValue("firstName", agentData.first_name);
     setValue("lastName", agentData.last_name);
@@ -91,10 +122,22 @@ const AgentProfile = () => {
     setValue("zipCode", agentData.zip_code ?? "");
     setValue("number", agentData.phone_number);
     setPhone(agentData.phone_number);
+    if (agentData.profile_image_url) {
+      setPreview(agentData.profile_image_url);
+    }
     if (agentData.length === 0) {
       dispatch(getAgentProfiledata(userId));
     }
-  }, [agentData]);
+  }, [agentData, setValue, dispatch, userId]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    // optional: validate file type / size here
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   //
   return (
     <div className="py-0">
@@ -107,6 +150,56 @@ const AgentProfile = () => {
             <h4 className="mb-4">EDIT PROFILE</h4>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="row">
+                <div className="form-row mb-3 col-md-12 d-flex align-items-center gap-3">
+                  <div
+                    style={{
+                      width: 110,
+                      height: 110,
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      border: "1px solid #ddd",
+                    }}
+                  >
+                    {preview ? (
+                      <img
+                        src={preview}
+                        alt="profile preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100%",
+                          color: "#666",
+                        }}
+                      >
+                        No image
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="form-label fw-bold">Profile Image</label>
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        disabled={disable ? false : true}
+                      />
+                      <small className="d-block text-muted">
+                        Max size: 2MB (recommended). JPG/PNG.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
                 <div className={`form-row mb-3 col-md-6`}>
                   First Name:
                   <Controller
