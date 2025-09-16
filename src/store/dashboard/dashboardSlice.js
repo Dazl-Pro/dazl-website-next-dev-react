@@ -43,27 +43,37 @@ export const getAgentProfiledata = createAsyncThunk(
     }
   }
 );
+
 export const updateAgentProfile = createAsyncThunk(
   "dashboard/updateAgentProfile",
-  async (values) => {
+  async (values, { rejectWithValue }) => {
     try {
-      console.log("values", values);
-      const response = await http.patch(`/realtor/update/`, values.formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      console.log([...values.formData.entries()]);
+      const response = await http.post("/realtor/update/", values.formData, {
+        headers: { Accept: "application/json" },
+        transformRequest: [
+          (data, headers) => {
+            if (headers && headers["Content-type"]) {
+              delete headers["Content-type"];
+            }
+            return data;
+          },
+        ],
       });
-      if (response.status === 200) {
+
+      if (response.status === 200 || response.status === 201) {
         return response.data;
+      } else {
+        return rejectWithValue(response.data);
       }
     } catch (error) {
-      return (
-        error.response.data,
-        Toastify({ data: "error", msg: error.response.data.message })
-      );
+      const errData = error?.response?.data || { message: error.message };
+      Toastify({ data: "error", msg: errData.message || "Update failed" });
+      return rejectWithValue(errData);
     }
   }
 );
+
 export const updatehomeOwnerProfile = createAsyncThunk(
   "dashboard/updatehomeOwnerProfile",
   async (values, { dispatch }) => {
@@ -152,6 +162,7 @@ export const createphdStepone = createAsyncThunk(
     }
   }
 );
+
 export const getCompanyProfile = createAsyncThunk(
   "dashboard/companyProfile",
   async (userId) => {
@@ -923,12 +934,18 @@ const dashboardSlice = createSlice({
         state.loading = true;
       })
       .addCase(updateAgentProfile.fulfilled, (state, action) => {
-        if (action.payload.status === 200) {
-          Toastify({ data: "success", msg: action.payload.message });
-          state.data.agentData = [];
-        }
         state.loading = false;
+        const payload = action.payload ?? {};
+        const realtor = payload.realtor ?? payload.data ?? payload;
+        if (payload?.status === 200 || payload?.status === "success") {
+          state.data.agentData = realtor;
+          Toastify({
+            data: "success",
+            msg: payload.message ?? "Profile updated",
+          });
+        }
       })
+
       .addCase(updateAgentProfile.rejected, (state, action) => {
         state.loading = false;
       })

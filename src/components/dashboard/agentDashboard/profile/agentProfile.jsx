@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router";
 import "./agentprofile.css";
 import PhoneInput from "react-phone-input-2";
-
+import { unwrapResult } from "@reduxjs/toolkit";
 import "react-phone-input-2/lib/bootstrap.css";
 
 const defaultValues = {
@@ -60,6 +60,7 @@ const AgentProfile = () => {
   const userId = localStorage.getItem("userId");
   const Selector = useSelector((state) => state.dashboardSlice);
   const agentData = Selector.data.agentData;
+  console.log("agentData", agentData);
   const [phone, setPhone] = React.useState("");
   const [disable, setDisable] = React.useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -85,10 +86,22 @@ const AgentProfile = () => {
   //   }
   // };
   const onSubmit = async (data) => {
-    if (disable) {
-      // Build FormData for multipart
+    if (!disable) {
+      setDisable(true);
+      return;
+    }
+    console.log(
+      "agentData in useEffect:",
+      agentData,
+      "image_url:",
+      agentData?.image_url,
+      "profile_image_url:",
+      agentData?.profile_image_url
+    );
+    console.log("preview state now:", preview);
+
+    try {
       const formData = new FormData();
-      // append fields (use backend field names expected by API)
       formData.append("first_name", data.firstName);
       formData.append("last_name", data.lastName);
       formData.append("email", data.email);
@@ -97,22 +110,46 @@ const AgentProfile = () => {
       formData.append("state", data.state || "");
       formData.append("zip_code", data.zipCode || "");
       formData.append("phone_number", data.number || "");
+
       // append file if selected
       if (selectedFile) {
-        console.log("selected file");
         formData.append("profile_image_url", selectedFile);
       }
-      // dispatch - updateAgentProfile should accept FormData (see thunk example below)
-      console.log("11111111111", formData);
-      dispatch(updateAgentProfile({ userId, formData }));
+      formData.append("_method", "PATCH");
+      const action = await dispatch(
+        updateAgentProfile({ userId, formData })
+      ).unwrap();
+      console.log("update response", action);
+
+      dispatch(getAgentProfiledata(userId));
       reset();
+      setSelectedFile(null);
+
+      const newImageUrl =
+        action?.realtor?.image_url ||
+        action?.data?.profile_image_url ||
+        action?.profile_image_url ||
+        null;
+
+      if (newImageUrl) {
+        // set preview immediately and bust cache
+        setPreview(`${newImageUrl}?t=${Date.now()}`);
+      }
+
+      // refresh profile in store and wait for it so useEffect sees the correct agentData
+      await dispatch(getAgentProfiledata(userId)).unwrap?.();
+
+      reset();
+      setSelectedFile(null);
       setDisable(false);
-    } else {
-      setDisable(true); // go into edit mode
+    } catch (err) {
+      console.error("update failed", err);
+      setDisable(true);
     }
   };
 
   useEffect(() => {
+    // set form fields (unchanged)
     setValue("firstName", agentData.first_name);
     setValue("lastName", agentData.last_name);
     setValue("email", agentData.email);
@@ -122,10 +159,22 @@ const AgentProfile = () => {
     setValue("zipCode", agentData.zip_code ?? "");
     setValue("number", agentData.phone_number);
     setPhone(agentData.phone_number);
-    if (agentData.profile_image_url) {
-      setPreview(agentData.profile_image_url);
+
+    // prefer agentData.image_url, then profile_image_url
+    const imageFromStore =
+      agentData?.image_url || agentData?.profile_image_url || null;
+
+    // only update preview if store actually has an image (don't clear existing preview)
+    if (imageFromStore) {
+      setPreview(`${imageFromStore}?t=${Date.now()}`);
+    } else {
+      // don't setPreview(null) here — keep current preview (avoid overwriting)
+      // if you want to clear preview on logout/profile-empty, handle that case separately
     }
-    if (agentData.length === 0) {
+
+    // fetch on first load if agentData empty object (fix your length-check)
+    // if agentData is an object, check for absence of id or first_name instead of length
+    if (!agentData || Object.keys(agentData).length === 0) {
       dispatch(getAgentProfiledata(userId));
     }
   }, [agentData, setValue, dispatch, userId]);
