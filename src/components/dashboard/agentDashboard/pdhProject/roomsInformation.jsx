@@ -350,13 +350,13 @@ const RoomsInformation = (props) => {
     //   (checkbox, index) => checkboxes[index]
     // );
     const isAnySelected = checkboxes.some((checked) => checked);
-  if (!isAnySelected) {
-    Toastify({
-      data: "error",
-      msg: "Please select at least one room feature before complete.",
-    });
-    return; // Stop saving
-  }
+    if (!isAnySelected) {
+      Toastify({
+        data: "error",
+        msg: "Please select at least one room feature before complete.",
+      });
+      return;
+    }
     const checkedCheckboxesData = phdCheckbox.filter(
       (checkbox, index) => checkboxes[index]
     );
@@ -881,7 +881,6 @@ const RoomsInformation = (props) => {
             <button
               type="button"
               className="btn btn-danger"
-           
               onClick={() => {
                 // appendPhoto({ description: "", file: null });
                 document.getElementById("OuterImage").click();

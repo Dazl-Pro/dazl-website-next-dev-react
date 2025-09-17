@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "@mui/material/Pagination";
 import SaveIcon from "@mui/icons-material/Save";
@@ -45,12 +46,23 @@ const MyProject = () => {
   const [formData, setFormData] = useState({
     title: "",
   });
+
+  const isInterestedValue = React.useCallback((val) => {
+    if (typeof val === "boolean") return val === true;
+    if (typeof val === "number") return val === 1;
+    if (typeof val === "string") {
+      const s = val.toLowerCase();
+      return s === "true" || s === "1";
+    }
+    return false;
+  }, []);
   // const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   // const [selectedImage, setSelectedImage] = useState(null);
 
   const [imagesArray, setImagesAray] = useState([]);
   const [imagesUpload, setImagesUpload] = useState([]);
+  // const interestedRoomsCount = .roominfo.filter(room => room.is_interested).length;
 
   // const openModal = (image) => {
   //   setSelectedImage(image);
@@ -84,6 +96,10 @@ const MyProject = () => {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+  const [roomInterestCounts, setRoomInterestCounts] = useState([]);
+  const [interestedCount, setInterestedCount] = useState(0);
+
+  const [dataIndex, setDataIndex] = useState(0); // Default to the first project
 
   useEffect(() => {
     if (projectData?.length === 0) {
@@ -96,6 +112,9 @@ const MyProject = () => {
       setImagesAray(projectData.data);
     }
   }, [projectData, location]);
+  useEffect(() => {
+    console.log("project", projectData);
+  });
   const handlePageChange = (event, value) => {
     if (location.pathname === "/homeOwner/my-project") {
       setPageNumber(value);
@@ -104,6 +123,49 @@ const MyProject = () => {
       dispatch(getAgentProject({ pageNo: value, numberofdata: 5 }));
     }
   };
+
+  useEffect(() => {
+    if (
+      projectData &&
+      projectData.data &&
+      projectData.data.length > 0 &&
+      projectData.data[dataIndex] &&
+      projectData.data[dataIndex].roominfo
+    ) {
+      const rooms = projectData.data[dataIndex].roominfo;
+
+      // Sum interested counts across all rooms
+      const totalInterested = rooms.reduce((sum, room) => {
+        const count = room.opportunities
+          ? room.opportunities.filter((op) => op.is_interested === 1).length
+          : 0;
+        return sum + count;
+      }, 0);
+
+      setInterestedCount(totalInterested);
+    }
+  }, [projectData, dataIndex]);
+
+  const roomInterestMap = React.useMemo(() => {
+    const map = {};
+    if (!projectData?.data) return map;
+
+    projectData.data.forEach((project) => {
+      const pid = project.project_id;
+      (project.roominfo || []).forEach((room) => {
+        const rid = room.room_id;
+        const count = (room.opportunities || []).filter((op) =>
+          isInterestedValue(op?.is_interested)
+        ).length;
+        map[`${pid}_${rid}`] = count;
+      });
+    });
+
+    return map;
+  }, [projectData, isInterestedValue]); // include helper in deps
+
+  // const interestedForThisRoom =
+  //   roomInterestMap[`${items.project_id}_${roominfoItems.room_id}`] || 0;
 
   const onChangeEdit = (item) => {
     setFormData((prevData) => ({
@@ -490,6 +552,29 @@ const MyProject = () => {
                                   (reply) =>
                                     reply.room_id == roominfoItems.room_id
                                 );
+                              console.log("replies", replies);
+                              // const interestedForThisRoom = replies.filter(
+                              //   (r) => isInterestedValue(r?.is_interested)
+                              // ).length;
+                              // replies coming from items.projectOpportunityReplies (has professional details)
+                              const projectReplies =
+                                items.projectOpportunityReplies || [];
+
+                              // opportunities attached to the room (often present and contains is_interested flags)
+                              const roomOpportunities =
+                                roominfoItems.opportunities || [];
+
+                              const interestedForThisRoom =
+                                roomOpportunities.length > 0
+                                  ? roomOpportunities.filter((op) =>
+                                      isInterestedValue(op?.is_interested)
+                                    ).length
+                                  : // fallback: count from projectReplies matching this room id
+                                    projectReplies.filter(
+                                      (r) =>
+                                        r.room_id == roominfoItems.room_id &&
+                                        isInterestedValue(r?.is_interested)
+                                    ).length;
 
                               return (
                                 <div key={indexroomInfo}>
@@ -848,13 +933,8 @@ const MyProject = () => {
                                           fontSize: 20,
                                         }}
                                       >
-                                        {" "}
-                                        {
-                                          // projectData.data?.[dataIndex]
-                                          //   ?.projectOpportunityReplies.length
-                                          replies.length
-                                        }{" "}
-                                        Professionals Engaged
+                                        {interestedForThisRoom} Professionals
+                                        Engaged
                                       </div>
                                     </div>
                                     <div>
