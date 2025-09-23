@@ -4,66 +4,42 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Resources\ProjectResource;
+use App\Http\Resources\CustomerResource;
+use App\Services\ProjectService;
 use App\Models\Project;
-use App\Models\ProjectImage;
 use App\Models\Customer;
 
 class ProjectController extends Controller
 {
+    protected ProjectService $projectService;
+
+    public function __construct(ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
+
     /**
      * Store Project and Images
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'budget_min' => 'nullable|numeric',
-            'budget_max' => 'nullable|numeric',
-            'location' => 'required|string|max:255',
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            $project = Project::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'budget_min' => $request->budget_min,
-                'budget_max' => $request->budget_max,
-                'location' => $request->location,
-                'customer_id' => auth()->id(),
-                'status' => 'draft',
-            ]);
+            $project = $this->projectService->createProject(
+                $request->validated(),
+                auth()->id()
+            );
 
             // Handle image uploads if provided
             if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $imagePath = $image->store('project_images', 'public');
-                    ProjectImage::create([
-                        'project_id' => $project->id,
-                        'url' => $imagePath,
-                        'description' => 'Project image'
-                    ]);
-                }
+                $this->projectService->uploadProjectImages($project, $request->file('images'));
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Project stored successfully',
-                'data' => [
-                    'project_id' => $project->id,
-                    'project' => $project->load('projectImages')
-                ]
+                'data' => new ProjectResource($project->load('projectImages'))
             ], 201);
 
         } catch (\Exception $e) {
@@ -80,39 +56,22 @@ class ProjectController extends Controller
      */
     public function projectImages(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'projectID' => 'required|exists:projects,id',
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            $imageUrls = [];
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('project_images', 'public');
-                $imageUrls[] = $imagePath;
-
-                ProjectImage::create([
-                    'project_id' => $request->projectID,
-                    'url' => $imagePath,
-                    'description' => 'Additional project image'
-                ]);
-            }
+            $project = Project::findOrFail($request->projectID);
+            $uploadedImages = $this->projectService->uploadProjectImages($project, $request->file('images'));
 
             return response()->json([
                 'success' => true,
                 'message' => 'Project images uploaded successfully',
                 'data' => [
                     'project_id' => $request->projectID,
-                    'uploaded_images' => $imageUrls
+                    'uploaded_images' => $uploadedImages
                 ]
             ]);
 

@@ -67,20 +67,32 @@ class HomeDiagnosticReportService
     }
 
     /**
-     * Update PHD report
+     * Update PHD report by ID
      */
-    public function updateReport(HomeDiagnosticReport $report, array $data): HomeDiagnosticReport
+    public function updateReport(int $id, array $data): ?HomeDiagnosticReport
     {
+        $report = HomeDiagnosticReport::find($id);
+
+        if (!$report) {
+            return null;
+        }
+
         $report->update($data);
         return $report->fresh();
     }
 
     /**
-     * Delete PHD report
+     * Delete PHD report by ID
      */
-    public function deleteReport(HomeDiagnosticReport $report): bool
+    public function deleteReport(int $id): bool
     {
         try {
+            $report = HomeDiagnosticReport::find($id);
+
+            if (!$report) {
+                return false;
+            }
+
             // Delete associated projects
             $report->projects()->delete();
 
@@ -118,6 +130,17 @@ class HomeDiagnosticReportService
         }
 
         return $query->orderBy('created_at', 'desc')->get();
+    }
+
+    /**
+     * Get single report for realtor
+     */
+    public function getReportForRealtor(int $reportId, int $realtorId): ?HomeDiagnosticReport
+    {
+        return HomeDiagnosticReport::with(['projects', 'customer'])
+                                 ->where('id', $reportId)
+                                 ->where('realtor_id', $realtorId)
+                                 ->first();
     }
 
     /**

@@ -5,110 +5,48 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\HomeDiagnosticReportRequest;
+use App\Http\Resources\HomeDiagnosticReportResource;
+use App\Services\HomeDiagnosticReportService;
 use App\Models\HomeDiagnosticReport;
-use App\Models\Project;
 
 class HomeDiagnosticReportController extends Controller
 {
+    protected HomeDiagnosticReportService $reportService;
+
+    public function __construct(HomeDiagnosticReportService $reportService)
+    {
+        $this->reportService = $reportService;
+    }
+
     /**
      * Store Home Diagnostic Report (PHD)
      */
-    public function store(Request $request)
+    public function store(HomeDiagnosticReportRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'client_email' => 'required|email',
-            'street_no' => 'required|string|max:50',
-            'street_name' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zip_code' => 'required|string|max:10',
-            'highest_price' => 'required|numeric',
-            'lowest_price' => 'required|numeric',
-            'year_built' => 'required|integer',
-            'bathrooms' => 'required|integer',
-            'bedrooms' => 'required|integer',
-            'basement' => 'required|string',
-            'gross_size' => 'required|string',
-            'spaces' => 'required|string',
-            'parking_features' => 'required|string',
-            'property_stories' => 'required|string',
-            'structure_type' => 'required|string',
-            'lot_size' => 'required|string',
-            'location' => 'required|string',
-            'foundation_type' => 'required|string',
-            'tax_accessed_value' => 'required|numeric',
-            'annual_tax_amount' => 'required|numeric',
-            'sale_date' => 'required|date',
-            'sale_amount' => 'required|numeric',
-            'type' => 'required|string',
-            'phd_description' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            $homeDiagnosticReport = HomeDiagnosticReport::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'client_email' => $request->client_email,
-                'street_no' => $request->street_no,
-                'street_name' => $request->street_name,
-                'city' => $request->city,
-                'state' => $request->state,
-                'zip_code' => $request->zip_code,
-                'highest_price' => $request->highest_price,
-                'lowest_price' => $request->lowest_price,
-                'year_built' => $request->year_built,
-                'bathrooms' => $request->bathrooms,
-                'bedrooms' => $request->bedrooms,
-                'basement' => $request->basement,
-                'gross_size' => $request->gross_size,
-                'spaces' => $request->spaces,
-                'parking_features' => $request->parking_features,
-                'property_stories' => $request->property_stories,
-                'structure_type' => $request->structure_type,
-                'lot_size' => $request->lot_size,
-                'location' => $request->location,
-                'foundation_type' => $request->foundation_type,
-                'tax_accessed_value' => $request->tax_accessed_value,
-                'annual_tax_amount' => $request->annual_tax_amount,
-                'sale_date' => $request->sale_date,
-                'sale_amount' => $request->sale_amount,
-                'type' => $request->type,
-                'phd_description' => $request->phd_description,
-                'realtor_id' => auth()->id(),
-            ]);
+            $result = $this->reportService->createReport(
+                $request->validated(),
+                auth()->id()
+            );
 
-            // Create associated project if not exists
+            $responseData = [
+                'report' => new HomeDiagnosticReportResource($result['report']),
+                'project' => $result['project'] ? new \App\Http\Resources\ProjectResource($result['project']) : null,
+                'customer' => $result['customer'] ? new \App\Http\Resources\CustomerResource($result['customer']) : null,
+            ];
+
+            // Format response for legacy API compatibility
             if (!$request->has('project_id')) {
-                $project = Project::create([
-                    'title' => 'PHD Report Project',
-                    'description' => $request->phd_description,
-                    'location' => $request->location,
-                    'home_diagnostic_report_id' => $homeDiagnosticReport->id,
-                    'realtor_id' => auth()->id(),
-                    'status' => 'draft'
-                ]);
-
                 $responseData = [
-                    'project_id' => $project->id,
-                    'house_id' => $homeDiagnosticReport->id,
-                    'customer' => [
-                        'first_name' => $request->first_name,
-                        'last_name' => $request->last_name,
-                        'email' => $request->client_email
-                    ]
+                    'project_id' => $result['project']?->id,
+                    'house_id' => $result['report']->id,
+                    'customer' => $result['customer'] ? [
+                        'first_name' => $result['customer']->first_name,
+                        'last_name' => $result['customer']->last_name,
+                        'email' => $result['customer']->email
+                    ] : null
                 ];
-            } else {
-                $responseData = $homeDiagnosticReport;
             }
 
             return response()->json([
@@ -131,39 +69,16 @@ class HomeDiagnosticReportController extends Controller
      */
     public function getHouseData(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'address' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            // TODO: Implement actual external API call for house data
-            // For now, returning mock data structure based on the old implementation
-
-            // Simulate external API response
-            $mockHouseData = [
-                'type' => 'Single Family',
-                'year_built' => 1995,
-                'bedrooms' => 3,
-                'bathrooms' => 2,
-                'structure_type' => 'Frame',
-                'lot_size' => '0.25 acres',
-                'location' => $request->address,
-                'foundation_type' => 'Concrete',
-                'tax_accessed_value' => 250000,
-                'sale_date' => '2020-01-15',
-            ];
+            $houseData = $this->reportService->getHouseData($request->address);
 
             return response()->json([
                 'success' => true,
-                'data' => $mockHouseData
+                'data' => $houseData
             ]);
 
         } catch (\Exception $e) {
@@ -181,14 +96,11 @@ class HomeDiagnosticReportController extends Controller
     public function getPHDForRealtor()
     {
         try {
-            $realtorId = auth()->id();
-            $reports = HomeDiagnosticReport::with(['projects'])
-                                          ->where('realtor_id', $realtorId)
-                                          ->get();
+            $reports = $this->reportService->getReportsForRealtor(auth()->id());
 
             return response()->json([
                 'success' => true,
-                'reports' => $reports
+                'reports' => HomeDiagnosticReportResource::collection($reports)
             ]);
 
         } catch (\Exception $e) {
@@ -206,11 +118,7 @@ class HomeDiagnosticReportController extends Controller
     public function getOnePHDForRealtor($homeDiagnosticReportId)
     {
         try {
-            $realtorId = auth()->id();
-            $report = HomeDiagnosticReport::with(['projects'])
-                                         ->where('id', $homeDiagnosticReportId)
-                                         ->where('realtor_id', $realtorId)
-                                         ->first();
+            $report = $this->reportService->getReportForRealtor($homeDiagnosticReportId, auth()->id());
 
             if (!$report) {
                 return response()->json([
@@ -221,7 +129,7 @@ class HomeDiagnosticReportController extends Controller
 
             return response()->json([
                 'success' => true,
-                'reports' => $report
+                'reports' => new HomeDiagnosticReportResource($report)
             ]);
 
         } catch (\Exception $e) {
@@ -238,16 +146,39 @@ class HomeDiagnosticReportController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $report = HomeDiagnosticReport::find($id);
-            if (!$report) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'PHD report not found'
-                ], 404);
-            }
+        $request->validate([
+            'first_name' => 'sometimes|string|max:255',
+            'last_name' => 'sometimes|string|max:255',
+            'client_email' => 'sometimes|email|max:255',
+            'street_no' => 'sometimes|string|max:10',
+            'street_name' => 'sometimes|string|max:255',
+            'city' => 'sometimes|string|max:255',
+            'state' => 'sometimes|string|max:255',
+            'zip_code' => 'sometimes|string|max:10',
+            'highest_price' => 'sometimes|numeric',
+            'lowest_price' => 'sometimes|numeric',
+            'year_built' => 'sometimes|integer',
+            'bathrooms' => 'sometimes|integer',
+            'bedrooms' => 'sometimes|integer',
+            'basement' => 'sometimes|string|max:255',
+            'gross_size' => 'sometimes|string|max:255',
+            'spaces' => 'sometimes|string|max:255',
+            'parking_features' => 'sometimes|string|max:255',
+            'property_stories' => 'sometimes|string|max:255',
+            'structure_type' => 'sometimes|string|max:255',
+            'lot_size' => 'sometimes|string|max:255',
+            'location' => 'sometimes|string|max:255',
+            'foundation_type' => 'sometimes|string|max:255',
+            'tax_accessed_value' => 'sometimes|numeric',
+            'annual_tax_amount' => 'sometimes|numeric',
+            'sale_date' => 'sometimes|date',
+            'sale_amount' => 'sometimes|numeric',
+            'type' => 'sometimes|string|max:255',
+            'phd_description' => 'sometimes|string|max:1000',
+        ]);
 
-            $report->update($request->only([
+        try {
+            $report = $this->reportService->updateReport($id, $request->only([
                 'first_name', 'last_name', 'client_email', 'street_no', 'street_name',
                 'city', 'state', 'zip_code', 'highest_price', 'lowest_price',
                 'year_built', 'bathrooms', 'bedrooms', 'basement', 'gross_size',
@@ -256,10 +187,17 @@ class HomeDiagnosticReportController extends Controller
                 'annual_tax_amount', 'sale_date', 'sale_amount', 'type', 'phd_description'
             ]));
 
+            if (!$report) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'PHD report not found'
+                ], 404);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'PHD report updated successfully',
-                'data' => $report
+                'data' => new HomeDiagnosticReportResource($report)
             ]);
 
         } catch (\Exception $e) {
@@ -277,15 +215,14 @@ class HomeDiagnosticReportController extends Controller
     public function delete($id)
     {
         try {
-            $report = HomeDiagnosticReport::find($id);
-            if (!$report) {
+            $deleted = $this->reportService->deleteReport($id);
+
+            if (!$deleted) {
                 return response()->json([
                     'success' => false,
                     'message' => 'PHD report not found'
                 ], 404);
             }
-
-            $report->delete();
 
             return response()->json([
                 'success' => true,

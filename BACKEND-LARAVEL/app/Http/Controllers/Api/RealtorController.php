@@ -4,74 +4,34 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Realtor;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Requests\RealtorRegistrationRequest;
+use App\Http\Resources\RealtorResource;
+use App\Services\AuthService;
 
 class RealtorController extends Controller
 {
+    protected AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Register Realtor
-     *
-     * @bodyParam email string required Example: polagorge@gmail.com
-     * @bodyParam password string required Example: 123123
-     * @bodyParam confirm_password string required Example: 123123
-     * @bodyParam first_name string required Example: Paula
-     * @bodyParam last_name string required Example: George
-     * @bodyParam phone_number string optional Example: +201272575873
-     * @bodyParam real_state_agency_name string required Example: Garden Realty
-     * @bodyParam city_of_real_state_agency string optional Example: New York
-     * @bodyParam state string optional Example: NY
-     * @bodyParam zip_code string optional Example: 10001
-     * @bodyParam check_box boolean required Must accept terms and conditions
      */
-    public function register(Request $request)
+    public function register(RealtorRegistrationRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:realtors,email',
-            'password' => 'required|min:6|same:confirm_password',
-            'confirm_password' => 'required',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone_number' => 'nullable|string|max:20',
-            'real_state_agency_name' => 'required|string|max:255',
-            'city_of_real_state_agency' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'zip_code' => 'nullable|string|max:10',
-            'check_box' => 'required|accepted',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            $realtor = Realtor::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone_number' => $request->phone_number,
-                'real_state_agency_name' => $request->real_state_agency_name,
-                'city_of_real_state_agency' => $request->city_of_real_state_agency,
-                'state' => $request->state,
-                'zip_code' => $request->zip_code,
-            ]);
-
-            $token = JWTAuth::fromUser($realtor);
+            $result = $this->authService->registerRealtor($request->validated());
 
             return response()->json([
                 'success' => true,
                 'message' => 'Realtor registered successfully',
                 'data' => [
-                    'realtor' => $realtor,
-                    'token' => $token,
-                    'token_type' => 'bearer',
+                    'realtor' => new RealtorResource($result['realtor']),
+                    'token' => $result['token'],
+                    'token_type' => $result['token_type'],
                 ]
             ], 201);
 
@@ -86,45 +46,42 @@ class RealtorController extends Controller
 
     /**
      * Login Realtor
-     *
-     * @bodyParam email string required Example: polagorge@gmail.com
-     * @bodyParam password string required Example: 123123
      */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if ($validator->fails()) {
+        try {
+            $credentials = $request->only('email', 'password');
+            $result = $this->authService->login($credentials, 'realtor');
+
+            if (!$result) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid credentials'
+                ], 401);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'realtor' => new RealtorResource($result['user']),
+                    'token' => $result['token'],
+                    'token_type' => $result['token_type'],
+                ]
+            ]);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Login failed',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $credentials = $request->only('email', 'password');
-
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        $realtor = auth()->user();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login successful',
-            'data' => [
-                'realtor' => $realtor,
-                'token' => $token,
-                'token_type' => 'bearer',
-            ]
-        ]);
     }
 
     /**
@@ -132,19 +89,17 @@ class RealtorController extends Controller
      */
     public function logout()
     {
-        try {
-            JWTAuth::invalidate(JWTAuth::getToken());
+        if ($this->authService->logout()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully logged out'
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Logout failed',
-                'error' => $e->getMessage()
-            ], 500);
         }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Logout failed'
+        ], 500);
     }
 
     /**
