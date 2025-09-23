@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\ProjectImage;
 use App\Models\ProjectOpportunity;
 use App\Models\Professional;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
