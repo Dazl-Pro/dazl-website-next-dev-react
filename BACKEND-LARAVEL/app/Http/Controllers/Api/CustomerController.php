@@ -4,65 +4,34 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Customer;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Requests\CustomerRegistrationRequest;
+use App\Http\Resources\CustomerResource;
+use App\Services\AuthService;
 
 class CustomerController extends Controller
 {
+    protected AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Register Customer
-     *
-     * @bodyParam email string required Example: customer@example.com
-     * @bodyParam password string required Example: 123123
-     * @bodyParam confirm_password string required Example: 123123
-     * @bodyParam first_name string required Example: Jane
-     * @bodyParam last_name string required Example: Doe
-     * @bodyParam phone_number string optional Example: +1234567890
-     * @bodyParam zip_code string required Example: 10001
-     * @bodyParam check_box boolean required Must accept terms and conditions
      */
-    public function register(Request $request)
+    public function register(CustomerRegistrationRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:customers,email',
-            'password' => 'required|min:6|same:confirm_password',
-            'confirm_password' => 'required',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone_number' => 'nullable|string|max:20',
-            'zip_code' => 'required|string|max:10',
-            'check_box' => 'required|accepted',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            $customer = Customer::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone_number' => $request->phone_number,
-                'zip_code' => $request->zip_code,
-            ]);
-
-            $token = JWTAuth::fromUser($customer);
+            $result = $this->authService->registerCustomer($request->validated());
 
             return response()->json([
                 'success' => true,
                 'message' => 'Customer registered successfully',
                 'data' => [
-                    'customer' => $customer,
-                    'token' => $token,
-                    'token_type' => 'bearer',
+                    'customer' => new CustomerResource($result['customer']),
+                    'token' => $result['token'],
+                    'token_type' => $result['token_type'],
                 ]
             ], 201);
 
@@ -77,45 +46,42 @@ class CustomerController extends Controller
 
     /**
      * Login Customer
-     *
-     * @bodyParam email string required Example: customer@example.com
-     * @bodyParam password string required Example: 123123
      */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if ($validator->fails()) {
+        try {
+            $credentials = $request->only('email', 'password');
+            $result = $this->authService->login($credentials, 'customer');
+
+            if (!$result) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid credentials'
+                ], 401);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'customer' => new CustomerResource($result['user']),
+                    'token' => $result['token'],
+                    'token_type' => $result['token_type'],
+                ]
+            ]);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Login failed',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $credentials = $request->only('email', 'password');
-
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        $customer = auth()->user();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login successful',
-            'data' => [
-                'customer' => $customer,
-                'token' => $token,
-                'token_type' => 'bearer',
-            ]
-        ]);
     }
 
     /**
@@ -123,19 +89,17 @@ class CustomerController extends Controller
      */
     public function logout()
     {
-        try {
-            JWTAuth::invalidate(JWTAuth::getToken());
+        if ($this->authService->logout()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully logged out'
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Logout failed',
-                'error' => $e->getMessage()
-            ], 500);
         }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Logout failed'
+        ], 500);
     }
 
     /**

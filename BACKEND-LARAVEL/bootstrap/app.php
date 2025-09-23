@@ -12,7 +12,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Register custom middleware aliases
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'project.ownership' => \App\Http\Middleware\ProjectOwnershipMiddleware::class,
+            'log.api' => \App\Http\Middleware\LogApiRequestsMiddleware::class,
+        ]);
+
+        // Apply API logging to all API routes
+        $middleware->group('api', [
+            'log.api',
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
