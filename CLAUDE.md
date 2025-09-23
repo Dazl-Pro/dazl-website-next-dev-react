@@ -2,6 +2,40 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🏗️ **DAZL MODERNIZATION PROJECT ARCHITECTURE**
+
+### **CRITICAL UNDERSTANDING - PROJECT FLOW:**
+
+**Phase 1: Backend Modernization (CURRENT)**
+- **Input**: Laravel 5.8 backend (ARCHIVES/Dazl-Pro-App) + Production Database
+- **Output**: Laravel 11 backend with admin dashboard
+- **Purpose**: Modern, secure API backend + admin management interface
+
+**Phase 2: Frontend Modernization (FUTURE)**
+- **Input**: Next.js frontend → **Output**: React/Vite frontend
+- **Purpose**: Customer-facing interface for all 3 user types
+
+### **CLEAR SEPARATION OF CONCERNS:**
+
+#### **Laravel 11 Backend = ADMIN DASHBOARD**
+- **Blade views** for business administration
+- **Admin oversight** of all realtors, professionals, customers
+- **Business analytics** and reporting
+- **Content management** (blogs, PHD reports, projects)
+- **API endpoints** for React frontend to consume
+
+#### **React Frontend = CUSTOMER INTERFACE**
+- **Realtor dashboards** (create PHD reports, manage clients)
+- **Professional dashboards** (bid on projects, manage portfolio)
+- **Customer dashboards** (request services, view reports)
+- **Public pages** (marketing, registration, login)
+
+### **NEVER CONFUSE THESE TWO:**
+- ❌ **DON'T** build user dashboards in Laravel Blade
+- ❌ **DON'T** build admin functions in React frontend
+- ✅ **DO** build admin oversight in Laravel Blade
+- ✅ **DO** build user interfaces in React frontend
+
 ## Development Commands
 
 ### Core Development
