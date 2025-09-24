@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { createphdStepone } from "../../../../store/dashboard/dashboardSlice";
 import { useNavigate } from "react-router-dom";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import PlacesAutocomplete, {
   geocodeByAddress,

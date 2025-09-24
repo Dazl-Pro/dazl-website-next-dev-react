@@ -4,7 +4,7 @@ import {
   FormControlLabel,
   TextField,
   Button,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import CommonRoomform from "../commonForm/commonRoomForm";
