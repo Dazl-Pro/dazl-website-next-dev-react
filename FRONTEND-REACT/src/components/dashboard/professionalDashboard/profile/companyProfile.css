@@ -1,0 +1,84 @@
+input:disabled {
+  background: #f5f5f5;
+  border-color: #f5f5f5;
+  border-style: solid;
+}
+
+input {
+  border: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+.error {
+  border: 1px solid red;
+  font-weight: bold;
+}
+
+.mob {
+  margin-bottom: 10px;
+}
+
+.form-image {
+  padding-inline: 10px;
+  border: 1px solid lightgray;
+  max-width: 320px;
+  /* margin-top: 20px; */
+}
+
+.delete-button {
+  display: none;
+  /* visibility: hidden; */
+}
+
+.col-inner:hover .delete-button {
+  display: block;
+  z-index: 1;
+  /* visibility: visible; */
+}
+
+.form-group {
+  margin-top: 8px;
+}
+
+.form-control:disabled {
+  background-color: #fff;
+  opacity: 1;
+  border: 1px solid #e9ecef;
+}
+.react-tel-input .form-control{
+  border: 1px solid #e9ecef !important; 
+}
+
+a.btn-bg {
+  background: #dc3545;
+  border: 1px solid #dc3545;
+  color: #fff !important;
+}
+
+.card-header {
+  background: #dc3545 !important;
+  color: #ffff;
+  padding: 20px;
+  border-radius: 20px;
+  border-radius: 20px 20px 0 0 !important;
+}
+
+.card-header h2 {
+  border-bottom: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+}
+
+.card {
+  padding: 0 !important;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+.line {
+  margin-bottom: 10px !important;
+  line-height: 26px;
+}
+

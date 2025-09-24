@@ -1,0 +1,124 @@
+@import url("https://p.typekit.net/p.css?s=1&k=mpz5wvi&ht=tk&f=1793.1794.1797.1798&a=847331&app=typekit&e=css");
+.FooterContainer{
+  margin-top: 1rem;
+}
+.footerDistributed {
+  display: grid;
+  padding-top: 2rem;
+  align-items: start;
+  grid-template-columns: 50% 50%;
+  background-color: #292c2f;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  position: sticky;
+}
+
+.footerDistributed .footerLeft p {
+  color: #8f9296;
+  font-size: 14px;
+  margin: 0;
+}
+
+.footerCenter {
+font-family: nudista-web,"sans-serif";
+  font-weight: 400;
+  font-style: normal;
+list-style: none;
+  color: #8a837a;
+  margin-top: 1rem;
+  vertical-align: bottom;
+  margin-left: 8rem;
+}
+.footerLinks {
+  font-size: 18px;
+  font-weight: bold;
+  color: #9f978d;
+  margin: 0 0 10px;
+  padding: 0;
+  transition: ease 0.25s;
+}
+
+.footerLinks .link-1:before {
+  content: none;
+}
+
+.footerRight {
+  float: right;
+  margin-right: 75px;
+  justify-self: end;
+}
+.socialContainer {
+  display: grid;
+  grid-gap: 1rem;
+  align-items: end;
+  grid-template-columns: repeat(auto-fit, minmax(auto, 1fr));
+}
+.socailLink {
+  border-radius: 2px;
+}
+.socialMedia {
+  background-position: center;
+  background-size: cover;
+  margin-left: 10px;
+  width: 30px;
+  height: 30px;
+}
+.footerDistributed .footerRight a:hover {
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+}
+
+.footerDistributed p.footerLinks a:hover
+{
+  text-decoration: underline;
+}
+
+.followUs {
+  font-family: "nudista-web", "sans-serif";
+  text-align: right;
+  font-size: 20px;
+  font-weight: 400;
+
+  color: #8a837a;
+}
+.navLogo {
+  float: left;
+
+  padding-left: 50px;
+}
+
+.footerLeft {
+  justify-self: start;
+}
+.footerlogo {
+  filter: brightness(100%) grayscale(25%);
+  width: 90px;
+  height: 90px;
+}
+.responseText{
+  display: none;
+}
+
+
+.FooterContainer{
+  width: 100%;
+  float: left;
+}
+
+
+@media (max-width: 500px){
+  .footerLeft ,.footerRight {
+    display: none;
+  }
+  .responseText{
+    display: block;
+    justify-self: center;
+    align-self: center;
+    color: white;
+    text-align: center;
+  }
+  .footerDistributed{
+    grid-template-columns: 1fr;
+
+  }
+}

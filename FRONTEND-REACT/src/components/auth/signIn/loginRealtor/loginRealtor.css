@@ -1,0 +1,45 @@
+/* .log-container{
+  background-image: url("/images/authImages/log-realtor.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+} */
+.min-height-login {
+  min-height: calc(100vh - 125px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.h2-tag{
+  text-align: center;
+}
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: calc(100vh - 125px);
+    background-color: #0000007a; */
+  }
+  
+  .error {
+    border: 2px solid red;
+    font-weight: bold;
+  }
+
+  .form-row {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    
+  }

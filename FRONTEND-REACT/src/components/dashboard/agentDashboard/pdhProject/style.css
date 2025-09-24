@@ -1,0 +1,416 @@
+.box-shaddow {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper {
+  max-width: unset;
+  width: calc(100% - 100px) !important;
+  padding: 30px 0px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 5px;
+}
+.MuiDialog-paperWidthSm.css-uhb5lp {
+  max-width: unset;
+  width: calc(100% - 100px) !important;
+  padding: 30px 0px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 5px;
+}
+
+.rooms-container-height {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+.value {
+  margin: 10px 0;
+}
+.popup1 h3 {
+  margin: 10px 0;
+}
+.img-style {
+  width: 50%;
+}
+.img-style img {
+  width: 100%;
+}
+.flex-sec {
+  width: 25%;
+  display: inline-block;
+}
+.popup1 .border {
+  border: 1px solid #80808059 !important;
+  border-radius: 10px;
+}
+.error {
+  border: 2px solid #ff0000;
+}
+
+.custom-radio-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-radio-label input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid black;
+  border-radius: 50%;
+  margin-left: 10px;
+  position: relative;
+}
+
+.custom-radio-label input:checked {
+  background-color: white; /* Set the background color when selected */
+  border-color: blue; /* Set the border color when selected */
+}
+
+.custom-radio-label input:checked::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: blue; /* Set the color of the dot */
+  position: absolute;
+  top: 50%; /* Position the dot at the vertical center */
+  left: 50%; /* Position the dot at the horizontal center */
+  transform: translate(-50%, -50%);
+}
+
+.autocomplete-dropdown-container div {
+  border-bottom: 1px solid #8080802e;
+  padding: 12px 0;
+}
+.autocomplete-dropdown-container {
+  width: 38%;
+  border-radius: 20px;
+  margin: 13px 4px;
+  border-radius: 5px;
+  position: absolute;
+}
+.bg-image-box,
+.bg-image-box2 {
+  background-image: url("/images/shrinkCardimages/proBG.jpg");
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  color: #fff;
+}
+.bg-image-box2 {
+  background-image: url("/images/shrinkCardimages/customerBG.jpg");
+}
+.bg-image-box:before,
+.bg-image-box2:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(0deg, black, #00000061);
+  border-radius: var(--bs-border-radius-xl) !important;
+}
+.slider-rangee {
+  color: #dc3545;
+}
+.slider-rangee .MuiSlider-thumb {
+  width: 10px;
+  height: 25px;
+  border-radius: 5px;
+}
+.slider-container {
+  position: relative;
+  width: 100%;
+}
+.start-label {
+  left: 0;
+}
+
+.end-label {
+  right: 0;
+}
+
+.slider-label {
+  position: absolute;
+  top: 35px; /* Adjust as needed to position above the slider */
+}
+.progress-slidee .MuiLinearProgress-bar {
+  background-color: #dc3545;
+}
+/* .progress-slidee{
+  border: 2px solid black;
+  padding: 4px 7px;
+} */
+
+.imagessss > img {
+  width: 70px;
+}
+.cs-dialogg-close {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: #dc3545;
+  border-radius: 6px 0 6px 6px;
+}
+.cs-dialogg-close > svg.MuiSvgIcon-root {
+  fill: #fff;
+  padding: 5px;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+
+.center-content {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/images/backdrop/backdrop.jpg"); /* Replace '/path/to/your/image.jpg' with the path to your image */
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.9; /* Adjust the opacity as needed */
+  z-index: -1;
+}
+
+.cs-dialogg > .MuiDialog-container > .MuiPaper-root {
+  overflow: hidden;
+  padding-block: 0 !important;
+}
+.cs-dialogg > .MuiDialog-container > .MuiPaper-root > .cs-dialogg-container {
+  overflow: auto;
+}
+.pb-70 {
+  padding-bottom: 70%;
+}
+.min-vh-auto {
+  min-height: auto;
+}
+.autocomplete-dropdown-container {
+  width: calc(100% - 23px);
+  margin: 0;
+  box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.1);
+}
+.autocomplete-dropdown-container > div {
+  padding-block: 8px;
+  padding-inline: 15px;
+}
+.bg-custom-red {
+  background-color: #dc35451f !important;
+}
+/* .bg-custom-red-col {
+    background-color: #dc354533 !important;
+} */
+body .cs-price-slider {
+  height: 25px;
+  padding: 0;
+  border-radius: 0;
+}
+.cs-price-ranges > p {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  margin: 0;
+  padding-inline: 15px;
+  z-index: 1;
+  color: #fff;
+  line-height: 25px;
+}
+.cs-price-slider-main {
+  width: calc(100% - 80px);
+  margin-left: 40px;
+  margin-right: 40px;
+  position: relative;
+}
+.cs-price-slider span.MuiSlider-thumb {
+  width: 80px;
+  height: 32px;
+  background: #c6303e;
+  border-radius: 10px;
+  z-index: 5;
+}
+.cs-price-slider span.MuiSlider-track {
+  background: #000;
+  border-color: #000;
+  border: 0;
+  top: 0;
+  transform: none;
+}
+.cs-price-slider span.MuiSlider-valueLabelOpen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: none;
+  background: no-repeat;
+  width: 100%;
+  height: 100%;
+  padding: 0 5px;
+  line-height: 31px;
+}
+.cs-price-slider:before,
+.cs-price-slider:after {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: -40px;
+  border-radius: 10px 0px 0px 10px;
+  width: 40px;
+  height: calc(100% + 0px);
+  background: #000;
+}
+body .cs-price-slider:after {
+  right: -40px;
+  left: auto;
+  border-radius: 0px 10px 10px 0px;
+  background: #c6303e;
+  opacity: 0.3;
+  top: 0;
+  height: 100%;
+}
+.cs-price-slider span.MuiSlider-rail {
+  background: #c6303e;
+  opacity: 0.3;
+  transform: none;
+  top: 0;
+}
+.start-n40px {
+  left: -40px;
+}
+.end-n40px {
+  right: -40px;
+}
+.customer-create-project .MuiInputBase-root.MuiOutlinedInput-root {
+  padding: 2px !important;
+}
+
+@media print {
+  .d-print-none {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mob-space {
+    flex-direction: column;
+    width: 100%;
+  }
+  .autocomplete-dropdown-container {
+    width: 100%;
+    left: 0;
+    right: 0;
+    padding: 0 13px;
+  }
+  .font-16 {
+    font-size: 16px;
+  }
+  .font-18 {
+    font-size: 18px;
+  }
+}
+@media (max-width: 767.98px) {
+  .cs-price-ranges > p {
+    font-size: 13px;
+    padding-inline: 5px;
+  }
+  .cs-price-slider span.MuiSlider-thumb {
+    width: 60px;
+  }
+  body .cs-price-slider:after {
+    right: -30px;
+  }
+  body .cs-price-slider:before {
+    left: -30px;
+  }
+  .cs-price-ranges .start-n40px {
+    left: -30px;
+  }
+  .cs-price-ranges .end-n40px {
+    right: -30px;
+  }
+  .cs-price-slider:before,
+  .cs-price-slider:after {
+    width: 30px;
+  }
+  .cs-price-slider-main {
+    width: calc(100% - 60px);
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+}
+.errorSub.MuiRadio-root .MuiSvgIcon-root {
+  fill: red !important;
+}
+.errorTerm.MuiCheckbox-root .MuiSvgIcon-root {
+  fill: red !important;
+}
+.slider-value p {
+  top: 53px !important;
+}
+
+
+.custom-modal .modal-content {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+.custom-modal .modal-body {
+  /* border-bottom: none !important; */
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+  
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.dlt-btn-3 button {
+  padding: 4px;
+}
+.dlt-btn-3 {
+  position: absolute;
+  top: 0;
+  right: 5%;
+}
+

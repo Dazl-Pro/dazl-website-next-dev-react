@@ -1,0 +1,7 @@
+.error {
+    border: 2px solid red;
+    font-weight: bold;
+  }
+  .mw-230px {
+    max-width: 230px;
+  }

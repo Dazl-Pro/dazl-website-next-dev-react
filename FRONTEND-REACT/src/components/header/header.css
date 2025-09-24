@@ -1,0 +1,78 @@
+.icon-button-container {
+    display: block;
+  }
+
+  .desktop-menu {
+    display: block;
+  }
+  .before{
+    width: 100%;
+  }
+  .hamburg-btnn {
+    background-color: #dc3545 !important;
+  }
+  .hamburg-btnn:hover {
+    background-color: #000 !important;
+  }
+/* Hide the icon button on screens with a width of 1023 pixels or larger */
+
+  @media (min-width: 1024px) {
+    .icon-button-container {
+      display: none;
+    }
+    .before{
+        display: none;
+    }
+
+  }
+  /* Hide the desktop menu on screens with a width of 1023 pixels or smaller */
+  @media (max-width: 1023.98px) {
+    .desktop-menu {
+      display: none;
+    }
+    .After{
+        display: none;
+    }
+    .header-mainn {
+      margin-inline: 0 !important;
+      width: 100% !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+    .header-mainn + main {
+      margin-inline: 0 !important;
+    }
+    .header-sidebarr {
+      position: fixed;
+      z-index: 999999;
+      right: 0;
+      top: 0;
+      width: 280px !important;
+    }
+    /* .header-sidebarr > div {
+      width: 280px !important;
+    } */
+
+  }
+@media (max-width: 991.98px) {
+  .header-containerr {
+    max-width: none;
+    padding-inline: 15px;
+} 
+
+}
+header{
+  z-index: 2 !important;
+}
+
+ /* Hide the desktop menu on screens with a width of 600 pixels or smaller */
+  @media (max-width: 574.98px) {
+    .header-sidebarr, .header-sidebarr > div {
+      width: 100% !important;
+    }
+    .header-sidebarr ul > li {
+      text-align: center;
+    }
+  }
+
+  

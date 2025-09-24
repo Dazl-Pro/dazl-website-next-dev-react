@@ -1,0 +1,80 @@
+* {
+  box-sizing: border-box;
+}
+.points-collab-inner {
+  transition: all 0.3s ease;
+}
+.points-collab-inner:hover {
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.175) !important;
+}
+.points-collab-inner:hover {
+  color: #222 !important;
+  transition: all 0.3s ease;
+}
+.decor-cmback-imgg img {
+  position: relative;
+  z-index: 1;
+}
+
+.decor-cmback-imgg::before,
+.decor-cmback-imgg::after,
+.cards-dazll-coll::before,
+.cards-dazll-coll::after {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transition: all 0.4s ease;
+  background-color: #ecdf0f;
+}
+.cards-dazll-coll::before,
+.cards-dazll-coll::after {
+  background-color: #dc3545;
+}
+.read-more {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.read-more:hover {
+  text-decoration: underline; /* Remove underline on hover */
+}
+
+.decor-cmback-imgg::before,
+.cards-dazll-coll::before {
+  top: 0px;
+  border-top-left-radius: var(--bs-border-radius-xl) !important;
+  left: 0px;
+}
+.decor-cmback-secc > .container:hover .decor-cmback-imgg::before,
+.cards-dazll-coll:hover::before {
+  top: -7px;
+  left: -7px;
+}
+.decor-cmback-imgg::after,
+.cards-dazll-coll::after {
+  bottom: -0px;
+  right: -0px;
+  border-bottom-right-radius: var(--bs-border-radius-xl) !important;
+}
+.decor-cmback-secc > .container:hover .decor-cmback-imgg::after,
+.cards-dazll-coll:hover::after {
+  bottom: -7px;
+  right: -7px;
+}
+.imgg-card-inner:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--bs-border-radius-xl) !important;
+  background: linear-gradient(0deg, black, transparent);
+}
+.cards-dazll {
+  padding-bottom: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 60px;
+}

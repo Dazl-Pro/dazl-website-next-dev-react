@@ -1,0 +1,30 @@
+.mob {
+    margin-bottom: 11px;
+}
+img.img-fluid.rounded {
+    max-height: 120px;
+}
+label.fw-bold.fs-3 {
+    color: #dc3545;
+}
+.inner-text.send-message {
+    color: #dc3545;
+}
+.text-red{
+    color: #dc3545!important;
+}
+.bg-lightgrey {
+    background-color: lightgray;
+}
+input#message {
+    width: 100%;
+    padding-bottom: 15%;
+    border-color: red;
+}
+
+@media only screen and (max-width: 767px) {
+    .console-flex {
+        flex-direction: column;
+        align-items: center !important;
+    }
+}
