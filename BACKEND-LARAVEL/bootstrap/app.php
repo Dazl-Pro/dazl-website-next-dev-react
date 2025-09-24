@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withProviders([
         \App\Providers\RepositoryServiceProvider::class,
+        \App\Providers\EventServiceProvider::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         // Register custom middleware aliases

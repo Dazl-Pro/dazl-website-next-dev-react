@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Customer;
 use App\Models\Professional;
 use App\Models\Realtor;
+use App\Events\UserRegistered;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,9 @@ class AuthService
             'phone_number' => $data['phone_number'] ?? null,
             'zip_code' => $data['zip_code'],
         ]);
+
+        // Fire event for welcome email and other onboarding tasks
+        UserRegistered::dispatch($customer, 'customer');
 
         $token = JWTAuth::fromUser($customer);
 

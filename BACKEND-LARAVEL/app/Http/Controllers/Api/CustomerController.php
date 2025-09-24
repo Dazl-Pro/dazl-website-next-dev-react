@@ -18,7 +18,64 @@ class CustomerController extends Controller
     }
 
     /**
-     * Register Customer
+     * @OA\Post(
+     *     path="/api/customers/register",
+     *     operationId="registerCustomer",
+     *     tags={"Authentication"},
+     *     summary="Register a new customer",
+     *     description="Creates a new customer account and returns authentication token",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Customer registration data",
+     *         @OA\JsonContent(
+     *             required={"first_name","last_name","email","password","password_confirmation","zip_code","check_box"},
+     *             @OA\Property(property="first_name", type="string", maxLength=255, example="John"),
+     *             @OA\Property(property="last_name", type="string", maxLength=255, example="Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+     *             @OA\Property(property="password", type="string", minLength=6, example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="password123"),
+     *             @OA\Property(property="phone_number", type="string", maxLength=20, example="+1234567890"),
+     *             @OA\Property(property="zip_code", type="string", maxLength=10, example="12345"),
+     *             @OA\Property(property="check_box", type="boolean", example=true, description="Terms acceptance")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Customer registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Customer registered successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="customer", type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="first_name", type="string", example="John"),
+     *                     @OA\Property(property="last_name", type="string", example="Doe"),
+     *                     @OA\Property(property="email", type="string", example="john.doe@example.com")
+     *                 ),
+     *                 @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
+     *                 @OA\Property(property="token_type", type="string", example="bearer")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation errors"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Registration failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Registration failed"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
      */
     public function register(CustomerRegistrationRequest $request)
     {
