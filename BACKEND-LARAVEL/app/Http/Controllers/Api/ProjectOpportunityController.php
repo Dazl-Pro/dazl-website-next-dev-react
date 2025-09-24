@@ -5,36 +5,75 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProjectOpportunityResource;
+use App\Services\ProjectOpportunityService;
 use App\Models\ProjectOpportunity;
-use App\Models\Project;
 
 class ProjectOpportunityController extends Controller
 {
+    protected ProjectOpportunityService $opportunityService;
+
+    public function __construct(ProjectOpportunityService $opportunityService)
+    {
+        $this->opportunityService = $opportunityService;
+    }
+
+    /**
+     * Get project opportunities for professionals with pagination
+     * Route: GET /project-opportunities/professionals/{page}
+     */
+    public function getProjectOpportunitiesForPros($page = 1)
+    {
+        try {
+            $professionalId = auth()->id();
+            $filters = request()->only(['status', 'min_price', 'max_price', 'project_status', 'location']);
+
+            $opportunities = $this->opportunityService->getOpportunitiesForProfessional(
+                $professionalId,
+                $filters,
+                $page
+            );
+
+            return response()->json([
+                'success' => true,
+                'data' => ProjectOpportunityResource::collection($opportunities->items()),
+                'pagination' => [
+                    'current_page' => $opportunities->currentPage(),
+                    'total_pages' => $opportunities->lastPage(),
+                    'total_items' => $opportunities->total(),
+                    'per_page' => $opportunities->perPage()
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve project opportunities',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Create/Submit bid for project opportunity
+     * Route: PATCH /project-opportunities/{id}
+     */
+    public function create(Request $request, $id)
+    {
+        // This method name matches the route but should actually submit a bid
+        return $this->submitBid($request, $id);
+    }
+
     /**
      * Get opportunities for authenticated professional
      */
     public function index(Request $request)
     {
         try {
-            $professionalId = auth()->id();
-            $query = ProjectOpportunity::with(['project', 'project.customer'])
-                                     ->where('professional_id', $professionalId);
-
-            // Filter by status
-            if ($request->has('status')) {
-                $query->where('status', $request->status);
-            }
-
-            // Filter by price range
-            if ($request->has('min_price')) {
-                $query->where('bid_amount', '>=', $request->min_price);
-            }
-
-            if ($request->has('max_price')) {
-                $query->where('bid_amount', '<=', $request->max_price);
-            }
-
-            $opportunities = $query->orderBy('created_at', 'desc')->paginate(20);
+            $filters = $request->only(['status', 'min_price', 'max_price', 'project_status']);
+            $opportunities = $this->opportunityService->getOpportunitiesForProfessional(
+                auth()->id(),
+                $filters
+            );
 
             return response()->json([
                 'success' => true,
@@ -70,52 +109,16 @@ class ProjectOpportunityController extends Controller
         ]);
 
         try {
-            $professionalId = auth()->id();
-            $project = Project::find($projectId);
-
-            if (!$project) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Project not found'
-                ], 404);
-            }
-
-            if ($project->status !== 'published') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Project is not accepting bids'
-                ], 400);
-            }
-
-            // Check if professional already submitted a bid
-            $existingBid = ProjectOpportunity::where('project_id', $projectId)
-                                           ->where('professional_id', $professionalId)
-                                           ->first();
-
-            if ($existingBid) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You have already submitted a bid for this project'
-                ], 400);
-            }
-
-            $opportunity = ProjectOpportunity::create([
-                'project_id' => $projectId,
-                'professional_id' => $professionalId,
-                'bid_amount' => $request->bid_amount,
-                'estimated_hours' => $request->estimated_hours,
-                'proposal_message' => $request->proposal_message,
-                'status' => 'pending',
-                'submitted_at' => now()
-            ]);
-
-            // Attach service types
-            $opportunity->serviceTypes()->attach($request->service_type_ids);
+            $opportunity = $this->opportunityService->submitBid(
+                $projectId,
+                auth()->id(),
+                $request->validated()
+            );
 
             return response()->json([
                 'success' => true,
                 'message' => 'Bid submitted successfully',
-                'data' => new ProjectOpportunityResource($opportunity->load(['project', 'serviceTypes']))
+                'data' => new ProjectOpportunityResource($opportunity)
             ], 201);
 
         } catch (\Exception $e) {

@@ -31,6 +31,8 @@ use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\BlogCategoryController;
 use App\Http\Controllers\Api\ContactUsController;
+use App\Http\Controllers\Api\FileUploadController;
+use App\Http\Controllers\Api\NotificationController;
 
 // ==========================================
 // 1. AUTHENTICATION & USER MANAGEMENT
@@ -116,7 +118,9 @@ Route::middleware(['jwt:realtor'])->group(function () {
 });
 
 // Public Project Routes
-Route::post('/getImage', [ProjectController::class, 'getimage']);
+Route::post('/getImage', [FileUploadController::class, 'uploadImage']);
+Route::post('/upload-multiple-images', [FileUploadController::class, 'uploadMultipleImages']);
+Route::post('/upload-document', [FileUploadController::class, 'uploadDocument']);
 
 // Project Opportunities for Professionals
 Route::middleware(['jwt:professional'])->group(function () {
@@ -253,6 +257,14 @@ Route::get('/blog-categories', [BlogCategoryController::class, 'index']);
 // Contact Us (Public)
 Route::post('/contact-us', [ContactUsController::class, 'store']);
 
+// Notification System (Protected)
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('/sendtestnote', [NotificationController::class, 'sendTestNote']);
+    Route::post('/sendtestmail', [NotificationController::class, 'sendTestMail']);
+    Route::post('/send-phd-report', [NotificationController::class, 'sendPHDReport']);
+    Route::post('/send-bid-notification', [NotificationController::class, 'sendBidNotification']);
+});
+
 // ==========================================
-// TOTAL: 79 API ENDPOINTS
+// TOTAL: 83 API ENDPOINTS
 // ==========================================

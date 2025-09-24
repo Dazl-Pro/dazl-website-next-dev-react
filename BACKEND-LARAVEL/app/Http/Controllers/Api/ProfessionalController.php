@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ProfessionalRegistrationRequest;
 use App\Http\Resources\ProfessionalResource;
 use App\Services\AuthService;
+use App\Models\Professional;
 
 class ProfessionalController extends Controller
 {

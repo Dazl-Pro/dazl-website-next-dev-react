@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RealtorRegistrationRequest;
 use App\Http\Resources\RealtorResource;
 use App\Services\AuthService;
+use App\Models\Realtor;
 
 class RealtorController extends Controller
 {
