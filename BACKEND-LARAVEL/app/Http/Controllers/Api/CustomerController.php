@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CustomerRegistrationRequest;
 use App\Http\Resources\CustomerResource;
 use App\Services\AuthService;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {

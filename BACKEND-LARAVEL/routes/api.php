@@ -70,6 +70,8 @@ Route::post('/professional/login', [ProfessionalController::class, 'login']);
 
 Route::middleware(['jwt:professional'])->group(function () {
     Route::post('/professional/logout', [ProfessionalController::class, 'logout']);
+    Route::patch('/professional/update', [ProfessionalController::class, 'update']);
+    Route::post('/professional/change_password', [ProfessionalController::class, 'change_password']);
 });
 
 // Realtor Authentication & Management
@@ -117,7 +119,7 @@ Route::middleware(['jwt:realtor'])->group(function () {
 Route::post('/getImage', [ProjectController::class, 'getimage']);
 
 // Project Opportunities for Professionals
-Route::middleware(['auth:professional'])->group(function () {
+Route::middleware(['jwt:professional'])->group(function () {
     Route::get('/project-opportunities/professionals/{page}', [ProjectOpportunityController::class, 'getProjectOpportunitiesForPros']);
     Route::patch('/project-opportunities/{id}', [ProjectOpportunityController::class, 'create']);
 });

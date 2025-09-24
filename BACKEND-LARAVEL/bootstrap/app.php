@@ -21,6 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'project.ownership' => \App\Http\Middleware\ProjectOwnershipMiddleware::class,
             'log.api' => \App\Http\Middleware\LogApiRequestsMiddleware::class,
+            'jwt:customer' => \App\Http\Middleware\JwtCustomerMiddleware::class,
+            'jwt:professional' => \App\Http\Middleware\JwtProfessionalMiddleware::class,
+            'jwt:realtor' => \App\Http\Middleware\JwtRealtorMiddleware::class,
         ]);
 
         // Apply API logging to all API routes
