@@ -92,12 +92,12 @@ model: opus    # (for strategic agents only)
 grep "model:" .claude/agents/*.md
 ```
 
-**Expected Output:**
+**Expected Output (DAZL Project):**
 ```
 .claude/agents/api-integration-specialist.md:model: sonnet
 .claude/agents/database-architect.md:model: sonnet
+.claude/agents/dazl-project-coordinator.md:model: opus
 .claude/agents/laravel-backend-specialist.md:model: sonnet
-.claude/agents/mojodojo-project-manager.md:model: opus
 .claude/agents/react-frontend-specialist.md:model: sonnet
 .claude/agents/security-qa-validator.md:model: opus
 ```
@@ -234,6 +234,14 @@ Consider upgrading to **Max 20x** if:
 - Created parallel delegation best practices
 - Provided generic templates for any project type
 
+### 2025-10-06: DAZL Project Coordinator Agent Created
+- Created `dazl-project-coordinator.md` with Opus model assignment
+- Comprehensive DAZL business logic and workflow documentation
+- Parallel delegation patterns for Laravel 11 + React modernization
+- Clear separation of concerns: Laravel Blade (admin) vs React (customer-facing)
+- Integration with all 5 specialist agents (4 Sonnet, 1 Opus)
+- Token-efficient coordination strategy implemented
+
 ### Future Updates:
 Add new entries here when you make changes to YOUR project's agent configurations.
 
@@ -260,8 +268,18 @@ grep "model:" .claude/agents/*.md
 [backend]-specialist.md:model: sonnet
 api-integration-specialist.md:model: sonnet
 database-architect.md:model: sonnet
-[project]-project-manager.md:model: opus
+[project]-coordinator.md:model: opus
 [frontend]-specialist.md:model: sonnet
+security-qa-validator.md:model: opus
+```
+
+**Current DAZL Project Status:**
+```
+api-integration-specialist.md:model: sonnet
+database-architect.md:model: sonnet
+dazl-project-coordinator.md:model: opus ✅
+laravel-backend-specialist.md:model: sonnet
+react-frontend-specialist.md:model: sonnet
 security-qa-validator.md:model: opus
 ```
 
